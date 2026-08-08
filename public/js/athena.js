@@ -944,6 +944,7 @@ $(function() {
 	fetch_resin_actual();
 	setInterval(function(){fetch_resin_actual();}, 10000);
 
+	fetch_navbar_bit_depth();
 });
 
 function fetch_resin_target(){
@@ -977,6 +978,25 @@ function fetch_resin_actual(){
 			$('.navbar-resin-temp').show();
 			$("#navbar-resin-temp-text").text(data + "");
 		}
+	});
+}
+
+function fetch_navbar_bit_depth(){
+	$.ajax({
+		url: "/json/db/machine.json",
+		type: 'GET',
+		timeout: 2000
+	}).done(function(result) {
+		var obj = (typeof result === "string") ? JSON.parse(result) : result;
+		var width = obj["ProjectorWidth"];
+		var is16k = (width == 15120 || width == 15136);
+		if (!is16k) {
+			$('.navbar-bit-depth').hide();
+			return;
+		}
+		var bitDepth = (obj["DisplayController"] == 1) ? "8-bit" : "3-bit";
+		$("#navbar-bit-depth-text").text(bitDepth);
+		$('.navbar-bit-depth').show();
 	});
 }
 
