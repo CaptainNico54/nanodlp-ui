@@ -111,6 +111,10 @@ function setupEasyMode(){
 	navButton.click(function () {
 		setEasyMode(!isEasyModeEnabled());
 	});
+
+	$("#profileEasyModeSwitchBtn").click(function () {
+		setEasyMode(false);
+	});
 }
 
 //$(document).ready(function(){
@@ -564,7 +568,10 @@ async function changeUpdateChannel(channel) {
 		});
 
 		const text = document.getElementById(`btn-${channel}`);
-		toastr.success(`Channel updated to ${text.innerText}! Please reboot your machine...`);
+		toastr.success(`Channel updated to ${text.innerText}!`);
+		if (confirm('A reboot is required for the channel change to take effect. Reboot now?')) {
+			window.location.href = '/printer/restart';
+		}
 	} catch (err) {
 		toastr.error('Failed to switch channels.')
 	}

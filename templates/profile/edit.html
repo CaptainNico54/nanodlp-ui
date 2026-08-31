@@ -877,6 +877,7 @@
 					<strong><translate>Easy Mode</translate></strong>
 					<p><translate>You are currently editing this profile in Easy Mode. Only Layer Thickness and Normal Exposure Time can be changed.</translate></p>
 					<p><translate>To access all resin profile settings, open the System menu and select Advanced Mode.</translate></p>
+					<button type="button" class="btn btn-primary" id="profileEasyModeSwitchBtn" translate>Switch to Advanced Mode</button>
 				</div>
 			</div>
 			<div class="col-md-4 i_basic i_option advance_mode">
@@ -937,9 +938,9 @@
 
 			<div class="col-md-2 col-sm-3 i_basic i_option advance_mode" style="padding-top:5px;">
 				<label for="YieldPressureSimple">
-					<translate>Part Strength (<b>GPa</b>)</translate>
+					<translate>Material Modulus (<b>GPa</b>)</translate>
 					<a class="help" data-toggle="tooltip" data-placement="top"
-					   title="Modulus of Elasticity, Bending Strength or similar as found in the datasheet">i</a>
+					   title="Used by Smart Kinematics to adjust lift motion based on material stiffness. Use Young's Modulus, Tensile Modulus, Modulus of Elasticity, or Flexural Modulus from the resin datasheet. If listed in MPa, divide by 1000. Do not use Tensile Strength or Flexural Strength.">i</a>
 				</label>
 				<input class="form-control" value="{{profile.CustomValues.YieldPressure}}" name="YieldPressure" id="YieldPressureSimple" step="0.0001" type="number">
 			</div>
