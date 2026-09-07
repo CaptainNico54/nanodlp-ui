@@ -65,22 +65,57 @@
         <h4>How To Evaluate Calibration Model</h4>
 
         <div id="model-evaluation-1" class="evaluation-text">
-            Check out <a
-                href="https://docs.google.com/document/d/1aoMSE6GBGMcoYXNGfPP9s_Jg8vr1wQmmZuvqP3suago/edit?tab=t.0#bookmark=kix.5d6umuu6x6ur"
-                target="_blank">J3D's instructions</a> for a guide on how to read the RERF test.<br><br>
+    <p>
+        The Concepts 3D Exposure Calibration prints six test tiles using increasing exposure times.
+        Tile 1 uses the shortest exposure and Tile 6 uses the longest.
+    </p>
 
-            Once you find the optimal exposure time, you can print another type of calibration model to verify it, or
-            create a new resin profile with the normal exposure time you determined here.
-        </div>
+    <p>
+        After printing, wash and dry all six tiles thoroughly, then compare the fine details to determine
+        which exposure gives the best overall result.
+    </p>
 
-        <div id="model-evaluation-2" class="evaluation-text" style="display: none">
-            Check out <a
-                href="https://docs.google.com/document/d/1aoMSE6GBGMcoYXNGfPP9s_Jg8vr1wQmmZuvqP3suago/edit?tab=t.0#bookmark=kix.cq1i76pon3wz"
-                target="_blank">J3D's instructions</a> for a guide on how to read the Boxes of Calibration.<br><br>
+    <ul>
+        <li><strong>Concepts3D logo:</strong> Look for crisp, complete lettering without bloating or merging.</li>
+        <li><strong>Holes and pins:</strong> A balanced number of visible holes and pins indicates a good exposure.</li>
+        <li><strong>Three triangles:</strong> The tips should meet cleanly in the center without a gap or blob.</li>
+        <li><strong>6 mm square:</strong> The square should measure close to 6.0 mm.</li>
+        <li><strong>Fine lines and gaps:</strong> Raised lines should remain separate while fine gaps remain open.</li>
+    </ul>
 
-            Once you find the optimal exposure time, you can print another type of calibration model to verify it, or
-            create a new resin profile with the normal exposure time you determined here.
-        </div>
+    <p>
+        For detailed evaluation examples, troubleshooting, Z-offset checks, and instructions for choosing
+        your final exposure time, open the full calibration guide:
+    </p>
+
+    <p>
+        <a href="https://help.concepts3d.ca/en-US/exposure-calibration-guide-8083022"
+           target="_blank"
+           rel="noopener noreferrer">
+            <strong>Open the Concepts 3D Exposure Calibration Guide</strong>
+        </a>
+    </p>
+
+    <div style="margin-top: 20px; text-align: center;">
+        <a href="https://help.concepts3d.ca/en-US/exposure-calibration-guide-8083022"
+           target="_blank"
+           rel="noopener noreferrer">
+            <img src="/static/shots/calibration-images/ExposureCalibration-RERF-QR.png"
+                 alt="QR code for the Concepts 3D Exposure Calibration Guide"
+                 style="width: 220px; max-width: 100%; height: auto;">
+        </a>
+
+        <p style="margin-top: 10px;">
+            <strong>Scan the QR code to open the full calibration guide.</strong>
+        </p>
+    </div>
+
+    <p>
+        Once you identify the best tile, use that tile's exposure time as the normal-layer exposure
+        for your resin profile. If Tile 1 or Tile 6 is clearly best, run the calibration again with
+        the starting exposure shifted so the best result falls closer to the middle of the range.
+    </p>
+</div>
     </div>
 
 </div>
