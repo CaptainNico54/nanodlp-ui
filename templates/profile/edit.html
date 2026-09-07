@@ -875,8 +875,8 @@
 			<div class="col-md-12 easy_mode">
 				<div class="alert alert-info" role="alert">
 					<strong><translate>Easy Mode</translate></strong>
-					<p><translate>You are currently editing this profile in Easy Mode. Only Layer Thickness and Normal Exposure Time can be changed.</translate></p>
-					<p><translate>To access all resin profile settings, open the System menu and select Advanced Mode.</translate></p>
+					<p><translate>You are currently editing this profile in Easy Mode. Only the most commonly adjusted resin settings are shown.</translate></p>
+					<p><translate>Switch to Advanced Mode to access all available resin profile parameters.</translate></p>
 					<button type="button" class="btn btn-primary" id="profileEasyModeSwitchBtn" translate>Switch to Advanced Mode</button>
 				</div>
 			</div>
@@ -893,7 +893,7 @@
 				<label for="Title" translate>Name</label>
 				<input class="form-control" value="{{profile.Title}}" name="Title" id="TitleSimple" required>
 			</div>
-			<div class="col-md-4 i_basic i_option advance_mode">
+			<div class="col-md-4 i_basic i_option">
 				<label for="ResinPrice" translate>Price (<b>$/L</b>)</label>
 				<input class="form-control" value="{{profile.ResinPrice}}" name="ResinPrice" id="ResinPrice" type="number" step="0.01">
 			</div>
@@ -901,7 +901,7 @@
 				<label for="Desc" translate>Description</label>
 				<textarea class="form-control" name="Desc" id="Desc">{{profile.Desc}}</textarea>
 			</div>
-			<div class="col-md-4 i_basic i_option advance_mode" style="padding-top:5px;">
+			<div class="col-md-4 i_basic i_option" style="padding-top:5px;">
 				<div class="row row-marginless">
 					<label for="ResinPreheatTemperature">
 						<translate>Resin Preheat Temperature (<b>C</b>)</translate>
@@ -957,7 +957,7 @@
 				<label for="Depth"><translate>Layer Thickness (<b>μm</b>)</translate></label>
 				<input class="form-control" value="{{profile.Depth}}" name="Depth" id="Depth" step="0.01" type="number" required>
 			</div>
-			<div class="col-md-2 col-sm-3 i_basic i_option advance_mode" style="padding-top:5px;">
+			<div class="col-md-2 col-sm-3 i_basic i_option" style="padding-top:5px;">
 				<label for="SupportLayerNumber">
 					<translate>Number of Burn-in Layers</translate>
 				</label>
@@ -978,7 +978,7 @@
 			<div class="col-md-4 i_basic i_option" > </div>
 
 			<!-- Bottom Layer Settings -->
-			<div class="col-md-6 i_basic i_option advance_mode" style="padding-left:0px; padding-top:10px;">
+			<div class="col-md-6 i_basic i_option" style="padding-left:0px; padding-top:10px;">
 				<div class="col-md-12 i_basic i_option">
 					<div class="col-md-6 i_basic i_option" style="padding-left:0px;">
 						<h5><span translate><strong>Bottom Layer Settings</strong></span></h5>
@@ -993,7 +993,7 @@
 					</div>
 					<div class="clearfix "></div>
 				</div>
-				<div class="col-md-12 i_basic i_option" style="padding-top: 10px;">
+				<div class="col-md-12 i_basic i_option advance_mode" style="padding-top: 10px;">
 					<div class="col-md-5 i_burnin i_option">
 						<label for="SupportWaitBeforePrint"><translate>Bottom Wait Before Print (<b>s</b>)</translate></label>
 					</div>
@@ -1001,7 +1001,7 @@
 						<input class="form-control" value="{{profile.SupportWaitBeforePrint}}" name="SupportWaitBeforePrint" step="0.01" id="SupportWaitBeforePrintSimple" type="number" required min="0" max="60">
 					</div>
 				</div>
-				<div class="col-md-12 i_basic i_option">
+				<div class="col-md-12 i_basic i_option advance_mode">
 					<div class="col-md-5 i_burnin i_option">
 						<label for="SupportWaitAfterPrint"><translate>Bottom Wait After Print (<b>s</b>)</translate></label>
 					</div>
@@ -1010,7 +1010,7 @@
 					</div>
 					<div class="clearfix "></div>
 				</div>
-				<div class="col-md-12 i_basic i_option">
+				<div class="col-md-12 i_basic i_option advance_mode">
 					<div class="col-md-5 i_burnin i_option">
 						<label for="SupportTopWait"><translate>Bottom Wait After Lift (<b>s</b>)</translate></label>
 					</div>
@@ -1034,7 +1034,7 @@
 
 			<!-- Normal Layers -->
 			<div class="col-md-6 i_basic i_option" style="padding-left:0px; padding-top:10px;">
-				<div class="col-md-12 i_basic i_option advance_mode">
+				<div class="col-md-12 i_basic i_option">
 					<div class="col-md-6 i_basic i_option" style="padding-left:0px;">
 						<h5><span translate><strong>Normal Layer Settings</strong></span></h5>
 					</div>
@@ -1084,7 +1084,7 @@
 					</div>
 					<div class="clearfix "></div>
 				</div>
-				<div class="col-md-12 i_basic i_option advance_mode" style="padding-top: 10px;">
+				<div class="col-md-12 i_basic i_option" style="padding-top: 10px;">
 					<div class="col-md-5 i_burnin i_option">
 						<label for="WaitHeight"><translate>Normal Lift Distance (<b>mm</b>)</translate></label>
 					</div>
@@ -1095,13 +1095,13 @@
 				</div>
 			</div>
 
-			<div class="col-md-12 i_basic i_option advance_mode">
+			<div class="col-md-12 i_basic i_option">
 				<div class="col-md-6 i_basic i_option" style="padding-left: 0px;">
 					<h5><span translate><strong>Lift / Retract Options</strong></span></h5>
 				</div>
 				<div class="col-md-12 i_basic i_option" style="padding-top:5px;">
 					<div class="row">
-						<div class="col-md-3 i_basic i_option" style="padding-left: 0px;">
+						<div class="col-md-3 i_basic i_option advance_mode" style="padding-left: 0px;">
 							<label for="SimpleSlowLiftLayers">
 								Slow Lift Layers
 								<a class="help" data-toggle="tooltip" data-placement="top"
@@ -1109,7 +1109,7 @@
 							</label>
 							<input class="form-control" name="SimpleSlowLiftLayers" id="SimpleSlowLiftLayers" type="number" required min="1">
 						</div>
-						<div class="col-md-3 i_basic i_option" style="padding-left: 0px;">
+						<div class="col-md-3 i_basic i_option advance_mode" style="padding-left: 0px;">
 							<label for="SimpleSlowLiftSpeed">
 								Slow Lift Speed (mm/m)
 								<a class="help" data-toggle="tooltip" data-placement="top"
@@ -1127,7 +1127,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-3 i_basic i_option" style="padding-left: 0px;">
+						<div class="col-md-3 i_basic i_option advance_mode" style="padding-left: 0px;">
 							<label for="SimpleSlowRetractLayers">
 								Slow Retract Layers
 								<a class="help" data-toggle="tooltip" data-placement="top"
@@ -1135,7 +1135,7 @@
 							</label>
 							<input class="form-control" name="SimpleSlowRetractLayers" id="SimpleSlowRetractLayers" type="number" required min="1">
 						</div>
-						<div class="col-md-3 i_basic i_option" style="padding-left: 0px;">
+						<div class="col-md-3 i_basic i_option advance_mode" style="padding-left: 0px;">
 							<label for="SimpleSlowRetractSpeed">
 								Slow Retract Speed (mm/m)
 								<a class="help" data-toggle="tooltip" data-placement="top"
@@ -1186,7 +1186,7 @@
 
 
 			<!-- FSS Options -->
-			<div class="col-md-12 i_basic i_option advance_mode" style="padding-top:10px;">
+			<div class="col-md-12 i_basic i_option" style="padding-top:10px;">
 				<div class="col-md-6 i_basic i_option" style="padding-left: 0px;">
 					<h5><span translate><strong>Detection systems</strong></span></h5>
 				</div>
@@ -1205,7 +1205,7 @@
 								<input class="form-control checkbox-profile" value="{{profile.CustomValues.FssEnablePeeldetection}}" name="FssEnablePeeldetection" id="PdEnableSimple" type="checkbox">
 							</div>
 						</div>
-						<div class="row">
+						<div class="row advance_mode">
 							<div class="col-md-4">
 								<label for="PdPeelMode"><translate>Kinematic Mode</translate>
 									<a class="help" data-toggle="tooltip" data-placement="top"
@@ -1219,7 +1219,7 @@
 								</select>
 							</div>
 						</div>
-						<div class="row peel-detection-settings">
+						<div class="row peel-detection-settings advance_mode">
 							<div class="col-md-4">
 								<label for="PdPeelStartSlopeSimple"><translate>Peel Detection Slope Start (<b>N</b>)</translate>
 									<a class="help" data-toggle="tooltip" data-placement="top"
@@ -1252,7 +1252,7 @@
 
 
 
-				<div class="col-md-12 i_basic i_option" style="padding-left:0px;">
+				<div class="col-md-12 i_basic i_option advance_mode" style="padding-left:0px;">
 					<div class="col-md-12 i_basic i_option" style="padding-left: 0px;">
 						<h5><span translate><strong>Crash Detection</strong></span></h5>
 					</div>
@@ -1281,7 +1281,7 @@
 					</div>
 				</div>
 
-				<div class="col-md-12 i_basic i_option" style="padding-left:0px;">
+				<div class="col-md-12 i_basic i_option advance_mode" style="padding-left:0px;">
 					<div class="col-md-12 i_basic i_option" style="padding-left: 0px;">
 						<h5><span translate><strong>Dynamic Wait</strong></span></h5>
 					</div>
@@ -1314,7 +1314,7 @@
 					</div>
 				</div>
 
-				<div class="col-md-12 i_basic i_option" style="padding-left:0px;">
+				<div class="col-md-12 i_basic i_option advance_mode" style="padding-left:0px;">
 					<div class="col-md-12 i_basic i_option" style="padding-left: 0px;">
 						<h5><span translate><strong>Resin Level Detection</strong></span></h5>
 					</div>
