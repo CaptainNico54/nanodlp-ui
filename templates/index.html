@@ -1,6 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
 
+<style>
+    .dashboard-z-position {
+        margin-top: 16px;
+        width: 82px;
+        text-align: center;
+    }
+
+    .dashboard-z-position-label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .dashboard-z-position-value {
+        display: block;
+        padding: 7px 6px;
+        border: 1px solid #777;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0.03);
+        line-height: 20px;
+        white-space: nowrap;
+        cursor: default;
+    }
+</style>
+
 <div>
     <div id="machine-status" class="row row-marginless">
         {% include "components/print-progress.html" %}
@@ -39,10 +66,17 @@
                                     <button id="btnMove100" class="btn btn-default btn-movement">0.1 mm</button>
                                     <button id="btnDown" class="btn btn-primary btn-axis-move" style="margin-top: 20px"><span class="glyphicon glyphicon-chevron-down"></span></button>
                                 </div>
+
                                 <div class="btn-group-vertical" style="padding-top: 80px">
                                     <button id="btnMoveHome" class="btn btn-default">Home</button>
                                     <button id="btnMoveBottom" class="btn btn-default">Floor</button>
-                                    <button id="btnStop" class="btn btn-danger" style="margin-top: 90px"><span class="glyphicon glyphicon-stop"></span></button>
+
+                                    <div class="dashboard-z-position">
+                                        <span class="dashboard-z-position-label">Z Position</span>
+                                        <span id="dashboard-z-position" class="dashboard-z-position-value">--</span>
+                                    </div>
+
+                                    <button id="btnStop" class="btn btn-danger" style="margin-top: 20px"><span class="glyphicon glyphicon-stop"></span></button>
                                 </div>
                             </div>
                         </div>
@@ -59,16 +93,17 @@
             </div>
         </div>
     </div>
-            <div class="row row-marginless">
-                <div id="pressure-chart-column" class="col-md-12 no-padding">
-                    <div class="panel panel-default dashboard-panel">
-                        <div class="panel-heading">Pressure Sensor</div>
-                        <div class="panel-body">
-                            {% include "dashboard-widgets/pressure-chart.html" %}
-                        </div>
-                    </div>
+
+    <div class="row row-marginless">
+        <div id="pressure-chart-column" class="col-md-12 no-padding">
+            <div class="panel panel-default dashboard-panel">
+                <div class="panel-heading">Pressure Sensor</div>
+                <div class="panel-body">
+                    {% include "dashboard-widgets/pressure-chart.html" %}
                 </div>
             </div>
+        </div>
+    </div>
 
     <div class="row chart-row row-marginless">
         <div class="col-md-12 no-padding">
@@ -84,5 +119,24 @@
 
 <translate class="hide" id="restart-confirm">Are you sure you want to restart the printer?</translate>
 <translate class="hide" id="poweroff-confirm">Are you sure you want to power off the printer?</translate>
+
+<script>
+(function () {
+    function updateDashboardZPosition() {
+        $.getJSON("/z-axis/info")
+            .done(function (data) {
+                var z = parseFloat(data["current-height-mm"]);
+                if (!isNaN(z)) {
+                    $("#dashboard-z-position").text(z.toFixed(2) + " mm");
+                }
+            });
+    }
+
+    $(function () {
+        updateDashboardZPosition();
+        setInterval(updateDashboardZPosition, 1500);
+    });
+})();
+</script>
 
 {% endblock %}

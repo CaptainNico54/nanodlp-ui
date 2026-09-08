@@ -440,3 +440,8 @@ input:checked + .switch-slider:before {
 
 /* End Dashboard Latest Updates */
 
+/* Center the fixed NanoDLP status bar in the Athena layout */
+.mlog {
+  left: 0 !important;
+  right: 0 !important;
+}
