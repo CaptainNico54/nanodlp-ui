@@ -1236,3 +1236,30 @@ $(document).ready(function () {
 	})
 
 })
+
+// Dashboard live Z-position updater
+function setupDashboardZPosition() {
+    const zPosition = $("#dashboard-z-position");
+
+    // athena.js is loaded on every Athena page. Only poll on the Dashboard.
+    if (!zPosition.length) {
+        return;
+    }
+
+    function updateDashboardZPosition() {
+        $.getJSON("/z-axis/info")
+            .done(function (data) {
+                const z = parseFloat(data["current-height-mm"]);
+                if (!isNaN(z)) {
+                    zPosition.text(z.toFixed(2) + " mm");
+                }
+            });
+    }
+
+    updateDashboardZPosition();
+    setInterval(updateDashboardZPosition, 1500);
+}
+
+$(document).ready(function () {
+    setupDashboardZPosition();
+});

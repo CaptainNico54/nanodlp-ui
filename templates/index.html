@@ -1,33 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-<style>
-    .dashboard-z-position {
-        margin-top: 16px;
-        width: 82px;
-        text-align: center;
-    }
-
-    .dashboard-z-position-label {
-        display: block;
-        margin-bottom: 4px;
-        font-size: 11px;
-        font-weight: 600;
-        white-space: nowrap;
-    }
-
-    .dashboard-z-position-value {
-        display: block;
-        padding: 7px 6px;
-        border: 1px solid #777;
-        border-radius: 3px;
-        background: rgba(255, 255, 255, 0.03);
-        line-height: 20px;
-        white-space: nowrap;
-        cursor: default;
-    }
-</style>
-
 <div>
     <div id="machine-status" class="row row-marginless">
         {% include "components/print-progress.html" %}
@@ -119,24 +92,5 @@
 
 <translate class="hide" id="restart-confirm">Are you sure you want to restart the printer?</translate>
 <translate class="hide" id="poweroff-confirm">Are you sure you want to power off the printer?</translate>
-
-<script>
-(function () {
-    function updateDashboardZPosition() {
-        $.getJSON("/z-axis/info")
-            .done(function (data) {
-                var z = parseFloat(data["current-height-mm"]);
-                if (!isNaN(z)) {
-                    $("#dashboard-z-position").text(z.toFixed(2) + " mm");
-                }
-            });
-    }
-
-    $(function () {
-        updateDashboardZPosition();
-        setInterval(updateDashboardZPosition, 1500);
-    });
-})();
-</script>
 
 {% endblock %}
