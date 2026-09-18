@@ -117,15 +117,6 @@
 		<button type="submit" class="btn btn-success upload-button"><translate>Submit</translate></button>
 		<button type="button" class="btn btn-success" id="browser_slice" disabled="disabled" translate>Slice on Browser and Submit</button>
 	</form>
-	{% if isARM && !remoteSlicing %}
-	<div class="row">
-		<div class="col-md-12">
-			<br>
-			<br>
-			<div class="alert alert-info" translate>To speedup slicing you can use, NanoDLP remote slicer feature.</div>
-		</div>
-	</div>
-	{% endif %}
 	<br>
 	<br>
 	<div class="row hide" id="largeFile">
@@ -147,25 +138,6 @@
 	{% endif %}
 	<br>
 	<br>
-	<div class="row hide" id="largeFile">
-		<div class="col-md-12">
-			<div class="alert alert-danger">
-				<translate>File is too large to process, use remote slicing, web slicing or upload a sliced file.</translate>
-				<translate>It is possible to process files smaller than {{fileSizeLimit}}MB.</translate>
-			</div>
-		</div>
-	</div>	
-	{% if remoteSlicing %}
-	<div class="row">
-		<div class="col-md-12">
-			<br>
-			<br>
-			<div class="alert alert-success" translate>Remote slicing enabled.</div>
-		</div>
-	</div>
-	<br>
-	<br>
-	{% endif %}
 </div>
 <script src='/static/js/wasm.js'></script>
 <script>

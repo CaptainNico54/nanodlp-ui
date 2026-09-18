@@ -53,10 +53,10 @@
             <li><a class="svg error label label-danger" href="/printer">{{ icon(heart_icon) }}</a></li>
         {% endif %}
         <li class="navbar-resin-temp" style="display:none">
-            <a href="/custom/heater"><small> Resin: <span id="navbar-resin-temp-text"></span>°C | <span id="navbar-resin-target-text"></span></small></a>
+            <a href="/"><small> Resin: <span id="navbar-resin-temp-text"></span>°C | <span id="navbar-resin-target-text"></span></small></a>
         </li>
         <li class="navbar-bit-depth" style="display:none">
-            <a href="/setup"><small id="navbar-bit-depth-text"></small></a>
+            <span class="c3d-navbar-readout"><small id="navbar-bit-depth-text"></small></span>
         </li>
         {% if os=="linux" %}
         <li>

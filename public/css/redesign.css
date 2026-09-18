@@ -2035,3 +2035,49 @@ body:has(.c3d-preview-layout) > br { display: none; }
   .c3d-printer-layout { height: auto; min-height: 0; }
   #console_wrapper { max-height: 60vh; }
 }
+
+/* Navbar status uses link spacing without becoming a navigation target. */
+.navbar-nav > li > .c3d-navbar-readout {
+  display: block;
+  padding: 10px 15px;
+  line-height: 20px;
+  font-size: 14px;
+  color: var(--df-text-muted);
+}
+@media (min-width: 768px) {
+  .navbar-nav > li > .c3d-navbar-readout { padding-top: 15px; padding-bottom: 15px; }
+}
+
+/* DragonFruit information view: content styles also work outside the modal. */
+.c3d-dragonfruit-modal .modal-dialog { width: calc(100% - 48px); max-width: 1120px; margin: 24px auto; }
+.c3d-dragonfruit-modal .modal-content { max-height: calc(100vh - 48px); display: flex; flex-direction: column; }
+.c3d-dragonfruit-modal .modal-header,
+.c3d-dragonfruit-modal .modal-footer { flex: 0 0 auto; padding: 20px 28px; background: var(--df-surface-0); }
+.c3d-dragonfruit-modal .modal-header { border-radius: var(--df-radius-lg) var(--df-radius-lg) 0 0; }
+.c3d-dragonfruit-modal .modal-footer { border-radius: 0 0 var(--df-radius-lg) var(--df-radius-lg); }
+.c3d-dragonfruit-info .text-muted { color: var(--df-text-muted); }
+.c3d-dragonfruit-modal .modal-body { padding: 24px 28px; overflow-y: auto; min-height: 0; }
+.c3d-dragonfruit-modal .modal-title { font-size: 28px; font-weight: 600; }
+.c3d-dragonfruit-modal .close { color: var(--df-text-strong); opacity: .8; text-shadow: none; }
+.c3d-dragonfruit-modal .close:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 4px; }
+.c3d-dragonfruit-intro { font-size: 18px; line-height: 1.6; margin-bottom: 24px; }
+.c3d-dragonfruit-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.c3d-dragonfruit-grid .c3d-card { padding: 24px; box-shadow: none; }
+.c3d-dragonfruit-grid h3 { margin: 0 0 4px; font-size: 18px; font-weight: 600; }
+.c3d-dragonfruit-grid h3 .glyphicon { color: var(--brand-accent); margin-right: 6px; font-size: 16px; }
+.c3d-dragonfruit-grid p { margin: 0; line-height: 1.7; }
+.c3d-dragonfruit-steps { padding-left: 22px; margin: 0; line-height: 1.7; }
+.c3d-dragonfruit-steps li + li { margin-top: 12px; }
+.c3d-dragonfruit-steps li::marker { color: var(--brand-accent); font-weight: 600; }
+.c3d-dragonfruit-athena { grid-column: 1 / -1; border-left: 3px solid var(--brand-accent); }
+.c3d-dragonfruit-note { margin: 22px 0 0; line-height: 1.6; }
+@media (max-width: 767px) {
+  .c3d-dragonfruit-modal .modal-dialog { width: calc(100% - 16px); margin: 8px auto; }
+  .c3d-dragonfruit-modal .modal-content { max-height: calc(100vh - 16px); }
+  .c3d-dragonfruit-modal .modal-header,
+  .c3d-dragonfruit-modal .modal-body,
+  .c3d-dragonfruit-modal .modal-footer { padding: 18px; }
+  .c3d-dragonfruit-modal .modal-title { font-size: 24px; }
+  .c3d-dragonfruit-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .c3d-dragonfruit-grid .c3d-card { padding: 18px; }
+}
