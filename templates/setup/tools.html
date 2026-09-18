@@ -9,76 +9,54 @@
 <translate class="hide" id="restart-confirm">Are you sure you want to restart the printer?</translate>
 <translate class="hide" id="reset-confirm">Are you sure you want to reset all the printer statistics?</translate>
 <translate class="hide" id="sampling-confirm">Toggle debug sampling? This will collect stack traces and memory usage every minute.</translate>
-<div class="starter-template">
-    <div class="row flex-row">
-        <div class="col-md-12">
-            <h2 translate>Settings</h2>
+<div class="c3d-tools-page">
+    <div class="c3d-page-head">
+        <div>
+            <div class="c3d-page-eyebrow"><translate>System</translate></div>
+            <h1 class="c3d-page-title"><translate>Settings &amp; Tools</translate></h1>
+            <p class="c3d-tools-description"><translate>Printer maintenance, configuration, backups and service tools.</translate></p>
         </div>
+        <div class="c3d-page-actions"><a href="#" id="expertModeCheckbox" class="ajax btn c3d-ghost c3d-ghost-gold c3d-tool-action">{% if viewMode == 1 %}<translate>Leave Service Mode</translate>{% else %}<translate>Enter Service Mode</translate>{% endif %}</a></div>
     </div>
-    <div class="row flex-row">
-        <div class="col-md-4">
-            <div class="list-group">
-            <span class="list-group-item list-group-item-action active" translate>Manage Printer</span>
-            <a class="ajax list-group-item list-group-item-action" data-ajax="/" href="/printer/force-stop" data-confirm="stop-confirm" translate>Force Stop</a>
-            <a class="ajax list-group-item list-group-item-action" data-ajax="/" href="/printer/off" data-confirm="poweroff-confirm" translate>Power Off</a>
-            <a class="ajax list-group-item list-group-item-action" data-ajax="/" href="/printer/restart" data-confirm="restart-confirm" translate>Restart</a>
-            <a id="BtnToggleHeater" class="ajax list-group-item list-group-item-action" translate>Toggle Heater system</a>
-            <a class="ajax list-group-item list-group-item-action {% if viewMode == 0 %}hidden{% endif %}" data-ajax="/" href="/printer/reload" translate>Reload NanoDLP</a>
-            <a class="ajax list-group-item list-group-item-action {% if viewMode == 0 %}hidden{% endif %}" data-ajax="/" href="/printer/terminate" data-confirm="terminate-confirm" translate>Terminate NanoDLP</a>
-                <a href="/printer/hmi/restart" data-ajax="/" class="list-group-item list-group-item-action ajax {% if viewMode == 0 %}hidden{% endif %}" translate>Restart HMI</a>
-                <a href="/printer/hmi/stop" data-ajax="/" class="list-group-item list-group-item-action ajax {% if viewMode == 0 %}hidden{% endif %}" translate>Stop HMI</a>
-                <a href="/printer/hmi/start" data-ajax="/" class="list-group-item list-group-item-action ajax {% if viewMode == 0 %}hidden{% endif %}" translate>Start HMI</a>
-                <a id="orion-toggle" class="ajax list-group-item list-group-item-action" style="display: none" onclick="onOrionToggle()">Toggle Orion</a>
-            {% if arch=="arm" %}
-            <a class="list-group-item list-group-item-action {% if viewMode == 0 %}hidden{% endif %}" href="/printer/edit/pi " translate>Edit Raspberry Pi Settings</a>
-            <a class="ajax list-group-item list-group-item-action {% if viewMode == 0 %}hidden{% endif %}" data-ajax="/" href="/printer/expand-fs" data-confirm="expand-confirm" translate>Expand Filesystem</a>
+    <div class="c3d-tools-grid">
+        <section class="c3d-card" aria-labelledby="tools-printer-heading">
+            <h2 id="tools-printer-heading"><span class="glyphicon glyphicon-off" aria-hidden="true"></span> <translate>Printer</translate></h2>
+            <div class="c3d-tool-actions">
+                <a class="ajax btn c3d-ghost c3d-ghost-danger c3d-tool-action" data-ajax="/" href="/printer/force-stop" data-confirm="stop-confirm" translate>Force Stop</a>
+                <a class="ajax btn c3d-ghost c3d-ghost-danger c3d-tool-action" data-ajax="/" href="/printer/off" data-confirm="poweroff-confirm" translate>Power Off</a>
+                <a class="ajax btn c3d-ghost c3d-tool-action" data-ajax="/" href="/printer/restart" data-confirm="restart-confirm" translate>Restart</a>
+                <a id="BtnToggleHeater" class="ajax btn c3d-ghost c3d-tool-action" translate>Toggle Heater system</a>
+                <a id="orion-toggle" class="ajax btn c3d-ghost c3d-tool-action" style="display: none" onclick="onOrionToggle()">Toggle Orion</a>
+                <a href="/debug" class="btn c3d-ghost c3d-tool-action" translate>Download Debug</a>
+            </div>
+        </section>
+        <section class="c3d-card" aria-labelledby="tools-backup-heading">
+            <h2 id="tools-backup-heading"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> <translate>Backup &amp; Restore</translate></h2>
+            <h3><translate>Export backups</translate></h3>
+            <div class="c3d-tool-actions">
+                <a href="/setup/export" class="btn c3d-ghost c3d-tool-action">Export Machine Settings</a>
+                <a href="/printer/backup" class="btn c3d-ghost c3d-tool-action">Export Plates and Settings</a>
+                <a href="/setup/export/nanosupport" class="btn c3d-ghost c3d-tool-action">Export NanoSupport Settings</a>
+            </div>
+            {% if viewMode == 1 %}
+            <div class="c3d-tools-restore">
+                <h3><translate>Restore configuration</translate></h3>
+                <p class="c3d-tools-warning"><translate>Restoring machine settings can replace printer configuration. Use only with a backup intended for this printer.</translate></p>
+                <a href="/printer/restore" class="btn c3d-ghost c3d-ghost-gold"><translate>Restore Machine Settings</translate></a>
+            </div>
+            {% else %}
+            <p class="c3d-tools-note"><translate>The restore shortcut is shown in Service Mode.</translate></p>
             {% endif %}
-            {% if os=="linux" %}
-            <a class="list-group-item list-group-item-action {% if viewMode == 0 %}hidden{% endif %}" href="/setup/timezone" translate>Change Timezone</a>
-            {% endif %}
-            <a class="list-group-item list-group-item-action {% if viewMode == 0 %}hidden{% endif %}" href="/term" translate>Gcode Terminal</a>
-                <a href="/debug" class="list-group-item list-group-item-action" translate>Download Debug</a>
-                </div>
-        </div>
-        <div class="col-md-4">
-            <div class="list-group">
-                <span href="#" class="list-group-item list-group-item-action active" translate>Customize</span>
-                <a href="/setup/custom-inputs" class="list-group-item list-group-item-action {% if viewMode == 0 %}hidden{% endif %}" translate>Inputs</a>
-                <a href="/setup/custom-sound" class="list-group-item list-group-item-action" translate>Sound</a>
-                <a href="/setup/custom-consumables" class="list-group-item list-group-item-action" translate>Manage Consumables</a>
-                <a href="/add-protection" class="list-group-item list-group-item-action" translate>Password Protection</a>
-                {% if arch=="arm" %}
-                <a href="/printer/edit/pi" class="list-group-item list-group-item-action {% if viewMode == 0 %}hidden{% endif %}" translate>Raspberry Pi Settings</a>
-                <a href="/printer/expand-fs" data-ajax="/" class="ajax list-group-item list-group-item-action {% if viewMode == 0 %}hidden{% endif %}" data-confirm="expand-confirm" translate>Expand Filesystem</a>
-                {% endif %}
-                {% if os=="linux" %}<a href="/setup/timezone" class="list-group-item list-group-item-action" translate>Timezone</a>{% endif %}
-                <a href="#" id="expertModeCheckbox" class="ajax list-group-item list-group-item-action">{% if viewMode == 1 %}<translate>Leave Service Mode</translate>{% else %}<translate>Enter Service Mode</translate>{% endif %}</a>
-
+        </section>
+        <section class="c3d-card" aria-labelledby="tools-custom-heading">
+            <h2 id="tools-custom-heading"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> <translate>Customization</translate></h2>
+            <div class="c3d-tool-actions">
+                <a href="/setup/custom-sound" class="btn c3d-ghost c3d-tool-action" translate>Sound</a>
+                <a href="/setup/custom-consumables" class="btn c3d-ghost c3d-tool-action" translate>Manage Consumables</a>
+                <a href="/add-protection" class="btn c3d-ghost c3d-tool-action" translate>Password Protection</a>
+                {% if os=="linux" %}<a href="/setup/timezone" class="btn c3d-ghost c3d-tool-action" translate>Timezone</a>{% endif %}
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="list-group">
-                <span class="list-group-item list-group-item-action disabled active" translate>Import / Export</span>
-                <a href="/printer/restore" class="list-group-item list-group-item-action">Import Settings</a>
-                <a href="/setup/export" class="list-group-item list-group-item-action">Export Machine Settings</a>
-                <a href="/printer/backup" class="list-group-item list-group-item-action">Export Plates and Settings</a>
-                <a href="/setup/export/nanosupport" class="list-group-item list-group-item-action">Export NanoSupport Settings</a>
-            </div>
-        </div>
-        <div class="col-md-4 {% if viewMode == 0 %}hidden{% endif %}">
-            <div class="list-group ">
-                <a href="#" class="list-group-item list-group-item-action disabled active" translate>Troubleshoot</a>
-                <a href="/debug/verbose" class="list-group-item list-group-item-action" translate>Enable Verbose Logging</a>
-                <a href="/debug/performance/cpu" class="list-group-item list-group-item-action" translate>CPU Profiling</a>
-                <a href="/debug/performance/memory" class="list-group-item list-group-item-action" translate>Memory Profiling</a>
-                <a href="/debug/performance/trace" class="list-group-item list-group-item-action" translate>Tracing</a>
-                <a href="/debug/sampling" class="list-group-item list-group-item-action ajax" data-confirm="sampling-confirm" translate>Sample Stack</a>
-                <a href="/debug/stack" class="list-group-item list-group-item-action" translate>View Stack</a>
-            </div>
-        </div>
-    </div>
-    <div class="row flex-row">
-        <div class="col-md-4" id="aegis-control-div" style="display: none;">
+<div class="c3d-tools-aegis" id="aegis-control-div" style="display: none;">
             <h4 translate>AEGIS</h4>
             <label for="aegis-available-toggle">
                 Enable AEGIS System
@@ -90,6 +68,32 @@
                 <span class="switch-slider round"></span>
             </label>
         </div>
+        </section>
     </div>
+    <section class="c3d-card c3d-tools-service {% if viewMode == 0 %}hidden{% endif %}" aria-labelledby="tools-service-heading">
+        <div class="c3d-page-eyebrow"><translate>Service Mode</translate></div>
+        <h2 id="tools-service-heading"><translate>Service Tools</translate></h2>
+        <p><translate>Maintenance and diagnostic controls for service work.</translate></p>
+        <div class="c3d-tool-actions">
+                <a class="ajax btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" data-ajax="/" href="/printer/reload" translate>Reload NanoDLP</a>
+                <a class="ajax btn c3d-ghost c3d-ghost-danger c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" data-ajax="/" href="/printer/terminate" data-confirm="terminate-confirm" translate>Terminate NanoDLP</a>
+                <a href="/printer/hmi/restart" data-ajax="/" class="btn c3d-ghost c3d-tool-action ajax {% if viewMode == 0 %}hidden{% endif %}" translate>Restart HMI</a>
+                <a href="/printer/hmi/stop" data-ajax="/" class="btn c3d-ghost c3d-tool-action ajax {% if viewMode == 0 %}hidden{% endif %}" translate>Stop HMI</a>
+                <a href="/printer/hmi/start" data-ajax="/" class="btn c3d-ghost c3d-tool-action ajax {% if viewMode == 0 %}hidden{% endif %}" translate>Start HMI</a>
+                {% if arch=="arm" %}<a class="btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" href="/printer/edit/pi " translate>Edit Raspberry Pi Settings</a>{% endif %}
+                {% if arch=="arm" %}<a class="ajax btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" data-ajax="/" href="/printer/expand-fs" data-confirm="expand-confirm" translate>Expand Filesystem</a>{% endif %}
+                {% if os=="linux" %}<a class="btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" href="/setup/timezone" translate>Change Timezone</a>{% endif %}
+                <a class="btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" href="/term" translate>Gcode Terminal</a>
+                <a href="/setup/custom-inputs" class="btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" translate>Inputs</a>
+                {% if arch=="arm" %}<a href="/printer/edit/pi" class="btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" translate>Raspberry Pi Settings</a>{% endif %}
+                {% if arch=="arm" %}<a href="/printer/expand-fs" data-ajax="/" class="ajax btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" data-confirm="expand-confirm" translate>Expand Filesystem</a>{% endif %}
+                <a href="/debug/verbose" class="btn c3d-ghost c3d-tool-action" translate>Enable Verbose Logging</a>
+                <a href="/debug/performance/cpu" class="btn c3d-ghost c3d-tool-action" translate>CPU Profiling</a>
+                <a href="/debug/performance/memory" class="btn c3d-ghost c3d-tool-action" translate>Memory Profiling</a>
+                <a href="/debug/performance/trace" class="btn c3d-ghost c3d-tool-action" translate>Tracing</a>
+                <a href="/debug/sampling" class="btn c3d-ghost c3d-tool-action ajax" data-confirm="sampling-confirm" translate>Sample Stack</a>
+                <a href="/debug/stack" class="btn c3d-ghost c3d-tool-action" translate>View Stack</a>
+        </div>
+    </section>
 </div>
 {% endblock %}

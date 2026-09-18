@@ -68,7 +68,7 @@ viewport. Confirm the menu in Easy/Advanced and locked configurations.
 | Print History / Gcode Terminal | Needs visual redesign | Customer-visible legacy template layouts |
 | Support & Connectivity | Redesigned in WP3 | Printer acceptance; see athena-support-diagnostics.md for hook inventory, download findings and existing functional issues |
 | Resin Import | Requires functional/layout review | Separate resin import from machine restore; preserve routes |
-| Settings and Tools / Machine Settings | Advanced/service page | Backup & Restore home; consider Advanced-only restore controls |
+| Settings and Tools / Machine Settings | Tools redesigned in WP4; Machine Settings remains a service page | Restore shortcut gated by existing Service Mode; import separation deferred pending real-printer route verification |
 | Z Axis / Heater / Display Calibration | Hide on Athena | Hidden from System; backend retained |
 | Pause / Resume | Requires separate functional review | Inspect movement/state handling before any lift/resume work; protect Z max |
 
@@ -128,3 +128,14 @@ to Connectivity, and a full-width data-processing table. Privacy/consent wording
 all original hooks and resource destinations remain available. No scripts or
 backend behavior changed. See [support diagnostics notes](athena-support-diagnostics.md)
 for validation, the existing `/debug` download investigation and printer checks.
+
+## Work Package 4: completed Tools scope; import split deferred
+
+Settings & Tools redesign is complete, with grouped Printer, Backup & Restore,
+Customization and Service Tools actions. Exports remain normally available.
+The `/printer/restore` shortcut appears only for `viewMode == 1`; this does not
+protect the backend route or alter restore behavior. Import templates, their
+repository link and duplicate input IDs are deliberately unchanged pending
+verification with Pascal/on Athena. Duplicate Pi/filesystem/timezone capabilities
+are retained. See [WP4 notes](athena-settings-tools.md) for validation, preserved
+hooks, exact scope and remaining printer checks.

@@ -2137,3 +2137,31 @@ body:has(.c3d-preview-layout) > br { display: none; }
   .c3d-support-page .c3d-card { padding: 18px; }
   .c3d-support-pairing-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
 }
+
+/* Settings & Tools: grouped actions without changing their command hooks. */
+.c3d-tools-page { margin-bottom: 24px; }
+.c3d-tools-description { color: var(--df-text-muted); margin: 10px 0 0; line-height: 1.6; }
+.c3d-tools-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: start; }
+.c3d-tools-page .c3d-card { min-width: 0; padding: 22px; box-shadow: none; }
+.c3d-tools-page h2 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
+.c3d-tools-page h2 .glyphicon { color: var(--brand-accent); margin-right: 6px; }
+.c3d-tools-page h3 { font-size: 14px; font-weight: 600; margin: 0 0 12px; }
+.c3d-tools-page .c3d-tool-actions { display: grid; gap: 8px; }
+.c3d-tools-page .c3d-tool-action { text-align: left; white-space: normal; overflow-wrap: anywhere; line-height: 1.5; padding: 10px 14px; margin: 0; }
+.c3d-tools-restore { border-top: 1px solid var(--df-border-subtle); padding-top: 18px; margin-top: 6px; }
+.c3d-tools-warning { border-left: 3px solid var(--df-warn); padding-left: 12px; line-height: 1.6; margin: 0 0 16px; }
+.c3d-tools-note { color: var(--df-text-muted); line-height: 1.6; margin: 4px 0 0; }
+.c3d-tools-service { margin-top: 20px; border-top: 3px solid var(--brand-accent); }
+.c3d-tools-service > p { color: var(--df-text-muted); margin: 0; }
+.c3d-tools-service .c3d-tool-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.c3d-tools-aegis { border-top: 1px solid var(--df-border-subtle); margin-top: 8px; padding-top: 14px; }
+.c3d-tools-aegis h4 { font-size: 14px; margin: 0 0 12px; }
+.c3d-tools-aegis > label { margin-right: 12px; vertical-align: middle; }
+@media (max-width: 1100px) {
+  .c3d-tools-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .c3d-tools-service .c3d-tool-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .c3d-tools-grid, .c3d-tools-service .c3d-tool-actions { grid-template-columns: minmax(0, 1fr); }
+  .c3d-tools-page .c3d-card { padding: 18px; }
+}
