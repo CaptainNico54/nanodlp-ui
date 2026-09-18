@@ -217,3 +217,62 @@ and sorting, Proteus iframe/open/close and import, all Jobs actions, bit-depth
 and other navbar live status, Dashboard spacing and camera online/offline layout,
 Camera & Timelapses, Support/Discord, and WP4 Tools/exports. Do not test ZIP
 restore as part of UI acceptance. Test desktop/mobile and Chrome/Safari.
+
+## Work Package 6: final local cleanup before deployment
+
+The navbar now has an explicit Dashboard link before Jobs. Its 50 px command
+bar aligns the logo, navigation and live right-side readouts at desktop widths;
+tablet widths collapse the navigation. The Dashboard news feed remains the
+Concepts3D website feed, labelled News / Latest News. A separate Software
+Update link to `/printer/upgrade` starts hidden and is revealed only by the
+existing `update_changelog()` available state. Current and error states hide it.
+Heater buttons now say Chamber Heater and Vat Heater in every state.
+
+The resin database heading says Proteus Resin Database and its shell aligns
+with the All Resins list. The existing iframe, profile messaging, machine type,
+search and import behavior remain unchanged. `docs/athena-design-system.md`
+records current WebUI tokens and derived sRGB fallbacks for Proteus/mobile use.
+
+The `/import` page now groups its four existing JSON file/URL forms into Resin
+Profile and Machine Settings cards. Actions, payload names, methods, enctype
+and required inputs are preserved. File IDs are unique; the obsolete external
+NanoDLP repository link is no longer presented. `/profile/compare` keeps both
+selectors and JSON comparison logic, while showing an empty state for matching
+profiles. New Job gives local file and production USB sources clear tabs;
+`ZipFile`, `USBFile`, upload progress and advanced fields remain. The browser
+slice button is hidden from Athena presentation while its ID and underlying
+NanoDLP implementation remain available in code.
+
+Production calibration reconciliation used the authorized printer read-only:
+`calibrationConfig.json`, all six Concepts3D RERF STLs, its preview image, the
+guide QR, current model name and the production evaluation instructions were
+recovered. The QR decodes to the linked Concepts3D calibration guide. The
+second J3D model remains unchanged; its image matched production. Calibration
+form IDs, exposure calculations, submit route and print action were not changed;
+no calibration print was executed.
+
+Print History now presents statistics and existing result controls in the dark
+card system, with semantic status colors and wrapping job names. The Gcode
+Terminal uses the same card/control style while retaining its live output,
+`#gcode` input and existing send hook. Settings & Tools no longer presents
+Export NanoSupport Settings. The existing AEGIS control remains in
+Customization with `#aegis-control-div` and `#aegis-available-toggle`, and
+`aegis_checkbox_init()` still follows the Athena printer-type/API response.
+Support now names technical and customer support and displays the verified
+Discord QR at 124 px on desktop, 88 px on mobile.
+
+### Printer acceptance still required
+
+After an approved deployment, test both normal and Service Mode rendering,
+navbar status alignment and collapse, Dashboard news and update states,
+Proteus database open/close/import, all four import/restore forms only with
+separate authorization, comparison with real profiles, local/USB job upload,
+calibration preview and model selection, history result controls, terminal
+output/input, AEGIS visibility, and Support QR scanning. Do not execute a
+calibration print or a Gcode command as part of visual acceptance.
+
+The Software Update page and `changeUpdateChannel()` workflow were not changed.
+On physical Athena hardware, separately test channel change, reboot prompt,
+cancel and accept paths, state after reboot, update availability, and update
+launch/progress. Do not invoke these operations locally. Deeper Machine
+Settings organization is deferred until real-printer testing.

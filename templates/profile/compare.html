@@ -25,6 +25,7 @@
                 $("#profile-compare thead th:eq(1)").html(profile1.Title);
                 $("#profile-compare thead th:eq(2)").html(profile2.Title);
                 $("#profile-compare tbody").html("");
+                var differences = 0;
                 var keys = Object.keys(profile1);
                 keys.forEach(key => {
                     if (key == "Title" || key == "ProfileID") return;
@@ -36,22 +37,32 @@
                     }
                     if (v1 !== v2) {
                         $("#profile-compare tbody").append("<tr><td>" + key + "</td><td>" + v1 + "</td><td>" + v2 + "</td></tr>");
+                        differences++;
                     }
                 });
+                $("#profile-compare").toggleClass("hidden", differences === 0);
+                $("#profile-compare-empty").toggleClass("hidden", differences !== 0);
             });
         });
     }
 </script>
-<h2>
-    <translate>Compare Profiles</translate>
-</h2>
-<table class="table">
-    <tr>
-        <td>{{ selectProfile(profiles,0) }}</td>
-        <td>{{ selectProfile(profiles,0) }}</td>
-    </tr>
-</table>
-<table class="table table-striped table-bordered" id="profile-compare">
+<div class="c3d-workflow-page c3d-compare-page">
+<div class="c3d-page-head">
+    <div>
+        <div class="c3d-page-eyebrow"><translate>Resins</translate></div>
+        <h1 class="c3d-page-title"><translate>Compare Profiles</translate></h1>
+        <p class="c3d-page-description"><translate>Select two resin profiles to compare their differing settings.</translate></p>
+    </div>
+</div>
+<section class="c3d-card">
+    <div class="c3d-compare-selectors">
+        <div>{{ selectProfile(profiles,0) }}</div>
+        <div>{{ selectProfile(profiles,0) }}</div>
+    </div>
+</section>
+<section class="c3d-card c3d-compare-results" aria-label="Profile differences">
+<div class="c3d-table-scroll">
+<table class="table" id="profile-compare">
     <thead>
         <tr>
             <th translate>Parameter</th>
@@ -63,4 +74,8 @@
 
     </tbody>
 </table>
+<div id="profile-compare-empty" class="c3d-empty-state hidden"><translate>No differences found between these profiles.</translate></div>
+</div>
+</section>
+</div>
 {% endblock %}

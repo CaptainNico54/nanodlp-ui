@@ -6,9 +6,10 @@
         <h1 class="c3d-dash-name" id="c3d-greeting">Good Morning!</h1>
     </div>
     <div class="c3d-updates">
-        <button type="button" class="btn btn-default c3d-updates-toggle" id="updates-toggle" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp; <translate>Updates</translate></button>
+        <button type="button" class="btn btn-default c3d-updates-toggle" id="updates-toggle" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-bullhorn"></span>&nbsp; <translate>News</translate></button>
+        <a class="btn c3d-ghost c3d-ghost-gold hidden" id="dashboard-software-update" href="/printer/upgrade"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>&nbsp; <translate>Software Update</translate></a>
         <div class="c3d-updates-popover" id="updates-popover" hidden>
-            <div class="c3d-updates-popover-header"><translate>Latest Updates</translate></div>
+            <div class="c3d-updates-popover-header"><translate>Latest News</translate></div>
             <div class="c3d-updates-list" id="updates-list"></div>
         </div>
     </div>
@@ -105,5 +106,5 @@
     el.textContent = g;
 })();
 </script>
-<script src='/static/js/updates-feed.js?{{version}}(c3dv2)'></script>
+<script src='/static/js/updates-feed.js?{{version}}(c3dv3)'></script>
 {% endblock %}

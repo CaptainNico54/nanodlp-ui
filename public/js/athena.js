@@ -581,6 +581,7 @@ function update_changelog(){
 
 // The header chip on the upgrade page: checking -> available | current | error.
 function set_update_state(state, text) {
+	$("#dashboard-software-update").toggleClass("hidden", state !== "available");
 	let chip = $("#update-state");
 	if (chip.length === 0) return;
 	chip.removeClass("is-checking is-available is-current is-error").addClass("is-" + state);

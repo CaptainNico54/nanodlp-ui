@@ -1,5 +1,10 @@
 # Work Package 4: Settings & Tools
 
+> WP6 follow-up: the Settings & Tools UI no longer presents Export NanoSupport
+> Settings; its backend URL remains unchanged. The `/import` page now groups its
+> four existing forms visually and uses unique file input IDs, without changing
+> form actions or payload names. The WP4 record below is historical.
+
 > WP5 follow-up: a read-only GET on Athena confirmed `/printer/restore` renders
 > `templates/setup/restore.html`, a separate `BackupFile` ZIP page titled
 > **Restore Backup**. Pascal confirmed this function has never been tested on

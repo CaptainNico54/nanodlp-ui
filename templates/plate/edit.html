@@ -8,19 +8,23 @@
 <meta http-equiv="Surrogate-Control" content="no-store">
 {% endblock %}
 {% block content %}
-<div class="starter-template">
-	<legend>
-		{% if not plate.PlateID %}
-			<ul class="nav nav-pills">
-				<li class="active"><a data-toggle="tab" href="#upload-section">Upload</a></li>
-				{% if os == "linux" %}
-				<li><a data-toggle="tab" href="#usb-section">USB</a></li>
-				{% endif %}
-			</ul>
-		{% else %}
-			<translate>Edit Plate</translate> "{{plate.Path}}"
-		{% endif %}		
-	</legend>
+<div class="c3d-workflow-page c3d-job-upload-page">
+	<div class="c3d-page-head">
+		<div>
+			<div class="c3d-page-eyebrow"><translate>Jobs</translate></div>
+			<h1 class="c3d-page-title">{% if not plate.PlateID %}<translate>New Job</translate>{% else %}<translate>Edit Job</translate>{% endif %}</h1>
+			{% if plate.PlateID %}<p class="c3d-page-description">{{plate.Path}}</p>{% else %}<p class="c3d-page-description"><translate>Choose a file source, name the job, and select a resin profile.</translate></p>{% endif %}
+		</div>
+	</div>
+	{% if not plate.PlateID %}
+	<ul class="nav nav-pills c3d-source-tabs" role="tablist">
+		<li class="active"><a data-toggle="tab" href="#upload-section"><span class="glyphicon glyphicon-upload" aria-hidden="true"></span> <translate>Upload File</translate></a></li>
+		{% if os == "linux" %}
+		<li><a data-toggle="tab" href="#usb-section"><span class="glyphicon glyphicon-hdd" aria-hidden="true"></span> <translate>USB Drive</translate></a></li>
+		{% endif %}
+	</ul>
+	{% endif %}
+	<section class="c3d-card c3d-job-upload-card">
 	<form method="post" class="edit-page upload-disable" id="plate-upload-form" enctype="multipart/form-data">
 		<div class="row flex-row">
 			{% if not plate.PlateID %}
@@ -114,9 +118,10 @@
 		<div class="progress hide">
 			<div style="width: 0%" class="progress-bar progress-bar-main progress-bar-striped active progress-bar-warning"></div>
 		</div>
-		<button type="submit" class="btn btn-success upload-button"><translate>Submit</translate></button>
-		<button type="button" class="btn btn-success" id="browser_slice" disabled="disabled" translate>Slice on Browser and Submit</button>
+		<button type="submit" class="btn c3d-ghost c3d-ghost-gold upload-button"><translate>Submit Job</translate></button>
+		<button type="button" class="hidden" id="browser_slice" disabled="disabled" aria-hidden="true" tabindex="-1">Slice on Browser and Submit</button>
 	</form>
+	</section>
 	<br>
 	<br>
 	<div class="row hide" id="largeFile">

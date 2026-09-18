@@ -1,19 +1,40 @@
 {% extends "../base.html" %}
 {% block content %}
-<h3>Print Statistics</h3>
-<div class="stat-bar progress">
-    <div class="part" style="background-color:rgba(150,150,255,255);width:{{status.0}}%;" translate>No Result</div>
-    <div class="part" style="background-color:rgba(150,150,150,255);width:{{status.1}}%;" translate>Ignore Result</div>
-    <div class="part" style="background-color:rgba(48,120,93,255);width:{{status.2}}%;" translate>Success</div>
-    <div class="part" style="background-color:rgba(150,120,93,255);width:{{status.3}}%;" translate>Part Missing</div>
-    <div class="part" style="background-color:rgba(188,174,56,255);width:{{status.4}}%;" translate>Only Support</div>
-    <div class="part" style="background-color:rgba(120,48,93,255);width:{{status.5}}%;" translate>Complete Failure</div>
+<div class="c3d-workflow-page c3d-history-page">
+    <div class="c3d-page-head">
+        <div>
+            <div class="c3d-page-eyebrow"><translate>Jobs</translate></div>
+            <h1 class="c3d-page-title"><translate>Print History</translate></h1>
+            <p class="c3d-page-description"><translate>Review past jobs and record their print results.</translate></p>
+        </div>
+    </div>
+    <section class="c3d-card c3d-history-stat-card" aria-labelledby="history-stats-heading">
+        <h2 id="history-stats-heading"><translate>Print Statistics</translate></h2>
+        <div class="stat-bar progress" aria-label="Print result distribution">
+            <div class="part c3d-stat-neutral" style="width:{{status.0}}%;" translate>No Result</div>
+            <div class="part c3d-stat-ignored" style="width:{{status.1}}%;" translate>Ignore Result</div>
+            <div class="part c3d-stat-success" style="width:{{status.2}}%;" translate>Success</div>
+            <div class="part c3d-stat-warning" style="width:{{status.3}}%;" translate>Part Missing</div>
+            <div class="part c3d-stat-warning-strong" style="width:{{status.4}}%;" translate>Only Support</div>
+            <div class="part c3d-stat-danger" style="width:{{status.5}}%;" translate>Complete Failure</div>
+        </div>
+        <div class="c3d-history-stat-legend">
+            <span><i class="c3d-stat-neutral"></i><translate>No Result</translate></span>
+            <span><i class="c3d-stat-ignored"></i><translate>Ignore Result</translate></span>
+            <span><i class="c3d-stat-success"></i><translate>Success</translate></span>
+            <span><i class="c3d-stat-warning"></i><translate>Part Missing</translate></span>
+            <span><i class="c3d-stat-warning-strong"></i><translate>Only Support</translate></span>
+            <span><i class="c3d-stat-danger"></i><translate>Complete Failure</translate></span>
+        </div>
+    </section>
+    <section class="c3d-history-list" aria-label="Past print jobs">
+        {% if prints %}
+            {% for print in prints %}
+            <article class="c3d-history-entry">{{ printHistory(print) }}</article>
+            {% endfor %}
+        {% else %}
+            <div class="c3d-card c3d-empty-state"><translate>No print history yet.</translate></div>
+        {% endif %}
+    </section>
 </div>
-
-<h3>Print History</h3>
-{% for print in prints %}
-    {{ printHistory(print) }}
-{% endfor %}
-<br>
-<br>
 {% endblock %}

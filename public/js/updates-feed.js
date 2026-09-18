@@ -1,4 +1,4 @@
-// Updates notification center — popover that renders the Concepts3D news feed
+// News popover that renders the existing Concepts3D feed
 // (https://dashboard.concepts3d.eu/dashboard.html, .update-item entries) as messages.
 (function () {
   'use strict';
@@ -23,7 +23,7 @@
     if (!items.length) {
       var empty = document.createElement('div');
       empty.className = 'c3d-updates-empty';
-      empty.textContent = 'No updates';
+      empty.textContent = 'No news yet';
       list.appendChild(empty);
       return;
     }
@@ -71,7 +71,7 @@
         list.textContent = '';
         var err = document.createElement('div');
         err.className = 'c3d-updates-empty';
-        err.textContent = 'Could not load updates';
+        err.textContent = 'Could not load news';
         list.appendChild(err);
       });
   }
