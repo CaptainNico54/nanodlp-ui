@@ -2,296 +2,133 @@
 {% block content %}
 <script src='/static/js/support.js'></script>
 
-<div class="modal fade" id="support_notification" tabindex="-1" role="dialog" aria-labelledby="modalLabelSmall" aria-hidden="false">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" id="modalLabelSmall"><center>Creating Ticket</center></h4>
-			</div>
-			<div class="modal-body">
-				<div class="progress">
-					<div id="anotherbar" class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="1000" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-					</div>
-				</div>
-				<div>
-					<center>
-						Diagnostic Data is being collected and sent, thanks for your patience.
-					</center>
-				</div>
-			</div>
-		</div> 
-	</div>
-</div>
+<div class="c3d-support-page">
+    <div class="c3d-page-head">
+        <div>
+            <div class="c3d-page-eyebrow"><translate>Support</translate></div>
+            <h1 class="c3d-page-title"><translate>Support &amp; Connectivity</translate></h1>
+            <p class="c3d-support-description"><translate>Support resources, diagnostics and printer connectivity.</translate></p>
+        </div>
+    </div>
 
-<div class="starter-template">
-	<div class="row flex-row">
-		<div class="col-md-12">
-			<h2 translate>Support Resources</h2>
-		</div>
-	</div>
-	<div class="row flex-row">
-		<div class="col-md-4">
-			<center>
-				<h4 translate>Questions? </br>Join our Discord</h4>
-				<br>
-				<a href="https://discord.gg/55wshXG7pp" target="_blank" translate>discord.gg/55wshXG7pp</a>
-				<br>
-				<br>
-				<a href="https://discord.gg/55wshXG7pp" target="_blank" translate><img width="15%"
-																					   src="/static/shots/athena-discord.png"
-																					   alt="A QR Code linking to Discord"/></a>
-			</center>
-		</div>
-		<div class="col-md-4">
-			<center>
-				<h4 translate>Manual and Getting started</h4>
-				<br>
-				<a href="https://help.concepts3d.ca" target="_blank" translate>help.concepts3d.ca</a>
-			</center>
-		</div>
-		<div class="col-md-4">
-			<center>
-				<h4 translate>Reach out to our support Team</h4>
-				<br>
-				<a href="mailto:support@concepts3d.ca" target="_blank" translate>support@concepts3d.ca</a>
-			</center>
-		</div>
-	</div>
-		<br>
-	<br>
-	<br>
-    <div class="row flex-row">
-        <div class="col-md-12">
-	
-			<h3 translate>Open a Ticket</h3>
-            <p translate>If requested by our Support team or if you belive you found an issue with the machine or it's software, please fill out the form below and click send.</p>                    
-            <p translate>Please provide your name and email address so we can reach out to you.</p>                    
-            <p translate>By submitting the form you agree that your printer configuration and log files will be transmitted to a server operated by Concepts3D or it's affiliates.</p>                    
-            <p translate>You will receive a confirmation email where you can download the data that has been submitted for your own validation.</p>                    
+    <div class="c3d-support-resources">
+        <section class="c3d-card" aria-labelledby="support-community-heading">
+            <h2 id="support-community-heading"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> <translate>Community / Discord</translate></h2>
+            <div class="c3d-support-discord">
+                <div>
+                    <p><translate>Ask questions and connect with the Athena community.</translate></p>
+                    <a href="https://discord.gg/55wshXG7pp" target="_blank" rel="noopener noreferrer" translate>discord.gg/55wshXG7pp</a>
+                </div>
+                <a href="https://discord.gg/55wshXG7pp" target="_blank" rel="noopener noreferrer"><img src="/static/shots/athena-discord.png" alt="A QR Code linking to Discord" width="88" height="88"></a>
+            </div>
+        </section>
+        <section class="c3d-card" aria-labelledby="support-manual-heading">
+            <h2 id="support-manual-heading"><span class="glyphicon glyphicon-book" aria-hidden="true"></span> <translate>Manual &amp; Getting Started</translate></h2>
+            <p><translate>Find printer documentation and getting-started guidance.</translate></p>
+            <a href="https://help.concepts3d.ca" target="_blank" rel="noopener noreferrer" translate>help.concepts3d.ca</a>
+        </section>
+        <section class="c3d-card" aria-labelledby="support-contact-heading">
+            <h2 id="support-contact-heading"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <translate>Contact Support</translate></h2>
+            <p><translate>Reach out to the Concepts3D support team.</translate></p>
+            <a href="mailto:support@concepts3d.ca" target="_blank" rel="noopener noreferrer" translate>support@concepts3d.ca</a>
+        </section>
+    </div>
+
+    <div class="c3d-support-main">
+        <section class="c3d-card c3d-support-ticket" aria-labelledby="support-ticket-heading">
+            <h2 id="support-ticket-heading"><translate>Open a Support Ticket</translate></h2>
+            <p><translate>If requested by our support team, or if you believe you found an issue with the printer or its software, describe it below. Please provide your name and email so we can reach you.</translate></p>
             <form class="support-form" id="SupportForm">
-                <input id="SupportNameField" class="form-control" name="name" type="name" placeholder="Your Name" required>
-                <input id="SupportEmailField" class="form-control" name="email" type="email" placeholder="Email address" required>
-				<textarea id="SupportTextField" class="form-control" name="report" placeholder="Detail of the bug you want to report." required></textarea>
-				<div class="support-form-checkbox">
-					<label for="SupportAiAnalysisField">
-						<input id="SupportAiAnalysisField" type="checkbox" name="ai_analysis" checked>
-						<span translate>Allow AI-assisted analysis of my diagnostic data to help support triage my ticket</span>
-					</label>
-				</div>
-                <input id="SupportSubmitButton" class="btn btn-success" value="Send">
+                <div class="form-group">
+                    <label for="SupportNameField"><translate>Name</translate></label>
+                    <input id="SupportNameField" class="form-control" name="name" type="text" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="SupportEmailField"><translate>Email</translate></label>
+                    <input id="SupportEmailField" class="form-control" name="email" type="email" placeholder="Email address" required>
+                </div>
+                <div class="form-group">
+                    <label for="SupportTextField"><translate>Issue / details</translate></label>
+                    <textarea id="SupportTextField" class="form-control" name="report" rows="6" placeholder="Detail of the bug you want to report." required></textarea>
+                </div>
+                <div class="support-form-checkbox">
+                    <label for="SupportAiAnalysisField">
+                        <input id="SupportAiAnalysisField" type="checkbox" name="ai_analysis" checked>
+                        <span translate>Allow AI-assisted analysis of my diagnostic data to help support triage my ticket</span>
+                    </label>
+                </div>
+                <button id="SupportSubmitButton" type="button" class="btn c3d-ghost c3d-ghost-gold" aria-describedby="support-ticket-privacy"><translate>Send</translate></button>
+                <div id="support-ticket-privacy" class="c3d-support-privacy">
+                    <p><strong><translate>Diagnostic data &amp; privacy</translate></strong></p>
+                    <p><translate>By submitting this form, you agree that your printer configuration and log files will be transmitted to a server operated by Concepts3D or its affiliates.</translate></p>
+                    <p><translate>You will receive a confirmation email where you can download the submitted data for your own validation.</translate></p>
+                </div>
             </form>
-            <br>  
-					
-			<br>
-		</div>
-	</div>
+        </section>
 
-	<div class="row" id="iot-control" style="display: none">
-		<div class="col-md-12">
-			<h4>IOT Control</h4>
-
-			<div class="row">
-				<div class="col-md-12">
-					<div class="col-md-6 center-block">
-						<div class="row" id="iot-control-toggle-row">
-							<div class="col-md-6 center-block" >
-								<label for="iot-control-toggle">Enable Cloud Connectivity</label>
-							</div>
-							<div class="col-md-6 center-block">
-								<label class="switch">
-									<input type="checkbox" id="iot-control-toggle" name="iotControlToggle">
-									<span class="switch-slider round"></span>
-								</label>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="col-md-6 center-block">
-						<div class="row" id="asset-sync-toggle-row">
-							<div class="col-md-6 center-block" >
-								<label for="asset-sync-toggle">Enable sync of print assets (Job previews, timelapses) for access in the app</label>
-							</div>
-							<div class="col-md-6 center-block">
-								<label class="switch">
-									<input type="checkbox" id="asset-sync-toggle" name="assetSyncToggle">
-									<span class="switch-slider round"></span>
-								</label>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col-md-12 center-block" >
-			<h5>By enabling the Cloud Connectivity feature you agree that anonymous ussage statistics are collected and processed by Concepts3D and it's affiliates</h5>
-			<p> This includes information about completed prints, number of layers printed and duration of prints among others</p>
-			<p> The Cloud Service is a necessary requirement to use the printer in the Athena Mobile App</p>
-			<p> Therefore printer data is transmitted to servers operated by Concepts 3D in Europe or by partners globally</p>
-			<p> To make the data available in the app, following pieces of information are transmitted</p>
-			<ul>
-				<li>Machine identifier and Serial Number</li>
-				<li>Machine status including resin profiles and usage statistics</li>
-				<li>Camera feed (if available)</li>
-				<li>Print jobs available on the machine (but no preview images or stl files)</li>
-				<li>Print progress and associated status messages</li>
-			</ul>
-
-			<p> As we believe transparency about how and where you data is processed is important, following services are operated.</p>
-
-			<style>
-				.athena-cloud-table {
-					width: 100%;
-					border-collapse: collapse;
-					margin: 1.5rem 0;
-					font-size: 0.95rem;
-					line-height: 1.45;
-					background: transparent;
-				}
-
-				.athena-cloud-table th,
-				.athena-cloud-table td {
-					border: 1px solid rgba(255, 255, 255, 0.18);
-					padding: 0.75rem 0.9rem;
-					vertical-align: top;
-					text-align: left;
-				}
-
-				.athena-cloud-table th {
-					background: rgba(255, 255, 255, 0.10);
-					font-weight: 700;
-				}
-
-				.athena-cloud-table tbody tr:nth-child(even) {
-					background: rgba(255, 255, 255, 0.04);
-				}
-
-				.athena-cloud-table tbody tr:hover {
-					background: rgba(255, 255, 255, 0.07);
-				}
-
-				.athena-cloud-table td:first-child,
-				.athena-cloud-table th:first-child {
-					font-weight: 600;
-					white-space: nowrap;
-				}
-
-				.athena-cloud-table-wrapper {
-					width: 100%;
-					overflow-x: auto;
-				}
-			</style>
-
-			<div class="athena-cloud-table-wrapper">
-				<table class="athena-cloud-table">
-					<thead>
-					<tr>
-						<th>System / Service</th>
-						<th>Function</th>
-						<th>Provider / Platform</th>
-						<th>Location / Region</th>
-						<th>Data Stored / Processed</th>
-						<th>Notes</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr>
-						<td>olymp.concepts3d.eu</td>
-						<td>Printer management, machine-to-machine authentication, update management</td>
-						<td>Hetzner</td>
-						<td>EU Central</td>
-						<td>Printer serial numbers, user-printer mappings, user-device mappings, optional print job preview images, optional timelapses</td>
-						<td>Central management endpoint</td>
-					</tr>
-					<tr>
-						<td>hades.concepts3d.eu</td>
-						<td>MQTT server</td>
-						<td>Hetzner</td>
-						<td>EU Central</td>
-						<td>Printer live data</td>
-						<td>Central IoT MQTT broker</td>
-					</tr>
-					<tr>
-						<td>talos.concepts3d.eu</td>
-						<td>User authentication and access management</td>
-						<td>Auth0</td>
-						<td>US-4</td>
-						<td>User login credentials, social login tokens, user roles</td>
-						<td>Central user management</td>
-					</tr>
-					<tr>
-						<td>hermes.concepts3d.eu</td>
-						<td>Object storage</td>
-						<td>Hetzner</td>
-						<td>EU Central</td>
-						<td>Athena software update binaries</td>
-						<td>Software update file storage</td>
-					</tr>
-					<tr>
-						<td>Managed MariaDB Server</td>
-						<td>Central Database</td>
-						<td>Hetzner</td>
-						<td>EU Central</td>
-						<td>Printer serial numbers, user-printer mappings, user-device mappings, optional print job preview images, optional timelapses</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Google Firebase</td>
-						<td>Push Notifications</td>
-						<td>Google</td>
-						<td>Global</td>
-						<td>Printer status messages</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>Gorgias</td>
-						<td>Support Ticket Management</td>
-						<td>Gorgias</td>
-						<td>Global</td>
-						<td>Stores an extract of the files submitted through the support page</td>
-						<td></td>
-					</tr>
-					<tr>
-						<td>ChatGPT Ticket Triage</td>
-						<td>Debug Ticket analysis and triage</td>
-						<td>OpenAI</td>
-						<td>Global</td>
-						<td>Opt-out when submitting a ticket is available</td>
-						<td></td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-
-	<div class="row" id="iot-control-qr" >
-		</br>
-		</br>
-		<div class="col-md-12">
-		<img src="/athena-iot/mqtt/qrcode">
-		</br>
-		<span>Scan the QR Code in the App to connect your printer</span>
-	</div>
-	</div>
-
-	<div class="row" id="iot-control-text">
-		<div class="col-md-12">
-		<h4>Printer Data for manual connection</h4>
-		<p id="iot-control-printername">Empty</p>
-			</br>
-		<p id="iot-control-printerserial">Empty</p>
-	</div>
-	</div>
-</div>
-	</div>
+        <section class="c3d-card c3d-support-connectivity" aria-labelledby="support-connectivity-heading">
+            <h2 id="support-connectivity-heading"><translate>Connectivity</translate></h2>
+            <p><translate>Cloud Connectivity is required to use your printer in the Athena Mobile App. When enabled, printer data is transmitted to servers operated by Concepts3D in Europe or by partners globally.</translate></p>
+            <div id="iot-control" style="display: none">
+                <div class="c3d-support-toggle" id="iot-control-toggle-row">
+                    <label for="iot-control-toggle"><translate>Enable Cloud Connectivity</translate></label>
+                    <label class="switch">
+                        <input type="checkbox" id="iot-control-toggle" name="iotControlToggle" aria-label="Enable Cloud Connectivity">
+                        <span class="switch-slider round"></span>
+                    </label>
+                </div>
+                <div class="c3d-support-toggle" id="asset-sync-toggle-row">
+                    <label for="asset-sync-toggle"><translate>Enable sync of print assets (job previews, timelapses) for access in the app</translate></label>
+                    <label class="switch">
+                        <input type="checkbox" id="asset-sync-toggle" name="assetSyncToggle" aria-label="Enable sync of print assets">
+                        <span class="switch-slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="c3d-support-privacy">
+                <p><strong><translate>Cloud data &amp; privacy</translate></strong></p>
+                <p><translate>By enabling Cloud Connectivity, you agree that anonymous usage statistics are collected and processed by Concepts3D and its affiliates. This includes completed prints, number of layers printed and print duration, among other information.</translate></p>
+                <p><translate>To make printer data available in the app, the following information is transmitted:</translate></p>
+                <ul>
+                    <li><translate>Machine identifier and serial number</translate></li>
+                    <li><translate>Machine status, including resin profiles and usage statistics</translate></li>
+                    <li><translate>Camera feed, if available</translate></li>
+                    <li><translate>Print jobs available on the machine (without preview images or STL files)</translate></li>
+                    <li><translate>Print progress and associated status messages</translate></li>
+                </ul>
+                <p><translate>The separate print-asset sync option enables sharing job previews and timelapses for access in the app.</translate></p>
+            </div>
+            <div class="c3d-support-pairing-layout">
+            <div id="iot-control-qr" class="c3d-support-pairing">
+                <img src="/athena-iot/mqtt/qrcode" alt="Printer pairing QR code" width="144" height="144">
+                <p><translate>Scan the QR code in the app to connect your printer.</translate></p>
+            </div>
+            <div id="iot-control-text" class="c3d-support-connection-data">
+                <h3><translate>Printer data for manual connection</translate></h3>
+                <p class="text-muted"><translate>Printer name</translate></p>
+                <p id="iot-control-printername">Empty</p>
+                <p class="text-muted"><translate>Serial number</translate></p>
+                <p id="iot-control-printerserial">Empty</p>
+            </div>
+            </div>
+        </section>
+    </div>
+    {% include "../components/support-data-services.html" %}
 </div>
 
-<br>
-<br>           
-<br>           
+<div class="modal fade c3d-support-notification" id="support_notification" tabindex="-1" role="dialog" aria-labelledby="modalLabelSmall" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalLabelSmall"><translate>Creating Ticket</translate></h4>
+            </div>
+            <div class="modal-body">
+                <div class="progress">
+                    <div id="anotherbar" class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-label="Collecting and sending diagnostic data" style="width: 100%"></div>
+                </div>
+                <p role="status"><translate>Diagnostic data is being collected and sent. Thank you for your patience.</translate></p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -66,7 +66,7 @@ viewport. Confirm the menu in Easy/Advanced and locked configurations.
 | Resins | Redesigned / preserve | Keep embedded Athena Resin Database; Proteus backend separate |
 | Analytics | Requires visual validation | Same metric colors on Dashboard/full charts; check ALL series together on dark backgrounds |
 | Print History / Gcode Terminal | Needs visual redesign | Customer-visible legacy template layouts |
-| Support & Connectivity | Needs visual redesign | Adapt to existing design tokens |
+| Support & Connectivity | Redesigned in WP3 | Printer acceptance; see athena-support-diagnostics.md for hook inventory, download findings and existing functional issues |
 | Resin Import | Requires functional/layout review | Separate resin import from machine restore; preserve routes |
 | Settings and Tools / Machine Settings | Advanced/service page | Backup & Restore home; consider Advanced-only restore controls |
 | Z Axis / Heater / Display Calibration | Hide on Athena | Hidden from System; backend retained |
@@ -120,3 +120,11 @@ routing implementation is not present here; no unverified route was assumed.
 The preserved Remote slicing enabled status and file-size guidance describe
 existing backend capabilities rather than promoting a slicer. Service settings
 still expose RemoteSlicer configuration, intentionally unchanged.
+
+## Work Package 3
+
+Support & Connectivity now uses three resource cards, a wider ticket panel next
+to Connectivity, and a full-width data-processing table. Privacy/consent wording,
+all original hooks and resource destinations remain available. No scripts or
+backend behavior changed. See [support diagnostics notes](athena-support-diagnostics.md)
+for validation, the existing `/debug` download investigation and printer checks.

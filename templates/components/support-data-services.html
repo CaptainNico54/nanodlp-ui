@@ -1,0 +1,84 @@
+<section class="c3d-card c3d-support-services" aria-labelledby="support-services-heading">
+    <h2 id="support-services-heading"><translate>Where your data is processed</translate></h2>
+    <p><translate>For transparency, these are the services used to process printer, app and support data.</translate></p>
+    <div class="athena-cloud-table-wrapper" tabindex="0" role="region" aria-label="Data processing services">
+<table class="athena-cloud-table">
+					<thead>
+					<tr>
+						<th>System / Service</th>
+						<th>Function</th>
+						<th>Provider / Platform</th>
+						<th>Location / Region</th>
+						<th>Data Stored / Processed</th>
+						<th>Notes</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>olymp.concepts3d.eu</td>
+						<td>Printer management, machine-to-machine authentication, update management</td>
+						<td>Hetzner</td>
+						<td>EU Central</td>
+						<td>Printer serial numbers, user-printer mappings, user-device mappings, optional print job preview images, optional timelapses</td>
+						<td>Central management endpoint</td>
+					</tr>
+					<tr>
+						<td>hades.concepts3d.eu</td>
+						<td>MQTT server</td>
+						<td>Hetzner</td>
+						<td>EU Central</td>
+						<td>Printer live data</td>
+						<td>Central IoT MQTT broker</td>
+					</tr>
+					<tr>
+						<td>talos.concepts3d.eu</td>
+						<td>User authentication and access management</td>
+						<td>Auth0</td>
+						<td>US-4</td>
+						<td>User login credentials, social login tokens, user roles</td>
+						<td>Central user management</td>
+					</tr>
+					<tr>
+						<td>hermes.concepts3d.eu</td>
+						<td>Object storage</td>
+						<td>Hetzner</td>
+						<td>EU Central</td>
+						<td>Athena software update binaries</td>
+						<td>Software update file storage</td>
+					</tr>
+					<tr>
+						<td>Managed MariaDB Server</td>
+						<td>Central Database</td>
+						<td>Hetzner</td>
+						<td>EU Central</td>
+						<td>Printer serial numbers, user-printer mappings, user-device mappings, optional print job preview images, optional timelapses</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Google Firebase</td>
+						<td>Push Notifications</td>
+						<td>Google</td>
+						<td>Global</td>
+						<td>Printer status messages</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Gorgias</td>
+						<td>Support Ticket Management</td>
+						<td>Gorgias</td>
+						<td>Global</td>
+						<td>Stores an extract of the files submitted through the support page</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>ChatGPT Ticket Triage</td>
+						<td>Debug Ticket analysis and triage</td>
+						<td>OpenAI</td>
+						<td>Global</td>
+						<td>Opt-out when submitting a ticket is available</td>
+						<td></td>
+					</tr>
+					</tbody>
+				</table>
+    </div>
+</section>

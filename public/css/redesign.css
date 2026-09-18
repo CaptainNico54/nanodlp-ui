@@ -2081,3 +2081,59 @@ body:has(.c3d-preview-layout) > br { display: none; }
   .c3d-dragonfruit-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .c3d-dragonfruit-grid .c3d-card { padding: 18px; }
 }
+
+/* Support & Connectivity: shared cards/controls, with page-scoped layout. */
+.c3d-support-page { margin-bottom: 24px; }
+.c3d-support-description { color: var(--df-text-muted); margin: 10px 0 0; }
+.c3d-support-resources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+.c3d-support-page .c3d-card { min-width: 0; padding: 22px; box-shadow: none; }
+.c3d-support-page h2 { font-size: 18px; font-weight: 600; margin: 0 0 6px; line-height: 1.4; }
+.c3d-support-page h3 { font-size: 15px; font-weight: 600; margin: 0 0 12px; }
+.c3d-support-page p { line-height: 1.65; margin-bottom: 0; }
+.c3d-support-page .text-muted { color: var(--df-text-muted); }
+.c3d-support-resources h2 .glyphicon { color: var(--brand-accent); margin-right: 5px; }
+.c3d-support-resources a { overflow-wrap: anywhere; }
+.c3d-support-discord { display: flex; align-items: center; gap: 14px; }
+.c3d-support-discord > div { min-width: 0; flex: 1; }
+.c3d-support-discord p { margin-bottom: 10px; }
+.c3d-support-discord img { display: block; width: 88px; height: 88px; object-fit: contain; background: #000; border-radius: var(--df-radius-sm); }
+.c3d-support-main { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; align-items: start; margin-bottom: 20px; }
+.c3d-support-page .support-form { margin-top: 6px; }
+.c3d-support-page .support-form .form-control { background: var(--df-surface-0); color: var(--df-text-strong); border: 1px solid var(--df-border-strong); border-radius: var(--df-radius-sm); margin-bottom: 0; }
+.c3d-support-page .support-form .form-control:focus { border-color: var(--brand-accent); }
+.c3d-support-page .support-form textarea { min-height: 170px; height: auto; resize: vertical; }
+.c3d-support-page .support-form-checkbox { margin: 20px 0; line-height: 1.6; }
+.c3d-support-page .support-form-checkbox input { flex-shrink: 0; margin-top: 5px; }
+.c3d-support-privacy { border-top: 1px solid var(--df-border-subtle); padding-top: 16px; margin-top: 8px; }
+.c3d-support-privacy p + p { margin-top: 10px; }
+.c3d-support-ticket .c3d-support-privacy { margin-top: 20px; }
+.c3d-support-privacy ul { padding-left: 20px; margin: 12px 0; line-height: 1.6; }
+.c3d-support-privacy li + li { margin-top: 6px; }
+.c3d-support-toggle { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 16px 0; }
+.c3d-support-toggle + .c3d-support-toggle { border-top: 1px solid var(--df-border-subtle); }
+.c3d-support-toggle > label:first-child { margin: 0; line-height: 1.5; }
+.c3d-support-toggle .switch { flex-shrink: 0; margin: 0; }
+.c3d-support-pairing-layout { display: grid; grid-template-columns: 144px minmax(0, 1fr); gap: 18px; }
+.c3d-support-pairing { padding-top: 12px; }
+.c3d-support-pairing img { display: block; width: 144px; height: 144px; object-fit: contain; background: #fff; border-radius: var(--df-radius-sm); margin-bottom: 12px; }
+.c3d-support-connection-data { padding-top: 12px; overflow-wrap: anywhere; }
+.c3d-support-connection-data .text-muted { font-size: 12px; margin-top: 8px; }
+.c3d-support-services .athena-cloud-table-wrapper { max-width: 100%; overflow-x: auto; }
+.c3d-support-services .athena-cloud-table { width: 100%; min-width: 900px; border-collapse: collapse; font-size: 13px; line-height: 1.6; }
+.c3d-support-services th, .c3d-support-services td { padding: 12px; border: 1px solid var(--df-border-subtle); text-align: left; vertical-align: top; }
+.c3d-support-services th { background: var(--df-surface-2); font-weight: 600; }
+.c3d-support-services tbody tr:nth-child(even) { background: var(--df-surface-1); }
+.c3d-support-services td:first-child { font-weight: 600; }
+.c3d-support-notification .modal-header { background: var(--df-surface-0); border-radius: var(--df-radius-lg) var(--df-radius-lg) 0 0; }
+.c3d-support-notification .modal-body p { line-height: 1.6; }
+@media (max-width: 1100px) {
+  .c3d-support-resources { grid-template-columns: minmax(0, 1fr); }
+  .c3d-support-discord { justify-content: space-between; }
+}
+@media (max-width: 991px) {
+  .c3d-support-main { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  .c3d-support-page .c3d-card { padding: 18px; }
+  .c3d-support-pairing-layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
