@@ -276,3 +276,27 @@ On physical Athena hardware, separately test channel change, reboot prompt,
 cancel and accept paths, state after reboot, update availability, and update
 launch/progress. Do not invoke these operations locally. Deeper Machine
 Settings organization is deferred until real-printer testing.
+
+## Work Package 7: final visual polish
+
+The navbar logo asset has visible strokes and a faint glow almost to its image
+edges, so it was not cropped. A shared 48 px navbar height, centered flex image
+and aligned link/readout heights tighten the command bar without distorting the
+logo. Jobs now groups DragonFruit Slicer, New Job, and Calibrate Exposure on the
+left, with More last on the right. The USB source remains conditional on the
+existing Linux context; Advanced Options uses the existing `viewMode` to hide
+its toggle in Easy Mode without changing the advanced fields.
+
+The Proteus header artifact came from the browser's default 5 px anchor focus
+outline clipping against the rounded database shell after a mouse click. Mouse
+focus no longer shows that outline, while keyboard focus has an inset gold ring.
+The redundant close toolbar was removed; the header chevron still controls the
+same iframe and integration. Calibration evaluation now places the existing
+dark-on-light guide QR beside the wider text on desktop and below it on mobile.
+The Gcode Terminal card is centered at a 960 px maximum and its Live Output
+label uses muted text. Print History and Support were left unchanged.
+
+Physical printer acceptance remains necessary for live navbar statuses,
+Linux/USB job availability, Proteus messaging and import, calibration guide QR
+scanning, and the existing service/update workflows. No printer writes or
+calibration/terminal actions were performed for WP7.

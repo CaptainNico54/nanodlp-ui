@@ -51,16 +51,6 @@
             }
         });
         
-        // Close database view
-        $('#resin-db-close').on('click', function() {
-            $('#resin-database-container').slideUp();
-            $('#resin-db-toggle')
-                .attr('aria-expanded', 'false')
-                .find('.athena-resin-db-chevron')
-                .removeClass('glyphicon-chevron-up')
-                .addClass('glyphicon-chevron-down');
-        });
-        
         // Auto-detect machine type if not set
         if (!RESIN_DB_CONFIG.machineType) {
             detectMachineType().then(function(machineType) {

@@ -8,16 +8,19 @@
 	</div>
 </div>
 {% endif %}
-<div class="c3d-page-head">
+<div class="c3d-page-head c3d-jobs-page-head">
     <div>
         <div class="c3d-page-eyebrow"><translate>Print Jobs</translate></div>
         <h1 class="c3d-page-title">{% if !restore %}<translate>Jobs</translate>{% else %}<translate>Deleted Jobs</translate>{% endif %}</h1>
     </div>
     <div class="c3d-page-actions">
         {% if !restore %}
+        <div class="c3d-jobs-primary-actions">
         <button type="button" class="btn c3d-ghost c3d-ghost-gold c3d-btn-i" data-toggle="modal" data-target="#dragonfruit-modal"><span class="glyphicon glyphicon-leaf" aria-hidden="true"></span><translate>DragonFruit Slicer</translate></button>
         <a class="btn c3d-ghost c3d-ghost-gold c3d-btn-i tip" href="/plate/add" role="button"><span class="glyphicon glyphicon-plus"></span><translate>New Job</translate></a>
-        <div class="btn-group">
+        <a class="btn c3d-ghost c3d-ghost-gold c3d-btn-i tip" href="/custom/calibration" role="button"><span class="c3d-cal-icon" role="img" aria-label="Calibration"></span><translate>Calibrate Exposure</translate></a>
+        </div>
+        <div class="btn-group c3d-jobs-more">
             <button type="button" class="btn c3d-ghost c3d-btn-i tip dropdown-toggle svg" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="" data-original-title="More">
                 {{ icon(list_icon) }} <translate>More</translate>
             </button>
@@ -36,8 +39,9 @@
 <!--					<li><a href="/plate/paint"><span class="glyphicon glyphicon-th"></span> &nbsp; <translate>Create a PCB job</translate></a></li>-->
             </ul>
         </div>
-        {% endif %}
+        {% else %}
         <a class="btn c3d-ghost c3d-ghost-gold c3d-btn-i tip" href="/custom/calibration" role="button"><span class="c3d-cal-icon" role="img" aria-label="Calibration"></span><translate>Calibrate Exposure</translate></a>
+        {% endif %}
     </div>
 </div>
 <div class="c3d-jobs-tools">
