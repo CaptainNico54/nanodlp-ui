@@ -191,9 +191,9 @@ files/backend remain. The
 System menu has no Machine heading and shows Machine Settings within Tools only
 in Service Mode. Navbar height/status alignment and Dashboard card positioning
 were adjusted without changing their live hooks. The Discord invite is now
-`https://discord.gg/concepts3d`. No reliable local QR encoder/decoder was
-available, so the outdated `public/shots/athena-discord.png` is no longer shown;
-a verified replacement asset is still required.
+`https://discord.gg/concepts3d`. The supplied replacement PNG was verified to
+decode to that exact invite, copied to `public/shots/athena-discord.png`, and
+restored on the Support page. The image also decoded at its 88 px display size.
 
 ### Local validation
 
