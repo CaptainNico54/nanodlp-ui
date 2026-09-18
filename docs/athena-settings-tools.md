@@ -1,5 +1,12 @@
 # Work Package 4: Settings & Tools
 
+> WP5 follow-up: a read-only GET on Athena confirmed `/printer/restore` renders
+> `templates/setup/restore.html`, a separate `BackupFile` ZIP page titled
+> **Restore Backup**. Pascal confirmed this function has never been tested on
+> Athena. WP5 renamed the Service Mode shortcut to **Restore Backup** and added
+> an untested-service warning. The WP4 description below records the earlier
+> implementation; no restore form or backend was changed.
+
 ## Completed scope
 
 Settings & Tools now uses the existing Athena/DragonFruit card and button styles:

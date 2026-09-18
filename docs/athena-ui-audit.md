@@ -63,12 +63,12 @@ viewport. Confirm the menu in Easy/Advanced and locked configurations.
 | Camera & Timelapses | Redesigned in WP1 | Printer acceptance checks above |
 | Status | Redesigned; validation pending | Preserve Paul's latest rebuild |
 | Jobs | WP2 information modal added | Supply official DragonFruit download URL and Athena instructions; printer acceptance pending |
-| Resins | Redesigned / preserve | Keep embedded Athena Resin Database; Proteus backend separate |
+| Resins | Production behavior reconciled in WP5 | Printer acceptance for all-profile sorting, default badge, editor modes and database iframe |
 | Analytics | Requires visual validation | Same metric colors on Dashboard/full charts; check ALL series together on dark backgrounds |
 | Print History / Gcode Terminal | Needs visual redesign | Customer-visible legacy template layouts |
 | Support & Connectivity | Redesigned in WP3 | Printer acceptance; see athena-support-diagnostics.md for hook inventory, download findings and existing functional issues |
-| Resin Import | Requires functional/layout review | Separate resin import from machine restore; preserve routes |
-| Settings and Tools / Machine Settings | Tools redesigned in WP4; Machine Settings remains a service page | Restore shortcut gated by existing Service Mode; import separation deferred pending real-printer route verification |
+| Resin Import | Route confirmed in WP5; layout separation deferred | `/import` retains both profile and machine-settings forms unchanged |
+| Settings and Tools / Machine Settings | Tools redesigned in WP4; Machine Settings remains a service page | `/printer/restore` is a separate, untested ZIP Restore Backup page; shortcut remains Service Mode only |
 | Z Axis / Heater / Display Calibration | Hide on Athena | Hidden from System; backend retained |
 | Pause / Resume | Requires separate functional review | Inspect movement/state handling before any lift/resume work; protect Z max |
 
@@ -139,3 +139,81 @@ repository link and duplicate input IDs are deliberately unchanged pending
 verification with Pascal/on Athena. Duplicate Pi/filesystem/timezone capabilities
 are retained. See [WP4 notes](athena-settings-tools.md) for validation, preserved
 hooks, exact scope and remaining printer checks.
+
+## Work Package 5: production UI reconciliation and local review
+
+The authorized Athena II test printer runs NanoDLP from `/home/pi/printer` under
+`nanodlp.service`. Its UI templates, stylesheets and scripts were copied read-only
+to a temporary local comparison snapshot before WP5. The printer was not changed.
+Production is the functional reference for resin editing; the branch design is
+the visual reference.
+
+The Resins page now keeps the default profile in the same sortable list as every
+other profile, with a Default badge. New Resin, Import, profile actions and
+`ManufacturerLock` conditions remain. The production Athena Resin Database
+bar and its expand/collapse state were adapted to the dark design. Proteus still
+uses `https://proteus.concepts3d.eu`, the existing machine/image detection,
+iframe messages and `/profile/import` upload. Only the production toggle/ARIA
+handling was merged into the integration script.
+
+The production `templates/profile/edit.html` was used as the functional base:
+its paired Bottom/Normal settings, Easy/Advanced layout, field grouping and help
+text are retained. Production resin-editor CSS and the peel-detection visibility
+logic were merged selectively. Form actions and field names match the production
+template. `templates/profile/simple.html` was identical and remains unchanged.
+
+Read-only GETs on the frozen build established the import routes:
+
+| Route | Rendered template | Content |
+| --- | --- | --- |
+| `/import` | `templates/import.html` | Profile JSON/URL import plus machine-settings JSON/URL restore forms; page title “Setup / Profile Import” |
+| `/printer/restore` | `templates/setup/restore.html` | Separate `BackupFile` ZIP upload form; page title “Restore Backup” |
+
+No route form was submitted. Pascal confirmed that Restore Backup has never been
+tested on Athena. WP5 relabels its WP4 shortcut and warns that it is an untested
+service function. The shortcut remains under `viewMode == 1`; no restore backend
+or import form changed. Import-page separation and investigation of ZIP restore
+behavior remain future work.
+
+Camera capability was investigated read-only in `machine.json`, `printers.json`,
+`custom-inputs.json`, nginx, `ustreamer.service` and existing UI scripts. The
+legacy camera/timelapse settings are zero even while `/athena-camera/state`
+reports `result.source.online: true`; they do not indicate installed hardware.
+No reliable persistent installed-camera flag was found. System navigation
+therefore remains visible. The unchanged `camera.js` still hides the Dashboard
+Webcam column and expands controls when its existing state request reports
+offline or fails. A capability flag is needed before camera-less printers can
+hide navigation without also hiding it during temporary outages.
+
+Jobs now presents DragonFruit, New Job, More and Calibrate Exposure in that
+order. Its 3D Editor toolbar and row-menu links are removed; the editor
+files/backend remain. The
+System menu has no Machine heading and shows Machine Settings within Tools only
+in Service Mode. Navbar height/status alignment and Dashboard card positioning
+were adjusted without changing their live hooks. The Discord invite is now
+`https://discord.gg/concepts3d`. No reliable local QR encoder/decoder was
+available, so the outdated `public/shots/athena-discord.png` is no longer shown;
+a verified replacement asset is still required.
+
+### Local validation
+
+The recovered editor retains all production field names, element IDs and form
+actions, with all 45 production tooltip hooks. JavaScript syntax checks and
+`git diff --check` passed. Static checks verified Jobs action order, removal
+of only the 3D Editor link, one resin list containing the default badge,
+sorting/action hooks, Service Mode restore gating, unchanged import forms and
+unchanged `camera.js`. A headless Edge fixture checked Jobs, Resins, both editor
+modes, Dashboard, menu, Tools and Support at 1440, 1024, 768 and 390 px: no
+horizontal overflow or page errors. The Dashboard heading-to-card gap was
+about 30 px at each width. A separate mocked interaction fixture passed resin
+name sorting and Proteus open/close state, including iframe machine type.
+These fixtures do not execute the frozen NanoDLP renderer or hardware APIs.
+
+### Outstanding printer acceptance
+
+After an explicitly approved deployment, check NanoDLP template rendering in
+both modes, resin editing and saving on a disposable profile, default selection
+and sorting, Proteus iframe/open/close and import, all Jobs actions, bit-depth
+and other navbar live status, Dashboard spacing and camera online/offline layout,
+Camera & Timelapses, Support/Discord, and WP4 Tools/exports. Do not test ZIP
+restore as part of UI acceptance. Test desktop/mobile and Chrome/Safari.

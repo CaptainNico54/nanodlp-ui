@@ -16,11 +16,6 @@
                 <span class="glyphicon glyphicon-wrench"></span>&nbsp; <translate>System</translate> <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-                {% if !manHighLock %}
-                <li class="c3d-nav-group"><translate>Machine</translate></li>
-                <li class="{% if viewMode == 0 %}hidden{% endif %}"><a href="/setup"><span class="glyphicon glyphicon-wrench"></span><translate>Machine Settings</translate></a></li>
-                {% endif %}
-
                 <li class="c3d-nav-group"><translate>Camera</translate></li>
                 <li><a href="/custom/webcam"><span class="glyphicon glyphicon-camera"></span><translate>Camera &amp; Timelapses</translate></a></li>
 
@@ -35,6 +30,7 @@
                 <li class="c3d-nav-group"><translate>Tools</translate></li>
                 <li><a href="/term"><span class="glyphicon glyphicon-phone"></span><translate>Gcode Terminal</translate></a></li>
                 <li><a href="/tools"><span class="glyphicon glyphicon-cog"></span><translate>Settings and Tools</translate></a></li>
+                <li class="{% if viewMode == 0 %}hidden{% endif %}"><a href="/setup"><span class="glyphicon glyphicon-wrench"></span><translate>Machine Settings</translate></a></li>
                 <!--<li class="{% if viewMode == 0 %}hidden{% endif %}"><a href="/add-protection"><span class="glyphicon glyphicon-lock"></span>&nbsp; <translate>Password Protection</translate></a></li>-->
                 {% endif %}
 

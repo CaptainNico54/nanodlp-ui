@@ -14,7 +14,7 @@
     </div>
 </div>
 
-<div class="c3d-viewport-center">
+<div class="c3d-dash-main">
     <div class="row row-marginless c3d-dash-row">
         <div id="control-column" class="col-md-8 no-padding">
             <div id="machine-status" class="row row-marginless">
@@ -103,23 +103,6 @@
     var h = new Date().getHours();
     var g = (h >= 5 && h < 12) ? 'Good Morning!' : (h >= 12 && h < 17) ? 'Good Afternoon!' : 'Good Evening!';
     el.textContent = g;
-})();
-</script>
-<script>
-(function () {
-    var wrap = document.querySelector('.c3d-viewport-center');
-    var footer = document.querySelector('.c3d-footer');
-    function fit() {
-        // Reserve the fixed footer twice: once so the page does not scroll
-        // under it, and once more to lift the optical center clear of it.
-        var top = wrap.getBoundingClientRect().top;
-        var footerHeight = footer ? footer.offsetHeight : 76;
-        var available = Math.floor(window.innerHeight - top - (footerHeight * 2)) - 1;
-        wrap.style.minHeight = Math.max(0, available) + 'px';
-    }
-    fit();
-    window.addEventListener('load', fit);
-    window.addEventListener('resize', fit);
 })();
 </script>
 <script src='/static/js/updates-feed.js?{{version}}(c3dv2)'></script>

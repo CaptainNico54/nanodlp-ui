@@ -54,13 +54,8 @@ body {
   padding-bottom: 76px;
 }
 .container { width: 100% !important; max-width: var(--c3d-max-width); padding-left: 24px; padding-right: 24px; }
-.c3d-viewport-center {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 0;
-}
-.c3d-viewport-center ~ br {
+.c3d-dash-main { margin-top: 2px; }
+.c3d-dash-main ~ br {
   display: none;
 }
 a { color: var(--brand-accent); }
@@ -74,8 +69,8 @@ a:hover, a:focus { color: var(--brand-accent); filter: brightness(1.08); }
   border-bottom: 1px solid var(--df-border-subtle);
   border-radius: 0;
 }
-.navbar-default .navbar-brand { height: 65px; display: flex; align-items: center; padding: 0 14px; }
-.navbar-default .navbar-brand img { height: 32px !important; width: auto; }
+.navbar-default .navbar-brand { height: 52px; display: flex; align-items: center; padding: 0 14px; }
+.navbar-default .navbar-brand img { height: 28px !important; width: auto; }
 .navbar-default .navbar-nav > li > a { color: var(--df-text-muted); font-size: 14px; }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus { color: var(--df-text-strong); background-color: transparent; }
@@ -553,6 +548,44 @@ a.c3d-badge:hover, a.c3d-badge:focus { text-decoration: none; color: var(--brand
   background-color: var(--brand-accent);
   border-color: var(--brand-accent);
 }
+
+/* Athena Resin Database keeps the production lazy iframe interaction. */
+.c3d-resin-db {
+  margin: 0 8px 20px;
+  overflow: hidden;
+  background: var(--df-surface-0);
+  border: 1px solid var(--df-border-strong);
+  border-radius: var(--df-radius-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+.c3d-resin-db-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 18px;
+  color: var(--df-text-strong);
+  text-decoration: none;
+}
+.c3d-resin-db-toggle:hover,
+.c3d-resin-db-toggle:focus {
+  color: var(--df-text-strong);
+  background: var(--df-surface-1);
+  text-decoration: none;
+}
+.c3d-resin-db-icon { flex: 0 0 auto; color: var(--brand-accent); font-size: 22px; }
+.c3d-resin-db-copy { flex: 1 1 auto; min-width: 0; }
+.c3d-resin-db-title { display: block; font-size: 16px; font-weight: 700; }
+.c3d-resin-db-title .c3d-badge { vertical-align: middle; margin-left: 8px; }
+.c3d-resin-db-description { display: block; margin-top: 3px; font-size: 12px; color: var(--df-text-muted); line-height: 1.4; }
+.athena-resin-db-chevron { color: var(--df-text-muted); }
+#resin-database-container { border-top: 1px solid var(--df-border-subtle); }
+.c3d-resin-db-toolbar { display: flex; justify-content: flex-end; padding: 8px 12px; }
+#resin-database-iframe-container { width: 100%; height: 72vh; min-height: 500px; max-height: 800px; }
+#resin-database-iframe { display: block; width: 100%; height: 100%; border: 0; }
+@media (max-width: 767px) {
+  .c3d-resin-db-toggle { padding: 12px 14px; gap: 10px; }
+  #resin-database-iframe-container { height: 70vh; min-height: 420px; }
+}
 .c3d-lock { color: var(--brand-accent); font-size: 12px; flex-shrink: 0; }
 /* Locked factory actions: same buttons, visibly dead */
 .c3d-list-actions .btn[disabled] {
@@ -985,6 +1018,12 @@ body.c3d-printing #webcam-column .dashboard-panel { flex: 1 1 auto; }
 /* Webcam: let the feed keep its native portrait sizing; center it in the tall card */
 #webcam-column .dashboard-panel > .panel-body { justify-content: center; }
 #webcam-column #livestream-container { margin: 0 auto; }
+@media (max-width: 991px) {
+  .c3d-dash-row { flex-direction: column; }
+  .c3d-dash-row > #control-column,
+  .c3d-dash-row > #webcam-column { width: 100%; }
+  #webcam-column { padding-top: 4px; }
+}
 
 /* Panel heading with a compact trailing action (e.g. webcam LED) */
 .c3d-panel-heading--split { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
@@ -2045,7 +2084,56 @@ body:has(.c3d-preview-layout) > br { display: none; }
   color: var(--df-text-muted);
 }
 @media (min-width: 768px) {
-  .navbar-nav > li > .c3d-navbar-readout { padding-top: 15px; padding-bottom: 15px; }
+  .navbar-default .navbar-nav > li > a,
+  .navbar-nav > li > .c3d-navbar-readout {
+    display: flex;
+    align-items: center;
+    height: 52px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .navbar-default .navbar-right { display: flex; align-items: center; }
+}
+
+/* Recovered production resin editor, within the current Athena surfaces. */
+.c3d-resin-editor-name { margin: 6px 0 0; color: var(--df-text-muted); }
+.c3d-resin-editor #setup,
+.c3d-resin-editor #setup2 {
+  margin: 0 8px 20px;
+  padding: 16px 18px 22px;
+  background: var(--df-surface-0);
+  border: 1px solid var(--df-border-subtle);
+  border-radius: var(--df-radius-lg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+.c3d-resin-editor .edit-page label { color: var(--df-text-muted); font-size: 13px; font-weight: 600; }
+.c3d-resin-editor .edit-page h3,
+.c3d-resin-editor .edit-page h5 { color: var(--df-text-strong); }
+.c3d-resin-editor .edit-page .form-control {
+  background-color: var(--df-surface-1);
+  border: 1px solid var(--df-border-strong);
+  border-radius: var(--df-radius-sm);
+  box-shadow: none;
+  color: var(--df-text-strong);
+  min-height: 38px;
+}
+.c3d-resin-editor .edit-page .form-control:focus { border-color: var(--brand-accent); box-shadow: none; }
+.c3d-resin-editor .edit-page input[type="checkbox"] { display: inline-block; width: auto; height: auto; accent-color: var(--brand-accent); }
+.c3d-resin-editor #setup2 .easy-mode-toolbar {
+  padding: 10px 12px;
+  background: var(--df-surface-1);
+  border: 1px solid var(--df-border-subtle);
+  border-radius: var(--df-radius-md);
+}
+.c3d-resin-editor #setup2 .profile-section-heading { border-bottom: 1px solid var(--df-border-subtle); margin-bottom: 8px; }
+.c3d-resin-editor #setup2 .profile-help-label .help,
+.c3d-resin-editor #setup .profile-help-label .help { color: var(--brand-accent); }
+.c3d-resin-editor #setup .setup-categories { margin-bottom: 14px; }
+.c3d-resin-editor #setup .selected-cat { color: var(--df-text-strong); }
+@media (max-width: 767px) {
+  .c3d-resin-editor #setup,
+  .c3d-resin-editor #setup2 { padding: 12px; margin-left: 0; margin-right: 0; }
+  .c3d-resin-editor #setup2 .easy-mode-toolbar { flex-wrap: wrap; }
 }
 
 /* DragonFruit information view: content styles also work outside the modal. */

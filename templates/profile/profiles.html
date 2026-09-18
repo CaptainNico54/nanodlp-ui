@@ -16,66 +16,30 @@
             {% endfor %}
         {% endif %}
         <a class="btn c3d-ghost c3d-ghost-info c3d-btn-i tip" href="/import"><span class="glyphicon glyphicon-import"></span><translate>Import</translate></a>
-        <a class="btn btn-primary c3d-btn-i tip" href="#" id="resin-db-toggle" role="button"><span class="glyphicon glyphicon-cloud"></span><translate>Browse Database</translate></a>
     </div>
 </div>
 
-<!-- Resin Database Integration Container -->
-<div id="resin-database-container" style="display: none; margin-bottom: 16px;">
-    <div class="panel panel-default dashboard-panel">
-        <div class="panel-heading c3d-panel-heading--split">
-            <span><translate>Resin Profile Database</translate> <span id="machine-type-badge" class="c3d-badge c3d-badge--set" style="display: none;"></span></span>
-            <button type="button" class="c3d-led-btn" id="resin-db-close" aria-label="Close">&times;</button>
-        </div>
-        <div class="panel-body" style="padding: 0;">
-            <div id="resin-database-iframe-container" style="width: 100%; height: 800px;">
-                <iframe id="resin-database-iframe"
-                        src=""
-                        style="width: 100%; height: 100%; border: none; display: block;"
-                        title="Resin Database">
-                </iframe>
-            </div>
+<!-- Production Athena database interaction, adapted to the current design system. -->
+<div class="c3d-resin-db">
+    <a href="#" id="resin-db-toggle" class="c3d-resin-db-toggle" role="button" aria-expanded="false" aria-controls="resin-database-container">
+        <span class="glyphicon glyphicon-cloud c3d-resin-db-icon" aria-hidden="true"></span>
+        <span class="c3d-resin-db-copy">
+            <span class="c3d-resin-db-title"><translate>Athena Resin Database</translate> <span id="machine-type-badge" class="c3d-badge c3d-badge--set" style="display: none;"></span></span>
+            <span class="c3d-resin-db-description"><translate>Pre-tested starting profiles for Athena printers. Exposure calibration is still recommended.</translate></span>
+        </span>
+        <span class="glyphicon glyphicon-chevron-down athena-resin-db-chevron" aria-hidden="true"></span>
+    </a>
+    <div id="resin-database-container" style="display: none;">
+        <div class="c3d-resin-db-toolbar"><button type="button" class="c3d-led-btn" id="resin-db-close" aria-label="Close resin database">&times;</button></div>
+        <div id="resin-database-iframe-container">
+            <iframe id="resin-database-iframe" src="" title="Athena Resin Database"></iframe>
         </div>
     </div>
 </div>
 
-<!-- Integration Script -->
-<script src="/static/js/resin-database-integration.js"></script>
+<script src="/static/js/resin-database-integration.js?{{version}}(athenav8)"></script>
 
 {% if profiles %}
-<div id="c3d-resin-default">
-    <div class="c3d-section-label"><translate>Current default</translate></div>
-    <div class="c3d-list c3d-list--hero">
-        {% for profile in profiles %}
-        {% if defaultProfile==profile.ProfileID %}
-        <div class="c3d-list-row c3d-list-row--default">
-            <div class="c3d-list-main">
-                {% if profile.ManufacturerLock %}<span class="glyphicon glyphicon-lock c3d-lock" title="Factory profile"></span>{% endif %}
-                <span class="c3d-list-title">{{profile.Title}}</span>
-                <span class="c3d-badge c3d-badge--default"><span class="glyphicon glyphicon-ok"></span> <translate>Default</translate></span>
-                <span class="c3d-list-meta"><translate>Layer</translate> {{profile.Depth|floatformat}} µm &nbsp;·&nbsp; <translate>Cure</translate> {{profile.CureTime|floatformat}} s</span>
-            </div>
-            <div class="c3d-list-actions">
-                {% if !profile.ManufacturerLock %}
-                <a class="btn c3d-ghost c3d-btn-i tip" href="/profile/edit/{{profile.ProfileID}}"><span class="glyphicon glyphicon-pencil"></span><translate class="hide">Edit</translate></a>
-                {% else %}
-                <a class="btn c3d-ghost c3d-btn-i tip" href="#" disabled tabindex="-1" aria-disabled="true"><span class="glyphicon glyphicon-pencil"></span><translate class="hide">Edit</translate></a>
-                {% endif %}
-                <a class="btn c3d-ghost c3d-btn-i tip" href="/profile/clone/{{profile.ProfileID}}"><span class="glyphicon glyphicon-duplicate"></span><translate class="hide">Clone</translate></a>
-                <a class="btn c3d-ghost c3d-btn-i tip" href="/profile/compare/{{profile.ProfileID}}"><span class="glyphicon glyphicon-random"></span><translate class="hide">Compare</translate></a>
-                <a class="btn c3d-ghost c3d-btn-i tip" href="/profile/export/{{profile.ProfileID}}"><span class="glyphicon glyphicon-export"></span><translate class="hide">Export</translate></a>
-                {% if !profile.ManufacturerLock %}
-                <a class="btn c3d-ghost c3d-ghost-danger c3d-btn-i ask tip" data-ask="delete-confirm" href="/profile/delete/{{profile.ProfileID}}"><span class="glyphicon glyphicon-trash"></span><translate class="hide">Delete</translate></a>
-                {% else %}
-                <a class="btn c3d-ghost c3d-ghost-danger c3d-btn-i tip" href="#" disabled tabindex="-1" aria-disabled="true"><span class="glyphicon glyphicon-trash"></span><translate class="hide">Delete</translate></a>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
-        {% endfor %}
-    </div>
-</div>
-
 <div id="c3d-resin-all">
     <div class="c3d-list-toolbar">
         <span class="c3d-section-label"><translate>All resins</translate> <span id="c3d-resin-count" class="c3d-count"></span></span>
@@ -89,15 +53,17 @@
     </div>
     <div class="c3d-list" id="c3d-resin-list">
         {% for profile in profiles %}
-        {% if defaultProfile!=profile.ProfileID %}
-        <div class="c3d-list-row" data-idx="{{forloop.Counter}}" data-depth="{{profile.Depth}}" data-cure="{{profile.CureTime}}">
+        <div class="c3d-list-row {% if defaultProfile==profile.ProfileID %}c3d-list-row--default{% endif %}" data-idx="{{forloop.Counter}}" data-depth="{{profile.Depth}}" data-cure="{{profile.CureTime}}">
             <div class="c3d-list-main">
                 {% if profile.ManufacturerLock %}<span class="glyphicon glyphicon-lock c3d-lock" title="Factory profile"></span>{% endif %}
                 <span class="c3d-list-title">{{profile.Title}}</span>
+                {% if defaultProfile==profile.ProfileID %}<span class="c3d-badge c3d-badge--default"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <translate>Default</translate></span>{% endif %}
                 <span class="c3d-list-meta"><translate>Layer</translate> {{profile.Depth|floatformat}} µm &nbsp;·&nbsp; <translate>Cure</translate> {{profile.CureTime|floatformat}} s</span>
             </div>
             <div class="c3d-list-actions">
+                {% if defaultProfile!=profile.ProfileID %}
                 <a class="c3d-badge c3d-badge--set tip" href="/profile/default/{{profile.ProfileID}}"><span class="glyphicon glyphicon-ok"></span> <translate>Set default</translate></a>
+                {% endif %}
                 {% if !profile.ManufacturerLock %}
                 <a class="btn c3d-ghost c3d-btn-i tip" href="/profile/edit/{{profile.ProfileID}}"><span class="glyphicon glyphicon-pencil"></span><translate class="hide">Edit</translate></a>
                 {% else %}
@@ -113,7 +79,6 @@
                 {% endif %}
             </div>
         </div>
-        {% endif %}
         {% endfor %}
     </div>
 </div>
@@ -121,9 +86,6 @@
 <script>
 (function () {
     'use strict';
-    var hero = document.getElementById('c3d-resin-default');
-    if (hero && !hero.querySelector('.c3d-list-row')) hero.style.display = 'none';
-
     var list = document.getElementById('c3d-resin-list');
     var chips = Array.prototype.slice.call(document.querySelectorAll('.c3d-chip'));
     if (!list) return;

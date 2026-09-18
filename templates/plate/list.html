@@ -188,10 +188,6 @@
 						class="glyphicon glyphicon-play"></span> &nbsp; <translate>Print from Middle</translate></a></li>
 					<li><a href="/plate/edit/{{ row.PlateID }}"><span
 						class="glyphicon glyphicon-pencil"></span> &nbsp; <translate>Edit</translate></a></li>
-					{% if row.Type=="stl" && row.Size < 500000000 %}
-					<li><a target="_blank" href="/static/editor/?ApplicationMode=embedded&src=/static/plates/{{ row.PlateID }}/plate.stl"><span class="glyphicon glyphicon-pencil"></span> &nbsp; <translate>3D Edit</translate>
-					</a></li>
-					{% endif %}
 					<li id="show-more-timelapse-{{ row.PlateID }}" style="display: none">
 						<a href="/custom/timelapse?plateid={{ row.PlateID }}">
 							<span class="glyphicon glyphicon-camera"></span> &nbsp; <translate>Timelapse</translate>
