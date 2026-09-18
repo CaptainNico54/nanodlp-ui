@@ -10,6 +10,7 @@ $(document).ready(function () {
         return;
     }
 
+    $('#timelapse-retry').on('click', refreshTimelapseGallery);
     initTimelapsePlayerModal();
     initFilters();
     refreshTimelapseGallery();
@@ -192,7 +193,7 @@ function sortTimelapses(entries) {
 }
 
 function escapeHtml(text) {
-    return $('<div>').text(text).html();
+    return $('<div>').text(text == null ? '' : String(text)).html().replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 function resolvePlateName(plateId) {
@@ -211,19 +212,21 @@ function renderTimelapseCard(entry) {
     const filename = escapeHtml(entry.filename);
     const previewfilename = escapeHtml(entry.previewfilename);
     const plateName = escapeHtml(resolvePlateName(entry.plateId));
-    const videoTitle = plateName ? `${plateName} · ${label}` : label;
+    const rawPlateName = resolvePlateName(entry.plateId);
+    const videoTitle = rawPlateName ? `${rawPlateName} · ${label}` : label;
 
     return (
-        '<div class="col-sm-6 col-md-4 col-lg-3 timelapse-card" data-plate-id="' + plateId + '">' +
-        '<div class="panel panel-default">' +
-        '<div class="panel-body">' +
-        '<div class="thumbnail timelapse-thumbnail" data-video-link="' + BASE_URL + videoLink + '" data-video-title="' + escapeHtml(videoTitle) + '">' +
-        '<img src="' + BASE_URL + previewLink + '" alt="">' +
-        '</div>' +
-        '<p><strong>' + (plateName || ('Plate ' + plateId)) + '</strong><br>' +
+        '<div class="timelapse-card" data-plate-id="' + plateId + '">' +
+        '<div class="c3d-card">' +
+        '<div class="timelapse-card-body">' +
+        '<button type="button" class="timelapse-thumbnail" aria-label="Play timelapse" data-video-link="' + BASE_URL + videoLink + '" data-video-title="' + escapeHtml(videoTitle) + '">' +
+        '<span class="timelapse-preview-placeholder"><span class="glyphicon glyphicon-film" aria-hidden="true"></span>Preview unavailable</span>' +
+        (entry.previewlink ? '<img src="' + BASE_URL + previewLink + '" alt="">' : '') +
+        '</button>' +
+        '<p class="timelapse-card-title"><strong>' + (plateName || ('Plate ' + plateId)) + '</strong><br>' +
         '<small class="text-muted">ID ' + plateId + ' · ' + escapeHtml(label) + '</small></p>' +
         '</div>' +
-        '<div class="panel-footer">' +
+        '<div class="c3d-card-actions">' +
         '<button type="button" class="btn btn-primary btn-sm timelapse-play" data-video-link="' + BASE_URL + videoLink + '" data-video-title="' + escapeHtml(videoTitle) + '">' +
         '<span class="glyphicon glyphicon-play"></span> Play' +
         '</button>' +
@@ -322,10 +325,16 @@ function renderFilteredGallery() {
 
     showTimelapseEmpty(false);
     gallery.html(entries.map(renderTimelapseCard).join(''));
+    gallery.find('.timelapse-thumbnail img').each(function () {
+        // Listen directly: image error events do not bubble. Handle cached failures too.
+        $(this).on('error', function () { $(this).hide(); });
+        if (this.complete && !this.naturalWidth) { $(this).hide(); }
+    });
     startEncodingStatusPoll(entries);
 }
 
 async function refreshTimelapseGallery() {
+    $('#timelapse-load-error').hide();
     try {
         const [entries, plateNames] = await Promise.all([
             loadTimelapses(),
@@ -338,7 +347,8 @@ async function refreshTimelapseGallery() {
         renderFilteredGallery();
     } catch (err) {
         toastr.error('Failed to load timelapses');
-        showTimelapseEmpty(true);
+        $('#timelapse-empty, #timelapse-gallery').hide();
+        $('#timelapse-load-error').show();
         stopEncodingStatusPoll();
     }
 }

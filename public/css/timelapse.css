@@ -1,34 +1,43 @@
-.timelapse-card {
-    margin-bottom: 24px;
+/* Page-scoped layout uses the shared DragonFruit/Athena tokens in redesign.css. */
+.c3d-camera-layout { display:grid; grid-template-columns:minmax(220px, 1fr) minmax(0, 3fr); gap:20px; align-items:start; }
+.c3d-camera-layout h2 { margin:0 0 14px; font-size:18px; font-weight:600; }
+.c3d-camera-panel { min-width:0; }
+.c3d-camera-panel h2 { margin-bottom:0; }
+.c3d-camera-unavailable { display:none; }
+.c3d-camera-panel #webcam-preview[hidden] + .c3d-camera-unavailable { display:block; }
+.c3d-camera-panel #livestream-container { width:100%; aspect-ratio:9/16; }
+.c3d-camera-panel #livestream-container img { flex-shrink:0; }
+.c3d-timelapse-panel { min-width:0; }
+.timelapse-filters { margin-bottom:16px; }
+.timelapse-filters label { color:var(--df-text-muted); font-size:12px; }
+.c3d-timelapse-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px; }
+.timelapse-card { min-width:0; }
+.timelapse-card > .c3d-card { height:100%; padding:12px; }
+.timelapse-card-body { min-width:0; }
+.timelapse-thumbnail { position:relative; display:block; width:100%; height:240px; padding:0; margin:0 0 12px; overflow:hidden; cursor:pointer; background:var(--df-surface-1); border:1px solid var(--df-border-subtle); border-radius:var(--df-radius-md); color:var(--df-text-muted); }
+/* Athena camera captures landscape frames mounted at 90 degrees; preserve that correction. */
+.timelapse-thumbnail img { position:absolute; top:50%; left:50%; width:240px; height:135px; max-width:none; object-fit:contain; transform:translate(-50%, -50%) rotate(90deg); background:var(--df-surface-1); }
+.timelapse-preview-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; gap:12px; align-items:center; justify-content:center; font-size:12px; }
+.timelapse-preview-placeholder .glyphicon { font-size:26px; opacity:.6; }
+.timelapse-thumbnail:hover { border-color:var(--brand-accent); }
+.timelapse-thumbnail:focus-visible { outline:2px solid var(--brand-accent); outline-offset:3px; }
+.timelapse-card-title { overflow-wrap:anywhere; margin:0; line-height:1.5; }
+.timelapse-card-title strong { display:inline-block; font-size:14px; }
+.timelapse-card-title small { font-size:12px; }
+#timelapse-empty { text-align:center; padding:32px 16px; }
+#timelapse-empty p { margin:0; }
+#timelapse-empty > .glyphicon { font-size:26px; color:var(--brand-accent); }
+#timelapse-player-modal .modal-content { background:var(--df-surface-0); color:var(--df-text-strong); border:1px solid var(--df-border-strong); border-radius:var(--df-radius-lg); }
+#timelapse-player-modal .modal-header, #timelapse-player-modal .modal-footer { border-color:var(--df-border-subtle); }
+#timelapse-player-modal .modal-title { overflow-wrap:anywhere; }
+#timelapse-player-modal .close { color:var(--df-text-strong); opacity:.8; text-shadow:none; }
+.timelapse-modal-body { text-align:center; background:var(--df-bg); }
+#timelapse-player-video { display:block; margin:auto; max-width:100%; max-height:70vh; }
+@media (max-width:991px) {
+    .c3d-camera-layout { grid-template-columns:minmax(200px, 1fr) minmax(0, 2fr); gap:16px; }
 }
-
-.timelapse-card .thumbnail {
-    margin-bottom: 12px;
-    cursor: pointer;
-    height: 220px;
-    overflow: hidden;
-}
-
-.timelapse-card .thumbnail img {
-    transform: rotate(90deg);
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.timelapse-card .panel-footer .btn {
-    margin-right: 6px;
-}
-
-.timelapse-modal-body {
-    text-align: center;
-}
-
-#timelapse-player-video {
-    max-width: 100%;
-    max-height: 70vh;
-}
-
-.timelapse-filters {
-    margin-bottom: 16px;
+@media (max-width:767px) {
+    .c3d-camera-layout { grid-template-columns:minmax(0, 1fr); }
+    .c3d-camera-panel { width:100%; max-width:360px; justify-self:center; }
+    .timelapse-filters > div + div { margin-top:12px; }
 }

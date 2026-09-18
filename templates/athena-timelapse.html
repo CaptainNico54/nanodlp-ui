@@ -1,65 +1,10 @@
 {% extends "base.html" %}
 {% block head %}
-<link href='/static/css/timelapse.css' rel="stylesheet">
+<link href='/static/css/timelapse.css?{{version}}(athenav2)' rel="stylesheet">
 {% endblock %}
 {% block js %}
-<script src='/static/js/timelapse.js'></script>
+<script src='/static/js/timelapse.js?{{version}}(athenav2)'></script>
 {% endblock %}
 {% block content %}
-
-<div class="col-md-12">
-    <h2><translate>Timelapses</translate></h2>
-
-    <div class="row timelapse-filters">
-        <div class="col-sm-4">
-            <label for="timelapse-filter-plate"><translate>Print job</translate></label>
-            <select id="timelapse-filter-plate" class="form-control">
-                <option value=""><translate>All jobs</translate></option>
-            </select>
-        </div>
-        <div class="col-sm-4">
-            <label for="timelapse-filter-time"><translate>Time range</translate></label>
-            <select id="timelapse-filter-time" class="form-control">
-                <option value="all"><translate>All time</translate></option>
-                <option value="24h"><translate>Last 24 hours</translate></option>
-                <option value="7d"><translate>Last 7 days</translate></option>
-                <option value="30d"><translate>Last 30 days</translate></option>
-            </select>
-        </div>
-    </div>
-
-    <div id="timelapse-encoding-hint" class="alert alert-info" style="display: none" role="alert">
-        <span class="glyphicon glyphicon-hourglass"></span>
-        <translate>A timelapse is still being encoded…</translate>
-        <span id="timelapse-encoding-progress"></span>
-    </div>
-
-    <div id="timelapse-empty" class="text-muted" style="display: none">
-        <p><translate>No timelapses found.</translate></p>
-    </div>
-
-    <div id="timelapse-gallery" class="row"></div>
-</div>
-
-<div class="modal fade" id="timelapse-player-modal" tabindex="-1" role="dialog" aria-labelledby="timelapse-player-modal-label">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="timelapse-player-modal-label"><translate>Timelapse</translate></h4>
-            </div>
-            <div class="modal-body timelapse-modal-body">
-                <video id="timelapse-player-video" controls playsinline></video>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"><translate>Close</translate></button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<translate class="hide" id="delete-timelapse-confirm">Are you sure you want to delete this timelapse?</translate>
-
+{% include "components/camera-timelapses.html" %}
 {% endblock %}
