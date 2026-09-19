@@ -1,5 +1,5 @@
 /* Page-scoped layout uses the shared DragonFruit/Athena tokens in redesign.css. */
-.c3d-camera-layout { display:grid; grid-template-columns:minmax(220px, 1fr) minmax(0, 3fr); gap:20px; align-items:start; }
+.c3d-camera-layout { display:grid; grid-template-columns:minmax(300px, 4fr) minmax(0, 7fr); gap:20px; align-items:start; }
 .c3d-camera-layout h2 { margin:0 0 14px; font-size:18px; font-weight:600; }
 .c3d-camera-panel { min-width:0; }
 .c3d-camera-panel h2 { margin-bottom:0; }
@@ -10,7 +10,7 @@
 .c3d-timelapse-panel { min-width:0; }
 .timelapse-filters { margin-bottom:16px; }
 .timelapse-filters label { color:var(--df-text-muted); font-size:12px; }
-.c3d-timelapse-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:14px; }
+.c3d-timelapse-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:14px; }
 .timelapse-card { min-width:0; }
 .timelapse-card > .c3d-card { height:100%; padding:12px; }
 .timelapse-card-body { min-width:0; }
@@ -33,11 +33,18 @@
 #timelapse-player-modal .close { color:var(--df-text-strong); opacity:.8; text-shadow:none; }
 .timelapse-modal-body { text-align:center; background:var(--df-bg); }
 #timelapse-player-video { display:block; margin:auto; max-width:100%; max-height:70vh; }
+@media (max-width:1399px) {
+    .c3d-timelapse-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+}
 @media (max-width:991px) {
     .c3d-camera-layout { grid-template-columns:minmax(200px, 1fr) minmax(0, 2fr); gap:16px; }
+    .c3d-timelapse-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width:767px) {
     .c3d-camera-layout { grid-template-columns:minmax(0, 1fr); }
     .c3d-camera-panel { width:100%; max-width:360px; justify-self:center; }
     .timelapse-filters > div + div { margin-top:12px; }
+}
+@media (max-width:575px) {
+    .c3d-timelapse-grid { grid-template-columns:minmax(0, 1fr); }
 }

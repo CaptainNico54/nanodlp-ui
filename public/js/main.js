@@ -6,6 +6,18 @@ const BASE_URL = DEV_MODE ? 'http://192.168.4.160' : '';
 var favicon;
 var percentage;
 
+// Capture the product/printer suffix once, before status updates mutate the tab title.
+// Some redesigned templates provide only the product name while others include a
+// page prefix. Page-only titles are not valid printer suffixes and are omitted.
+var initial_document_title = (document.title || '').trim();
+var base_title_suffix = (function(initialTitle){
+	if (!initialTitle || /(^|\s)undefined($|\s)/i.test(initialTitle)) return '';
+	var separator = ' - ';
+	var separatorIndex = initialTitle.indexOf(separator);
+	if (separatorIndex >= 0) return initialTitle.slice(separatorIndex + separator.length).trim();
+	return /(NanoDLP|Athena|Concepts3D)/i.test(initialTitle) ? initialTitle : '';
+})(initial_document_title);
+
 
 $(function(){
 	// Run for index page
@@ -984,7 +996,9 @@ function current_status_display(){
 }
 
 function title_update(title){
-	document.title = title + ' - ' + $('title').text().split('-')[1];
+	var statusTitle = title == null ? '' : String(title).trim();
+	if (/^undefined$/i.test(statusTitle)) statusTitle = '';
+	document.title = [statusTitle,base_title_suffix].filter(function(part){ return part !== ''; }).join(' - ');
 }
 
 var last_frame_key='';

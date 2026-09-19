@@ -506,3 +506,98 @@ Dashboard chart sizing with real print analytics, equal Status panel heights at
 the printer's usual browser size, the Software Update menu link, and Reset
 confirmation dismissal without accepting it. A separately authorized update is
 still required to observe the WP9 progress modal against the real updater.
+
+## Work Package 11: Machine Settings and final presentation fixes
+
+### Machine Settings field/category manifest
+
+This manifest was recorded before implementation. “Hide” means suppress the
+Athena presentation while retaining the existing form control, `name`, value,
+and NanoDLP backend support. Shared fields stay visible through the listed kept
+category even when another category is hidden.
+
+| Current category | Field label | Backend field/name | Planned action |
+| --- | --- | --- | --- |
+| Interface and Appearance | Category title | `i_appearance` | Relabel to Interface & Appearance |
+| Interface and Appearance | Printer Name; Language | `Name`; `Lang` | Keep |
+| Interface and Appearance | View Mode: Basic / Expert | `ViewMode` values `0` / `1` | Relabel options to Easy / Advanced |
+| Interface and Appearance | Theme | `Theme` | Hide |
+| Interface and Appearance | Nextion Display Port Address | `USBDisplayAddress` | Hide |
+| Interface and Appearance | Play Sound After Print Stop | `Mute` | Hide |
+| Slicing and Print Quality | Category and category-only fields | `i_slicing`; `BarrelFactor`, `BarrelX`, `BarrelY`, `AutoSlice` | Hide category; preserve controls |
+| Slicing and Print Quality / Display | Resolution, controller, mirror fields | `ProjectorWidth`, `ProjectorHeight`, `DisplayController`, `XYRes`, `YRes`, `ImageMirror` | Keep through Display |
+| Slicing and Print Quality / Network | Remote Slicer | `RemoteSlicer` | Keep through Network unchanged |
+| Dynamic G-Code | Bootup, shutdown, start, resume, pause, unpause, preflight, stop, cure, manual movement, parser, shutter open/close | `ShieldBootup`, `ShieldShutdown`, `ShieldStart`, `ShieldResume`, `ShieldPause`, `ShieldUnpause`, `PrinterCheck`, `ShieldFinish`, `CureGcode`, `ManualMoveGcode`, `BoardParser`, `ShutterOpenGcode`, `ShutterCloseGcode` | Keep |
+| Dynamic G-Code / Movement | Lifecycle G-code also tagged for Movement | `ShieldStart`, `ShieldResume`, `ShieldPause`, `ShieldUnpause`, `PrinterCheck`, `ShieldFinish`, `CureGcode`, `ManualMoveGcode` | Hide from Movement; keep in Dynamic G-Code |
+| Dynamic G-Code / Movement | Custom Acceleration | `SpeedFormula` | Keep in both; formula is movement configuration, not duplicate lifecycle G-code |
+| Dynamic G-Code / Display / Slicing | Light Output Formula | `LightOutputFormula` | Hide everywhere |
+| Movement | Step GPIO for Z-Axis | `ZAxisPin` | Hide |
+| Movement / Hardware | Wait GPIO | `WaitPin` | Hide |
+| Movement | Direction, limits, enable, positioning, axis direction, dimensions and speeds | `DirectionPin`, `LimitPin`, `LimitPinB`, `LimitPinMode`, `LimitPinReset`, `EnablePin`, `EnablePinState`, `EnablePinMode`, `ShieldPositioning`, `ShieldAxisMode`, `StopPositionMm`, `ResinDistanceMm`, `MaxSpeed`, `MinSpeed`, `StartupSpeed`, `MotorDegree`, `MicroStep`, `LeadscrewPitch`, `ZAxisHeight` | Keep |
+| Display | Resolution, controller, mirror, display number/connection/framebuffer | `ProjectorWidth`, `ProjectorHeight`, `DisplayController`, `XYRes`, `YRes`, `ImageMirror`, `DisplayID`, `DispConn`, `FBPath` | Keep |
+| Display | Communication type; warm-up; lamp query/brightness; baud; projector USB; on/off commands; power cycle | `ProjectorType`, `ProjectorWarmup`, `ProjectorLampQuery`, `ProjectorLampEffect`, `ProjectorSpeed`, `ProjectorAddress`, `ProjectorOn`, `ProjectorOff`, `ProjectorPowerCycle` | Hide |
+| Network | WiFi Country; TCP Port; Remote Slicer | `WiFiCountry`, `Port`, `RemoteSlicer` | Keep unchanged |
+| Camera | Entire category | `i_camera`; `CameraFrequency`, `CameraStore`, `CameraCommand` | Hide category; preserve controls |
+| Hardware | Entire category and hardware-only controls | `i_hardware`; printer/controller/GPIO/shutter fields | Hide category; preserve controls |
+| Other Settings | Category title and Athena custom inputs | `i_custom`; custom input names supplied by NanoDLP | Relabel category to Athena Settings; keep controls/hooks |
+
+### Implementation and validation
+
+The Athena Machine Settings sidebar now exposes Interface & Appearance,
+Dynamic G-Code, Movement, Display, Network, and Athena Settings. Slicing and
+Print Quality, Camera, and Hardware have no category buttons. Their controls
+remain in the template and form so NanoDLP retains the same field names,
+values, and backend support. A page-scoped `c3d-athena-hidden-setting` rule
+keeps the specifically hidden controls suppressed even when the existing
+category or conditional-display JavaScript calls `show()`.
+
+Interface & Appearance uses Easy and Advanced as the labels for the unchanged
+`ViewMode` values 0 and 1. Theme, Nextion Display Port Address, and Play Sound
+After Print Stop are hidden. Dynamic G-Code remains the single presentation for
+the duplicated lifecycle fields; those same controls no longer appear in
+Movement. Custom Acceleration remains visible in both categories because it is
+motion configuration rather than duplicated lifecycle G-code. Movement also
+hides Step GPIO and Wait GPIO. Display hides the legacy communication, warm-up,
+lamp query/brightness, baud, projector USB, on/off, power-cycle, and light-output
+formula controls while retaining Athena's required resolution, controller,
+mirror, display connection, and framebuffer controls. Network was not changed.
+No requested field was unsafe to hide under this presentation-only policy.
+
+The shared browser-title bug came from splitting the current title on `-` for
+every status refresh. Redesigned pages without a separator returned an
+undefined array element, while later refreshes parsed a title that had already
+been rewritten. `main.js` now captures one stable product/printer suffix before
+the first mutation, accepts a separator-free suffix only when it identifies
+NanoDLP, Athena, or Concepts3D, and joins only non-empty title parts. Focused
+tests covered Not Printing, Printing Layer 2/100, Connectivity Problem,
+separator and separator-free product titles, page-only titles, repeated
+updates, and an undefined status value; no case emitted the literal text
+`undefined` or duplicated the suffix.
+
+The dedicated Camera & Timelapses desktop grid is now 4fr/7fr, approximately
+36/64 after the gap, and remains 1fr/2fr on tablet before stacking on narrow
+screens. At a 1600 px fixture viewport the dedicated camera panel measured
+551.625 px versus a 482.328 px Dashboard camera sample. The live view retained
+its 9:16 aspect ratio. The timelapse gallery uses four columns above 1399 px,
+three through smaller desktop widths, two through tablet widths, and one below
+576 px. Fixture measurements at 1600, 1300, 900, and 500 px showed the expected
+4/3/2/1 columns and zero document overflow. The preview image retained its 90
+degree transform; Play opened the existing modal with its video source, and the
+plate filter reduced six cards to one then restored all six. The existing
+Delete confirmation, delete request code, metadata, missing-preview state,
+encoding status, camera availability hooks, and LED control were not changed.
+
+JavaScript syntax checks, the focused title test, template block balance, and
+`git diff --check` passed. Browser console checks reported no errors or
+warnings. No backend route, form name/value, saved configuration, camera logic,
+timelapse API behavior, printer file, service, restart, or deployment was
+changed.
+
+Real-printer acceptance remains for Machine Settings category switching and a
+save with deliberately unchanged values; titles on Dashboard, Camera &
+Timelapses, Exposure Calibration, Jobs, Resin, Status, and Software Update
+through idle, printing, and connectivity states; live camera detection,
+unavailable state, stream, and LED behavior; optical comparison of the
+dedicated and Dashboard camera widths; and real timelapse preview, filter,
+encoding, Play, and separately authorized Delete behavior at the printer's
+desktop, tablet, and phone-equivalent viewport sizes.

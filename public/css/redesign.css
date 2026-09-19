@@ -2207,6 +2207,10 @@ body:has(.c3d-preview-layout) > br { display: none; }
   .c3d-resin-editor #setup2 .easy-mode-toolbar { flex-wrap: wrap; }
 }
 
+/* Athena Machine Settings presentation policy. Controls remain in the form so
+   NanoDLP receives the existing names and stored values unchanged. */
+#setup .c3d-athena-hidden-setting { display: none !important; }
+
 /* DragonFruit information view: content styles also work outside the modal. */
 .c3d-dragonfruit-modal .modal-dialog { width: calc(100% - 48px); max-width: 1120px; margin: 24px auto; }
 .c3d-dragonfruit-modal .modal-content { max-height: calc(100vh - 48px); display: flex; flex-direction: column; }

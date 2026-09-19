@@ -47,15 +47,12 @@
 		{% endif %}
 		<div class="row">
 			<div class="col-xs-12 col-sm-4 col-md-3 setup-categories setup">
-				{{ setting_cat("<translate>Interface and Appearance</translate>","<translate>Printer name, HMI, theme, language, sound</translate>",font_icon,"i_appearance") }}
-				{{ setting_cat("<translate>Slicing and Print Quality</translate>","<translate>Resolution, remote slicer, light output, barrel correction</translate>",layers_icon,"i_slicing") }}
+				{{ setting_cat("<translate>Interface &amp; Appearance</translate>","<translate>Printer name, language, and view mode</translate>",font_icon,"i_appearance") }}
 				{{ setting_cat("<translate>Dynamic G-Code</translate>","<translate>Boot-up, start, resume, stop print, before, after layer</translate>",code_icon,"i_code") }}
-				{{ setting_cat("<translate>Movement</translate>","<translate>Positioning, speed, g-codes</translate>",axis_icon,"i_axis") }}
+				{{ setting_cat("<translate>Movement</translate>","<translate>Positioning, speeds, and Z-axis configuration</translate>",axis_icon,"i_axis") }}
 				{{ setting_cat("<translate>Display</translate>","<translate>Display resolution, connection, lamp</translate>",computer_icon,"i_display") }}
 				{{ setting_cat("<translate>Network</translate>","<translate>Network port, remote slicer, WiFi</translate>",wifi_icon,"i_network") }}
-				{{ setting_cat("<translate>Camera</translate>","<translate>Camera settings, storage</translate>",cam_icon,"i_camera") }}
-				{{ setting_cat("<translate>Hardware</translate>","<translate>Printer type, controller, GPIO, shutter</translate>",cpu_icon,"i_hardware") }}
-				{{ setting_cat("<translate>Other Settings</translate>","<translate>Additional custom settings and parameters</translate>",gear_icon,"i_custom") }}
+				{{ setting_cat("<translate>Athena Settings</translate>","<translate>Athena-specific settings and parameters</translate>",gear_icon,"i_custom") }}
 			</div>
 			<div class="col-xs-12 col-sm-8 col-md-9">
 				<div>
@@ -108,11 +105,11 @@
 					<translate>View Mode</translate>
 				</label>
 				<select class="form-control" name="ViewMode" id="ViewMode"> <translate class="hide">Choose between basic and expert view modes</translate>
-					<option value="0" {% if ViewMode==0 %}selected{% endif %} translate>Basic</option>
-					<option value="1" {% if ViewMode==1 %}selected{% endif %} translate>Expert</option>
+					<option value="0" {% if ViewMode==0 %}selected{% endif %} translate>Easy</option>
+					<option value="1" {% if ViewMode==1 %}selected{% endif %} translate>Advanced</option>
 				</select>
 			</div>
-			<div class="col-md-4 i_appearance i_option tip">
+			<div class="col-md-4 i_appearance i_option tip c3d-athena-hidden-setting">
 				<label for="Theme">
 					<translate>Theme</translate>
 				</label>
@@ -149,7 +146,7 @@
 				</select>
 
 			</div>
-			<div class="col-md-4 i_axis conditional i_option tip i_lock" data-condition="#arch=='arm' && #scategory=='i_axis'">
+			<div class="col-md-4 i_axis conditional i_option tip i_lock c3d-athena-hidden-setting" data-condition="#arch=='arm' && #scategory=='i_axis'">
 				<label for="ZAxisPin">
 					<translate>Step GPIO for Z-Axis</translate> {{helpPage("https://docs.nano3dtech.com/manual/direct/")}}
 				</label>
@@ -293,7 +290,7 @@
 					<option value="1" {% if ShieldAxisMode==1 %}selected{% endif %} translate>Zero at Top</option>
 				</select>
 			</div>
-			<div class="col-md-4 conditional i_axis i_hardware i_option tip i_lock"
+			<div class="col-md-4 conditional i_axis i_hardware i_option tip i_lock c3d-athena-hidden-setting"
 				data-condition="#arch=='arm' && ['i_axis','i_hardware'].includes(#scategory)">
 				<label for="WaitPin">
 					<translate>Wait GPIO</translate> {{helpPage("https://docs.nano3dtech.com/manual/hardware/#wait-pin")}}
@@ -322,7 +319,7 @@
 				<textarea class="form-control" name="ShieldShutdown" id="ShieldShutdown">{{ShieldShutdown}}</textarea>
 				<translate class="hide">G-code commands to execute on system shutdown</translate>
 			</div>
-			<div class="col-md-11 i_code i_axis i_option tip i_lock">
+			<div class="col-md-11 i_code i_option tip i_lock">
 				<label for="ShieldStart">
 					<translate>Start of Print Code</translate> {{helpPage("https://docs.nano3dtech.com/manual/code/")}}
 					{{formulaModal()}}
@@ -330,7 +327,7 @@
 				<textarea class="form-control" name="ShieldStart" id="ShieldStart">{{ShieldStart}}</textarea>
 				<translate class="hide">G-code commands to execute at start of print</translate>
 			</div>
-			<div class="col-md-11 i_code i_axis i_option tip i_lock">
+			<div class="col-md-11 i_code i_option tip i_lock">
 				<label for="ShieldResume">
 					<translate>Resume Print Code</translate> {{helpPage("https://docs.nano3dtech.com/manual/code/")}}
 					{{formulaModal()}}
@@ -338,21 +335,21 @@
 				<textarea class="form-control" name="ShieldResume" id="ShieldResume">{{ShieldResume}}</textarea>
 				<translate class="hide">G-code commands to execute when resuming print</translate>
 			</div>
-			<div class="col-md-11 i_code i_axis i_option i_lock">
+			<div class="col-md-11 i_code i_option i_lock">
 				<label for="ShieldPause">
 					<translate>Pause Print Code</translate> {{helpPage("https://docs.nano3dtech.com/manual/code/")}}
 					{{formulaModal()}}
 				</label>
 				<textarea class="form-control" name="ShieldPause" id="ShieldPause">{{ShieldPause}}</textarea>
 			</div>
-			<div class="col-md-11 i_code i_axis i_option i_lock">
+			<div class="col-md-11 i_code i_option i_lock">
 				<label for="ShieldUnpause">
 					<translate>Unpause Print Code</translate> {{helpPage("https://docs.nano3dtech.com/manual/code/")}}
 					{{formulaModal()}}
 				</label>
 				<textarea class="form-control" name="ShieldUnpause" id="ShieldUnpause">{{ShieldUnpause}}</textarea>
 			</div>
-			<div class="col-md-11 i_code i_axis i_option i_lock">
+			<div class="col-md-11 i_code i_option i_lock">
 				<label for="PrinterCheck">
 					<translate>Preflight Check Code</translate> {{helpPage("https://docs.nano3dtech.com/manual/code/")}}
 					{{formulaModal()}}
@@ -360,14 +357,14 @@
 				<textarea class="form-control" name="PrinterCheck" id="PrinterCheck">{{PrinterCheck}}</textarea>
 
 			</div>
-			<div class="col-md-11 i_code i_axis i_option tip i_lock">
+			<div class="col-md-11 i_code i_option tip i_lock">
 				<label for="ShieldFinish">
 					<translate>Print Stop Code</translate> {{formulaModal()}}
 				</label>
 				<textarea class="form-control" name="ShieldFinish" id="ShieldFinish">{{ShieldFinish}}</textarea>
 				<translate class="hide">G-code commands to execute when stopping print</translate>
 			</div>
-			<div class="col-md-11 i_code i_axis i_option tip i_lock">
+			<div class="col-md-11 i_code i_option tip i_lock">
 				<label for="CureGcode">
 					<translate>Code for Curing</translate> {{helpPage("https://docs.nano3dtech.com/manual/code/#code-for-curing")}} {{formulaModal()}}
 				</label>
@@ -375,7 +372,7 @@
 					id="CureGcode">{{CureGcode}}</textarea>
 				<translate class="hide">G-code commands to execute during curing</translate>
 			</div>
-			<div class="col-md-4 i_code i_axis i_option tip i_lock">
+			<div class="col-md-4 i_code i_option tip i_lock">
 				<label for="ManualMoveGcode">
 					<translate>Manual Movement Code Template</translate>
 				</label>
@@ -533,7 +530,7 @@
 					<option value="3" {% if ConfigSlicerOptions.ImageMirror==3 %}selected{% endif %} translate>Both</option>
 				</select>
 			</div>
-			<div class="col-md-4 i_display i_option tip i_lock">
+			<div class="col-md-4 i_display i_option tip i_lock c3d-athena-hidden-setting">
 				<label for="ProjectorType">
 					<translate>Display Communication Type</translate> {{helpPage("https://docs.nano3dtech.com/manual/hardware/#projector")}}
 				</label>
@@ -547,7 +544,7 @@
 				</select>
 
 			</div>
-			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock">
+			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock c3d-athena-hidden-setting">
 				<label for="ProjectorWarmup">
 					<translate>Display Warm-up Time</translate> <span class="label label-default"
 						translate>Second</span>
@@ -555,14 +552,14 @@
 				<input class="form-control" value="{{ProjectorWarmup|floatformat}}" name="ProjectorWarmup" id="ProjectorWarmup"
 					type="number"> <translate class="hide">Display warm-up time in seconds</translate>
 			</div>
-			<div class="col-md-4 ProjectorType_toggle i_display i_slicing i_option tip i_lock">
+			<div class="col-md-4 ProjectorType_toggle i_display i_slicing i_option tip i_lock c3d-athena-hidden-setting">
 				<label for="ProjectorLampQuery">
 					<translate>Query Lamp Hours</translate> {{helpPage("https://docs.nano3dtech.com/manual/hardware/#lamp")}}
 				</label>
 				<input class="form-control" value="{{ProjectorLampQuery}}" name="ProjectorLampQuery"
 					id="ProjectorLampQuery"> <translate class="hide">Command to query lamp hours</translate>
 			</div>
-			<div class="col-md-4 ProjectorType_toggle i_display i_slicing i_option tip i_lock">
+			<div class="col-md-4 ProjectorType_toggle i_display i_slicing i_option tip i_lock c3d-athena-hidden-setting">
 				<label for="ProjectorLampEffect">
 					<translate>Lamp Brightness</translate> <span class="label label-default"
 						translate>Percentage</span> {{helpPage("https://docs.nano3dtech.com/manual/hardware/#lamp")}}
@@ -570,30 +567,30 @@
 				<input class="form-control" value="{{ProjectorLampEffect|floatformat}}" name="ProjectorLampEffect"
 					id="ProjectorLampEffect" step="0.01" type="number"> <translate class="hide">Lamp brightness as percentage</translate>
 			</div>
-			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock">
+			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock c3d-athena-hidden-setting">
 				{{ speed_select("ProjectorSpeed","Baud Rate",ProjectorSpeed) }}
 			</div>
-			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock">
+			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock c3d-athena-hidden-setting">
 				<label for="ProjectorAddress">
 					<translate>Projector USB/Serial Port Address</translate>
 				</label>
 				<input class="form-control" value="{{ProjectorAddress}}" name="ProjectorAddress" id="ProjectorAddress"
 					list="devices"> <translate class="hide">USB/serial port address for projector</translate>
 			</div>
-			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock">
+			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock c3d-athena-hidden-setting">
 				<label for="ProjectorOn">
 					<translate>Display Turn On Command</translate>
 				</label>
 				<input class="form-control" value="{{ProjectorOn}}" name="ProjectorOn" id="ProjectorOn"> <translate class="hide">Command to turn on the display</translate>
 			</div>
-			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock">
+			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock c3d-athena-hidden-setting">
 				<label for="ProjectorOff">
 					<translate>Display Turn Off Command</translate>
 				</label>
 				<input class="form-control" value="{{ProjectorOff}}" name="ProjectorOff" id="ProjectorOff"> <translate class="hide">Command to turn off the display</translate>
 
 			</div>
-			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock">
+			<div class="col-md-4 ProjectorType_toggle i_display i_option tip i_lock c3d-athena-hidden-setting">
 				<label for="ProjectorPowerCycle">
 					<translate>Display Power Cycle</translate>
 				</label>
@@ -631,7 +628,7 @@
 					{% endfor %}
 				</datalist>
 			</div>
-			<div class="col-md-4 i_display i_slicing i_code i_option tip i_lock">
+			<div class="col-md-4 i_display i_slicing i_code i_option tip i_lock c3d-athena-hidden-setting">
 				<label for="LightOutputFormula">
 					<translate>Light Output Formula</translate> <span class="label label-default"
 						translate>Percentage</span>  {{helpPage("https://docs.nano3dtech.com/manual/code/#light-output")}} {{formulaModal()}}
@@ -743,7 +740,7 @@
 				</label>
 				<input class="form-control" value="{{CameraCommand}}" name="CameraCommand" id="CameraCommand"> <translate class="hide">Command to capture camera photos</translate>
 			</div>
-			<div class="col-md-4 i_appearance i_option tip i_lock">
+			<div class="col-md-4 i_appearance i_option tip i_lock c3d-athena-hidden-setting">
 				<label for="USBDisplayAddress">
 					<translate>Nextion Display Port Address</translate> {{helpPage("https://docs.nano3dtech.com/manual/hardware/#projector")}}
 				</label>
@@ -783,7 +780,7 @@
 				</label>
 				<input class="form-control" value="{{Port}}" name="Port" id="Port" min="80" max="65535" type="number" readonly> <translate class="hide">TCP port for web interface</translate>
 			</div>
-			<div class="col-md-4 i_appearance i_option tip">
+			<div class="col-md-4 i_appearance i_option tip c3d-athena-hidden-setting">
 				<label for="Mute">
 					<translate>Play Sound After Print Stop</translate>
 				</label>
