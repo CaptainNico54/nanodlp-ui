@@ -73,13 +73,15 @@ function renderChart(name, dataRows, series, chartConfig) {
     const containerEl = $uplot[0];
     const parentEl = containerEl ? containerEl.parentElement : null;
     if (chartConfig.fitParent === true && parentEl) {
-        const link = parentEl.querySelector('a[href="/analytic"]');
+        const actionRow = parentEl.querySelector('.c3d-dashboard-chart-action');
         const cs = getComputedStyle(parentEl);
         const pad = parseFloat(cs.paddingTop || 0) + parseFloat(cs.paddingBottom || 0);
+        const plotCs = getComputedStyle(containerEl);
+        const plotMargin = parseFloat(plotCs.marginTop || 0) + parseFloat(plotCs.marginBottom || 0);
         // uPlot renders its legend inside the container, so reserve that too
         const legendEl = containerEl.querySelector('.u-legend');
         const legendH = legendEl ? legendEl.offsetHeight + 6 : 56;
-        const inner = parentEl.clientHeight - pad - (link ? link.offsetHeight + 8 : 0);
+        const inner = parentEl.clientHeight - pad - plotMargin - (actionRow ? actionRow.offsetHeight : 0);
         if (inner - legendH > 150) {
             plotHeight = Math.round(inner - legendH);
             containerEl.style.height = Math.round(inner) + 'px';

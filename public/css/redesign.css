@@ -71,7 +71,7 @@ a:hover, a:focus { color: var(--brand-accent); filter: brightness(1.08); }
   border-radius: 0;
 }
 .navbar-default .navbar-brand { height: 48px; display: flex; align-items: center; padding: 0 12px; }
-.navbar-default .navbar-brand img { display: block; height: 30px !important; width: auto; transform: translateY(5px); }
+.navbar-default .navbar-brand img { display: block; height: 30px !important; width: auto; transform: translateY(-3px); }
 .navbar-default .navbar-toggle { margin-top: 7px; margin-bottom: 7px; }
 .navbar-default .navbar-nav > li > a { color: var(--df-text-muted); font-size: 14px; }
 .navbar-default .navbar-nav > li > a:hover,
@@ -1016,7 +1016,9 @@ body.c3d-printing #webcam-column .dashboard-panel { flex: 1 1 auto; }
 .pressure-row > [class*="col-"] { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; }
 .pressure-row .dashboard-panel { flex: 1 1 0; min-height: 0; }
 .pressure-row .dashboard-panel > .panel-body { flex: 1 1 0; min-height: 0; overflow: hidden; }
-.pressure-row #uplot-1 { min-height: 0; }
+.pressure-row #uplot-1 { min-height: 0; margin-bottom: 4px; }
+.c3d-dashboard-chart-action { flex: 0 0 auto; display: flex; justify-content: flex-end; min-height: 28px; }
+.c3d-dashboard-chart-action .btn { min-height: 28px; padding: 3px 9px; font-size: 11px; }
 /* Webcam keeps its natural content height (source of truth for the row),
    so the pressure card fills the remainder without a resize feedback loop.
    Gutter lives on the column (padding counts toward flex height) rather than
@@ -2018,14 +2020,15 @@ body:has(.c3d-preview-layout) > br { display: none; }
 .c3d-printer-summary {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-  align-items: start;
+  align-items: stretch;
   gap: 12px;
   flex: 0 0 auto;
 }
 .c3d-printer-summary > .c3d-printer-panel:only-child { grid-column: 1 / -1; }
 
 /* usage counters — two columns by three rows in the desktop summary */
-.c3d-printer-usage { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.c3d-printer-usage-panel { display: flex; flex-direction: column; }
+.c3d-printer-usage { flex: 1 1 auto; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, 1fr)); }
 .c3d-printer-usage .c3d-stat { padding: 7px 12px; }
 .c3d-printer-usage-panel .c3d-panel-head .btn { margin-left: auto; min-height: 28px; padding: 3px 9px; font-size: 11px; }
 
@@ -2057,6 +2060,7 @@ body:has(.c3d-preview-layout) > br { display: none; }
   #stat { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 767px) {
+  .c3d-dashboard-chart-action .btn { width: 100%; justify-content: center; }
   .c3d-printer-usage { grid-template-columns: minmax(0, 1fr); }
   #stat { grid-template-columns: minmax(0, 1fr); }
 }

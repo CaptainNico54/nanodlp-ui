@@ -671,6 +671,7 @@ update_status.problem = 0;
 update_status.once = false;
 update_status.play_once = false;
 function update_status(){
+	if ($('#stat').length>0) update_printer_temperatures();
 	$.ajax({
 		url: BASE_URL + '/status',
 		dataType: 'json',
@@ -775,6 +776,30 @@ async function update_stat(){
 }
 
 var charts_data=[];
+
+function update_temperature_metric(key,value){
+	var parsed = parseFloat(value);
+	if (!Number.isFinite(parsed)) {
+		$('#'+key).text('--');
+		return;
+	}
+	$('#'+key).text(parsed.toFixed(1));
+	if (!charts_data[key]) charts_data[key]=[];
+	charts_data[key].push(parsed);
+	if (charts_data[key].length>120) charts_data[key].shift();
+	$('#'+key+'_chart').sparkline(charts_data[key], {"width": '80px',"height":"16px", "fillColor":false,"minSpotColor":false,"maxSpotColor":false,'lineColor':'#8ab4f8'});
+}
+
+function update_printer_temperatures(){
+	$.each([
+		{key:'chamber_temp',url:'/analytic/value/22'},
+		{key:'uv_temp',url:'/analytic/value/8'}
+	],function(_,metric){
+		$.ajax({url:BASE_URL+metric.url,dataType:'json',type:'GET',timeout:1200})
+			.done(function(value){update_temperature_metric(metric.key,value);})
+			.fail(function(){update_temperature_metric(metric.key,null);});
+	});
+}
 
 function change_stats(data,keys){
 	$.each(keys,function(k,v){

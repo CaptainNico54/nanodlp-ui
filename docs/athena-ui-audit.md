@@ -447,3 +447,62 @@ checks passed. Physical re-test remains for the final logo alignment, live
 sparklines and Usage reset confirmation without accepting it, full Analytics
 during a print, and observing the WebUI modal during a separately authorized
 real software update.
+
+## Work Package 10: final real-printer layout and navigation polish
+
+The Dashboard sensor card is now titled Force & Resin Temperature. Its existing
+200 g Force and 2°C resin-temperature minimum spans are unchanged. Dashboard
+alone opts into the guarded parent-fitting path introduced in WP8; that path now
+reserves the compact action row and the plot's CSS margins before sizing uPlot.
+The chart therefore uses the remaining panel height without measuring a parent
+whose height depends on the chart. The former centered text link is a small gold
+ghost Full Analytics button with a chart icon, aligned right on desktop and full
+width on phones, and still routes to `/analytic`.
+
+Logo alignment is based on the wordmark pixels rather than the full asset. The
+250×50 PNG's wordmark occupies source rows 12–46, with the stable opaque center
+at row 29.5. At the unchanged 30 px display height that center is 17.7 px below
+the image top. A centered 30 px image begins 9 px into the unchanged 48 px brand
+box, while neighboring navbar text centers at 24 px. The required logo-only
+translation is therefore 24 − (9 + 17.7) = −2.7 px, rounded to `translateY(-3px)`.
+The image file, size, aspect ratio, navbar height, menu alignment, and collapse
+rules are unchanged.
+
+Printer Status now has nine System tiles in a desktop three-by-three grid:
+CPU, Proc, CPU Temp; Disk, Memory, Uptime; Resin Temp, Chamber Temp, and UV Temp.
+A read-only check on the authorized Athena II found no chamber or UV fields in
+`/status`; the existing `/analytic/value/22` and `/analytic/value/8` endpoints
+returned numeric Chamber Temp and UV Temp values respectively. The Status page
+polls those endpoints only when `#stat` exists, on the existing roughly four
+second status cadence. Values use one decimal place with °C, failed or invalid
+responses show `--`, and up to 120 readings remain only in browser memory for
+matching sparklines. No backend route or analytics persistence was added.
+
+The desktop 40/60 summary grid now intentionally stretches Usage Stats and
+System to the same height. Its six existing Usage tiles remain two by three and
+share the available height across three modest rows; Reset retains its route,
+confirmation, and header placement. Tablet layouts stack the panels while
+keeping three System columns where space permits, and phone layouts use one
+column. Software Update is now a normal-mode Tools entry after Settings and
+Tools and before the Service Mode Machine Settings item. It routes to
+`/printer/upgrade`; the existing build/version link and WP9 update page/modal
+are unchanged.
+
+Validation used a local browser fixture with the project Bootstrap, theme,
+uPlot, analytics, and redesign assets. At 1440×1000 the panels were both
+240.8125 px high, the System columns were 260.656/260.672/260.656 px, and the
+Usage rows were three equal 49.9375 px rows. The Dashboard plot stayed 347 px
+high after 100 refreshes and its 311 px canvas plus legend/action fit inside the
+panel. At 900×900 and 390×844 the grids stacked as intended, the mobile action
+filled its row, and document horizontal overflow remained zero. Browser console
+checks were clean. JavaScript syntax and a focused helper test passed for live
+value formatting, sparkline history, and unavailable fallback. No reset,
+motion, Gcode, heat, print, update, configuration change, deployment, restart,
+or reboot was performed.
+
+Physical acceptance remains for the logo's optical alignment on the normal
+single-row navbar and collapsed menu, live Chamber/UV polling and sparklines,
+Dashboard chart sizing with real print analytics, equal Status panel heights at
+the printer's usual browser size, the Software Update menu link, and Reset
+confirmation dismissal without accepting it. A separately authorized update is
+still required to observe the WP9 progress modal against the real updater.
