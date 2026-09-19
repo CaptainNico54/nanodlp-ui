@@ -601,3 +601,65 @@ unavailable state, stream, and LED behavior; optical comparison of the
 dedicated and Dashboard camera widths; and real timelapse preview, filter,
 encoding, Play, and separately authorized Delete behavior at the printer's
 desktop, tablet, and phone-equivalent viewport sizes.
+
+## Work Package 12: Machine Settings, Service Mode, and navbar branding
+
+Machine Settings keeps the WP11 presentation policy and the original NanoDLP
+form contract. The same six category hooks remain visible, and the hidden
+Slicing and Print Quality, Camera, Hardware, and field-level controls remain in
+the submitted form. The page now uses the Athena header, a compact gold-accented
+category rail, and a bordered settings panel. Category selection adds a visual
+and accessible selected state without replacing the existing switching code.
+Normal fields use a responsive two-column grid where space permits, and the
+NanoDLP-provided Athena custom inputs use two columns on desktop and one on
+phones. A comparison with the WP11 template found the same 111 literal `name`
+attributes, the same empty form action, and the same POST method.
+
+Service Mode remains NanoDLP `viewMode == 1` and uses only the existing GET
+`/printer/view/toggle` request. The top-level Settings & Tools action was
+removed. In normal mode, a subdued Advanced Service Access section appears at
+the bottom and opens an Athena warning modal. Cancel and Escape close it
+without a request, focus moves to Cancel after the modal transition, and Enter
+cannot activate the confirmation by default. The explicit confirmation sends
+one existing toggle request and retains the reload callback. Active mode adds a
+compact global banner below the navbar, a SERVICE badge beside System, and a
+direct Leave Service Mode action. Settings & Tools also replaces the entry
+section with an active-state exit section. Existing Service Tools, Restore
+Backup, and Machine Settings gates are unchanged. Dashboard, Jobs, Resins,
+Status, Camera & Timelapses, Settings & Tools, Machine Settings, and Software
+Update all inherit the banner and badge from the shared base and menu templates.
+No timeout or new backend route was added.
+
+The official Concepts3D source SVG was separated structurally without changing
+its geometry. `public/general/concepts3d-wordmark.svg` contains the source's
+first ten paths with a tight `264.14 54.825 841.86 152.503` viewBox, while
+`public/general/concepts3d-icon.svg` contains the eleventh path with a tight
+`0 0 234.186 223` viewBox. Path data, white fills, and path fill rules match the
+supplied source. One brand link now lays out the two assets with flex alignment:
+the icon renders 33.59375 × 32 px, the wordmark 110.390625 × 20 px, and the gap
+is 8 px. The icon, wordmark, and desktop navigation labels all measured a 24 px
+vertical center in the unchanged 48 px content box; the navbar remains 49 px
+including its border. No logo transform or raster scaling remains.
+
+Validation used local mocked fixtures only. At a 1280 px desktop viewport the
+Machine Settings layout measured 280 px plus 919 px, the Athena custom fields
+measured two equal 432.5 px columns, and document overflow was zero. Effective
+871 px and 378 px embedded tablet/phone viewports exercised the project media
+queries: the tablet category rail measured 230 px with a 564 px panel; the phone
+stacked both at 315 px and changed Athena fields to one 281 px column. The split
+brand stayed visible at its desktop dimensions, the collapse toggle remained
+available, both banner layouts remained inside the viewport, and overflow was
+zero. Mocked entry confirmation and both exit paths each produced exactly one
+GET to `/printer/view/toggle`; cancellation produced zero. Final fixture console
+checks were clean. JavaScript syntax, template token balance, exact SVG path
+comparison, form-name comparison, and `git diff --check` passed. No resin editor,
+backend, database, profile, printer configuration, updater, printer file,
+service, restart, deployment, or physical printer state was changed.
+
+Real-printer acceptance remains for optical wordmark alignment and collapsed
+navbar fit in the printer browser; Machine Settings category switching and a
+save with deliberately unchanged values; inactive entry modal focus, Cancel,
+Escape, and confirmation; active banner and SERVICE badge across the listed
+routes; continued visibility of service-only tools and Restore Backup; and one
+authorized enter/leave cycle confirming the live reload behavior. WP12 must be
+deployed separately before those checks.

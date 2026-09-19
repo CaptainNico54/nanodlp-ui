@@ -38,15 +38,23 @@
 	<option value="115200" {% if default==115200 %}selected{% endif %}>115200</option>
 </select>
 {% endmacro %}
+<div class="c3d-machine-settings">
+	<div class="c3d-page-head">
+		<div>
+			<div class="c3d-page-eyebrow"><translate>System / Service</translate></div>
+			<h1 class="c3d-page-title"><translate>Machine Settings</translate></h1>
+			<p class="c3d-page-description"><translate>Advanced printer configuration and Athena-specific settings.</translate></p>
+		</div>
+		<div class="c3d-page-actions"><button type="submit" form="setup" class="btn c3d-ghost c3d-ghost-gold"><translate>Save Settings</translate></button></div>
+	</div>
 <div class="starter-template">
 	<input type="hidden" id="scategory" value="">
-	<form action="" method="post" class="edit-page" id="setup">
-		<br>
+	<form action="" method="post" class="edit-page c3d-machine-form" id="setup">
 		{% if printing %}
 		<div class="alert alert-warning" role="alert" translate>Some critical settings such as type of the shield and etc, will not take effect in the middle of printing. To change those settings without restart, stop printing and submit this page again.</div>
 		{% endif %}
-		<div class="row">
-			<div class="col-xs-12 col-sm-4 col-md-3 setup-categories setup">
+		<div class="row c3d-settings-layout">
+			<div class="col-xs-12 col-sm-4 col-md-3 setup-categories setup c3d-settings-categories" role="tablist" aria-label="Machine Settings categories">
 				{{ setting_cat("<translate>Interface &amp; Appearance</translate>","<translate>Printer name, language, and view mode</translate>",font_icon,"i_appearance") }}
 				{{ setting_cat("<translate>Dynamic G-Code</translate>","<translate>Boot-up, start, resume, stop print, before, after layer</translate>",code_icon,"i_code") }}
 				{{ setting_cat("<translate>Movement</translate>","<translate>Positioning, speeds, and Z-axis configuration</translate>",axis_icon,"i_axis") }}
@@ -54,15 +62,15 @@
 				{{ setting_cat("<translate>Network</translate>","<translate>Network port, remote slicer, WiFi</translate>",wifi_icon,"i_network") }}
 				{{ setting_cat("<translate>Athena Settings</translate>","<translate>Athena-specific settings and parameters</translate>",gear_icon,"i_custom") }}
 			</div>
-			<div class="col-xs-12 col-sm-8 col-md-9">
-				<div>
-					<div class="section-header" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-						<h3 class="section-title" style="margin:0;" translate>System Settings</h3>
-						<button type="submit" class="btn btn-success" translate>Save</button>
+			<div class="col-xs-12 col-sm-8 col-md-9 c3d-card c3d-settings-panel">
+				<div class="c3d-settings-panel-head">
+					<div>
+						<div class="c3d-page-eyebrow"><translate>Configuration</translate></div>
+						<h2><translate>System Settings</translate></h2>
 					</div>
-					<hr>
+					<button type="submit" class="btn c3d-ghost c3d-ghost-gold"><translate>Save</translate></button>
 				</div>
-				<div class="row flex-row">
+				<div class="row flex-row c3d-settings-fields">
 			<div class="col-md-4 i_appearance i_option tip">
 				<label for="Name">
 					<translate>Printer Name</translate>
@@ -807,9 +815,10 @@
 					<option value="1" {% if AutoSlice==1 %}selected{% endif %} translate>Disable</option>
 				</select>
 			</div>
-				</div><!-- /.row -->
-		</div>
-		<br>
+			{{ customInputs(inputs,CustomValues,0)}}
+				</div><!-- /.c3d-settings-fields -->
+		</div><!-- /.c3d-settings-panel -->
+		</div><!-- /.c3d-settings-layout -->
 		<input type="hidden" value="{{USBDisplayBaud}}" name="USBDisplayBaud">
 		<input type="hidden" value="{{USBPath}}" name="USBPath">
 		<input type="hidden" value="{{PreviewGenerate}}" name="PreviewGenerate">
@@ -847,9 +856,7 @@
 		<input type="hidden" name="AreaPaddingRight" value="{{AreaPaddingRight}}">
 		<input type="hidden" name="USBPath" value="{{USBPath}}">
 		<input type="hidden" name="UpdateCustomInput" value="true">
-		{{ customInputs(inputs,CustomValues,0)}}
 	</form>
-	<br>
-	<br>
+</div>
 </div>
 {% endblock %}

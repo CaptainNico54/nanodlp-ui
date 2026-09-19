@@ -209,6 +209,17 @@
 	<nav class="navbar navbar-default">
 		{% include "menu.html" %}
 	</nav>
+	{% if viewMode == 1 %}
+	<div class="c3d-service-banner" role="status">
+		<div class="c3d-service-banner-inner">
+			<div class="c3d-service-banner-copy">
+				<span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
+				<div><strong><translate>Service Mode Active</translate></strong><span><translate>Advanced configuration and service controls are available. Leave Service Mode when finished.</translate></span></div>
+			</div>
+			<a href="#" class="btn c3d-ghost c3d-service-mode-leave"><translate>Leave Service Mode</translate></a>
+		</div>
+	</div>
+	{% endif %}
 
     <div class="container">
         {% block content %} {% endblock %}

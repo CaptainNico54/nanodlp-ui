@@ -159,6 +159,8 @@ function select_setting(){
 function settings_open(t){
     console.log(t)
     var cl = $(t).data("related");
+	$("#setup .setting-cat").removeClass("is-active").attr("aria-selected", "false");
+	$(t).addClass("is-active").attr("aria-selected", "true");
     $("#scategory").val(cl);
     $("."+cl).show();
     window.location = "#"+cl;
@@ -169,6 +171,7 @@ function settings_open(t){
 
 function settings_close(){
     $("#scategory").val("");
+	$("#setup .setting-cat").removeClass("is-active").attr("aria-selected", "false");
     $(".i_option").hide();
     window.location = "#";
     $(".selected-cat").html("");
@@ -1280,17 +1283,44 @@ $(document).ready(function() {
 	});
 });
 
-$("#expertModeCheckbox").click(function (e) {
-	e.preventDefault();
+var serviceModeTogglePending = false;
+
+function toggleServiceMode() {
+	if (serviceModeTogglePending) return;
+	serviceModeTogglePending = true;
 	$.ajax({
 		url: "/printer/view/toggle",
 		type: "GET",
 		dataType: "json",
-		complete: () => {
+		complete: function () {
 			window.location.reload(true);
 		},
- 	 });
+	});
+}
+
+$(document).on("click", "#serviceModeEntry", function (e) {
+	e.preventDefault();
+	$("#serviceModeWarningModal").modal("show");
 });
+
+$(document).on("click", "#serviceModeConfirm", function (e) {
+	e.preventDefault();
+	$(this).prop("disabled", true);
+	toggleServiceMode();
+});
+
+$(document).on("click", ".c3d-service-mode-leave", function (e) {
+	e.preventDefault();
+	toggleServiceMode();
+});
+
+$("#serviceModeWarningModal")
+	.on("shown.bs.modal", function () {
+		$("#serviceModeCancel").focus();
+	})
+	.on("keydown", function (e) {
+		if (e.which === 13 && !$(e.target).is("#serviceModeCancel")) e.preventDefault();
+	});
 
 function update_plates_list(){
 	$.get("/plates/list",function(plateDataHtml){
