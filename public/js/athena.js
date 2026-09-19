@@ -613,14 +613,24 @@ async function changeUpdateChannel(channel) {
 const url_progress = "/athena-update/athena_progress.txt";
 const url_message = "/athena-update/athena_message.txt";
 
+function render_update_progress(value) {
+	let progress = Number.parseFloat(String(value).replace(/[\r\n%]+/g, ""));
+	if (!Number.isFinite(progress)) return;
+	progress = Math.max(0, Math.min(100, progress));
+	let label = Math.round(progress) + "%";
+
+	$('#theBar').width(progress + "%");
+	$('#theBar').attr('aria-valuenow', progress);
+	$('#update-progress-percent').text(label);
+}
+
 function open_update_modal(){
 	let update_status_helper = "";
 
 	let ajax_error_cnt = 0;
 
-	$('#theBar').width(5+"%");
-	$('#theBar').html(5+"%");
-	$('#progress-message').html("Launching updater");
+	render_update_progress(0);
+	$('#progress-message').text("Launching updater");
 
 	var counterBack = setInterval(function()
 	{
@@ -630,10 +640,7 @@ function open_update_modal(){
 				if(update_status_helper === ""){
 					update_status_helper = "running";
 				}
-				result = result.replace(/[\r\n]+/gm, "") + "%";
-
-				$('#theBar').width(result)
-				$('#theBar').html(result);
+				render_update_progress(result);
 			},
 			error: function( result){
 				if(update_status_helper === "running"){
@@ -644,7 +651,7 @@ function open_update_modal(){
 				ajax_error_cnt++;
 
 				if(ajax_error_cnt >= 20){
-					$('#progress-message').html("Connection to the updater seems to have failed, please reload this page");
+					$('#progress-message').text("Update status is temporarily unavailable. Please reload this page if it does not return.");
 				}
 
 			}});
@@ -652,7 +659,7 @@ function open_update_modal(){
 		$.ajax({
 			url: url_message,
 			success: function( result ) {
-				$('#progress-message').html(result);
+				$('#progress-message').text(result);
 			},
 
 		});

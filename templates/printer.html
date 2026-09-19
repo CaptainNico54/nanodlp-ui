@@ -6,9 +6,6 @@
 			<div class="c3d-page-eyebrow"><translate>Monitoring</translate></div>
 			<h1 class="c3d-page-title"><translate>Printer Status</translate></h1>
 		</div>
-		<div class="c3d-page-actions">
-			<a href="/printer/stat/reset" data-ask="reset-confirm" class="ask btn c3d-ghost c3d-ghost-danger c3d-btn-i hidden"><span class="c3d-btn-i"><span class="glyphicon glyphicon-repeat"></span><translate>Reset Usage Stats</translate></span></a>
-		</div>
 	</div>
 
 	{% if power||disk||heat||swap||space||storage %}
@@ -29,6 +26,7 @@
 	<div class="c3d-panel c3d-printer-panel c3d-printer-usage-panel">
 		<div class="c3d-panel-head">
 			<span class="c3d-section-label"><translate>Usage Stats</translate></span>
+			<a href="/printer/stat/reset" data-ask="reset-confirm" class="ask btn c3d-ghost c3d-ghost-danger c3d-btn-i"><span class="glyphicon glyphicon-repeat"></span><translate>Reset</translate></a>
 		</div>
 		<div class="c3d-stat-grid c3d-printer-usage">
 			<div class="c3d-stat">
@@ -144,7 +142,7 @@
 </div>
 
 <translate class="hide" id="consumable-reset-confirm">Are you sure you have changed the consumable?</translate>
-<translate class="hide" id="reset-confirm">Are you sure you want to reset your usage stats? These cannot be recovered</translate>
+<translate class="hide" id="reset-confirm">Reset all usage statistics? This action cannot be undone.</translate>
 
 <script>
 // The navbar wraps to a second row below ~1250px, so a hardcoded navbar height

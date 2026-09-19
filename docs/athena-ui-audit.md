@@ -357,3 +357,93 @@ Physical printer re-test remains necessary for live Z updates during manual and
 printer-driven motion, real AEGIS values, full Analytics during a long print,
 status sparklines/log data, and the logo's final optical alignment on the
 printer display. WP8 was not deployed and no printer actions were executed.
+
+## Work Package 9: second real-printer polish and updater investigation
+
+WP8 was subsequently deployed to the authorized Athena II test printer and its
+read-only acceptance checks passed. WP9 applies the follow-up presentation
+changes locally only. Full Analytics now opts only its Pressure scale into the
+existing 200 g minimum-span behavior. The Dashboard keeps its 200 g Force span
+and increases only its temperature minimum span from 1.0°C to 2.0°C. The
+range helper still returns wider real ranges unchanged, so neither setting
+clips, filters, or smooths source data.
+
+Printer Status keeps the desktop 40/60 Usage/System grid but no longer stretches
+the shorter Usage panel to the System panel height. Its six usage counters stay
+in the two-by-three grid. The existing `/printer/stat/reset` action is now a
+small danger ghost button in the Usage header and still uses the shared `ask`
+handler with `data-ask="reset-confirm"`; its confirmation explicitly states
+that resetting every usage statistic cannot be undone. No reset request was
+made during validation. System tiles use the same value and sparkline IDs with
+the label above and a compact value/sparkline row below. Uptime keeps its value
+aligned without a sparkline.
+
+The live printer screenshot and browser geometry showed the 30 px logo image at
+10 px from the top with the earlier 1 px translation, while the first navigation
+link began at 12.5 px. The logo wordmark was still visibly high because of its
+internal optical bounds. The image now has a total 5 px downward translation;
+the 48 px brand box, 30 px asset height, aspect ratio, and collapse rules are
+unchanged.
+
+The WebUI update modal retains `#update_notification`, `#theBar`,
+`#progress-message`, `.progress-bar-main`, the existing one-second polling, the
+same progress/message endpoints, disappearance-based completion detection, and
+the same `/home/pi/athena-start-update.sh` launch. Its presentation now uses a
+centered warm-dark Athena panel, live status above the gold progress bar, a
+separate live percentage, and a persistent power warning. Invalid progress is
+ignored, numeric progress is bounded for display, and the existing delayed
+connection warning now describes a temporarily unavailable updater. There is
+still no close or cancel affordance. Validation used mocked 0%, 42%, 100%, and
+unavailable responses; it did not launch an update.
+
+### Physical HMI update screen (read-only findings)
+
+The physical update screen is the compiled Flutter release at
+`/home/pi/athena-update-progress`, package `athena_update_progress` 1.0.0. Its
+layout and polling code are compiled into `app.so`; the only application image
+listed by its asset manifest is `assets/splash.png` (1024x600). No Dart source or
+`pubspec.yaml` for this application is installed on the printer. The active
+touch display reports `800x480` on `DSI-2`, so the update UI targets landscape
+800x480 even though the splash source is larger.
+
+`/home/pi/athena-start-update.sh` creates `/tmp/athena_message.txt` and
+`/tmp/athena_progress.txt`, stops `nanodlp-dsi.service` (and therefore the
+current Orion process), then starts `athena2-update-dsi.service` on Athena II.
+That service copies `/root/nanodlp/hmi/dsi` to `/tmp/flutter` and launches:
+
+```
+/tmp/flutter --drm-vout-display DSI-2 --release /home/pi/athena-update-progress
+```
+
+Legacy models use `athena-update-dsi.service` with the same bundle and no
+explicit display selector. The updater starts
+`/home/pi/athena-update-server.py` in `/tmp` on port 8080. Both start and main
+update scripts write the current status and percentage to the two `/tmp` files;
+nginx exposes that directory to the WebUI through `/athena-update/`. Strings in
+the compiled HMI application identify `/athena_message.txt`,
+`/athena_progress.txt`, and an optional `/athena_headline.txt`; the installed
+scripts do not write the headline file. Thus the HMI and WebUI consume the same
+status and progress sources. On a recoverable startup error, the start script
+stops the update display and restarts `nanodlp-dsi.service`. A successful main
+update reaches 100% and either reboots or asks for a power cycle.
+
+This screen is owned and delivered by the AthenaOS updater package, rather than
+the Orion bundle at `/opt/orion`. Replacing only `assets/splash.png` is safe for
+startup branding but cannot change the dynamic progress layout. An Orion-style
+redesign should be made in the update application's source, rebuilt as a
+complete Flutter release, and deployed as an atomic replacement of
+`/home/pi/athena-update-progress` (at minimum `app.so`, asset manifests, and any
+changed assets such as `assets/splash.png`). The service units, launch script,
+local HTTP server, and `/tmp` progress/message contract need no change for a
+visual-only redesign. Those live files and services were inspected read-only
+and were not modified or restarted.
+
+WP9 validation kept the full Analytics canvas/container heights identical at
+refreshes 0, 10, and 100. Range checks produced -93 to 107 g for 3-11 g data,
+left -120 to 150 g unchanged, and expanded 25.0-25.3°C to 24.15-26.15°C.
+Desktop and phone fixtures showed the shorter Usage panel, side-by-side metric
+sparklines, compact update modal, and no component overflow. JavaScript syntax
+checks passed. Physical re-test remains for the final logo alignment, live
+sparklines and Usage reset confirmation without accepting it, full Analytics
+during a print, and observing the WebUI modal during a separately authorized
+real software update.

@@ -1,19 +1,21 @@
 {% extends "../base.html" %}
 {% block content %}
 	<div class="modal fade" id="update_notification" tabindex="-1" role="dialog" aria-labelledby="modalLabelSmall" aria-hidden="false">
-		<div class="modal-dialog">
-			<div class="modal-content">
+		<div class="modal-dialog c3d-update-dialog">
+			<div class="modal-content c3d-update-modal">
 				<div class="modal-header">
+					<div class="c3d-update-kicker"><translate>AthenaOS</translate></div>
 					<h4 class="modal-title" id="modalLabelSmall"><translate>Software Update</translate></h4>
 				</div>
 				<div class="modal-body">
-					<div class="progress">
+					<p class="c3d-update-progress-message" id="progress-message" role="status" aria-live="polite"><translate>Preparing update status...</translate></p>
+					<div class="progress c3d-update-progress-track">
 						<div id="theBar" class="progress-bar progress-bar-main progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-						0%
 						</div>
 					</div>
-					<p class="c3d-update-progress-message" id="progress-message"></p>
-					<p class="c3d-update-hint"><translate>This page will reload automatically, please check the screen of your printer for further information.</translate></p>
+					<div class="c3d-update-progress-percent" id="update-progress-percent">0%</div>
+					<div class="c3d-update-active-label"><translate>Updating AthenaOS...</translate></div>
+					<p class="c3d-update-hint"><translate>Do not power off the printer.</translate></p>
 				</div>
 			</div>
 		</div>
