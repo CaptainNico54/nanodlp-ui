@@ -72,8 +72,8 @@ a:hover, a:focus { color: var(--brand-accent); filter: brightness(1.08); }
 }
 .navbar-default .navbar-brand { height: 48px; display: flex; align-items: center; padding: 0 12px; }
 .navbar-default .c3d-navbar-brand { gap: 8px; }
-.navbar-default .c3d-navbar-brand .c3d-brand-icon { display: block; width: auto !important; height: 32px !important; flex: 0 0 auto; transform: translateY(9px); }
-.navbar-default .c3d-navbar-brand .c3d-brand-wordmark { display: block; width: auto !important; height: 20px !important; flex: 0 0 auto; transform: translateY(11px); }
+.navbar-default .c3d-navbar-brand .c3d-brand-icon { display: block; width: auto !important; height: 32px !important; flex: 0 0 auto; transform: translateY(12px); }
+.navbar-default .c3d-navbar-brand .c3d-brand-wordmark { display: block; width: auto !important; height: 20px !important; flex: 0 0 auto; transform: translateY(14px); }
 .navbar-default .navbar-toggle { margin-top: 7px; margin-bottom: 7px; }
 .navbar-default .navbar-nav > li > a { color: var(--df-text-muted); font-size: 14px; }
 .navbar-default .navbar-nav > li > a:hover,
@@ -2230,6 +2230,12 @@ body:has(.c3d-preview-layout) > br { display: none; }
 .c3d-settings-layout { display: grid; grid-template-columns: minmax(220px, 280px) minmax(0, 1fr); gap: 18px; margin: 0; align-items: start; }
 .c3d-machine-settings .c3d-settings-categories,
 .c3d-machine-settings .c3d-settings-panel { float: none; width: auto; min-width: 0; padding: 0; }
+.c3d-machine-settings .c3d-settings-layout::before,
+.c3d-machine-settings .c3d-settings-layout::after,
+.c3d-machine-settings .c3d-settings-fields::before,
+.c3d-machine-settings .c3d-settings-fields::after,
+.c3d-machine-settings .i_custom .custom::before,
+.c3d-machine-settings .i_custom .custom::after { display: none; content: none; }
 .c3d-machine-settings .c3d-settings-categories { grid-column: 1; display: grid; gap: 8px; }
 .c3d-machine-settings .setting-cat { display: grid; grid-template-columns: 36px minmax(0, 1fr); column-gap: 10px; align-items: center; margin: 0; padding: 11px 12px; color: var(--df-text-muted); background: var(--df-surface-0); border: 1px solid var(--df-border-subtle); border-radius: var(--df-radius-md); text-decoration: none; transition: border-color .15s ease, background-color .15s ease, color .15s ease; }
 .c3d-machine-settings .setting-cat:hover,
@@ -2365,8 +2371,9 @@ body:has(.c3d-preview-layout) > br { display: none; }
 /* Settings & Tools: grouped actions without changing their command hooks. */
 .c3d-tools-page { margin-bottom: 24px; }
 .c3d-tools-description { color: var(--df-text-muted); margin: 10px 0 0; line-height: 1.6; }
-.c3d-tools-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: start; }
-.c3d-tools-stack { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.c3d-tools-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: stretch; }
+.c3d-tools-grid > .c3d-card { height: 100%; }
+.c3d-tools-stack { min-width: 0; height: 100%; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 12px; align-content: stretch; }
 .c3d-tools-page .c3d-card { min-width: 0; padding: 22px; box-shadow: none; }
 .c3d-tools-page h2 { font-size: 18px; font-weight: 600; margin: 0 0 6px; }
 .c3d-tools-page h2 .glyphicon { color: var(--brand-accent); margin-right: 6px; }
@@ -2376,7 +2383,7 @@ body:has(.c3d-preview-layout) > br { display: none; }
 .c3d-tools-restore { border-top: 1px solid var(--df-border-subtle); padding-top: 18px; margin-top: 6px; }
 .c3d-tools-warning { border-left: 3px solid var(--df-warn); padding-left: 12px; line-height: 1.6; margin: 0 0 16px; }
 .c3d-tools-note { color: var(--df-text-muted); line-height: 1.6; margin: 4px 0 0; }
-.c3d-tools-service { margin-top: 20px; border-top: 3px solid var(--brand-accent); }
+.c3d-tools-service { margin-top: 20px; }
 .c3d-tools-service > p { color: var(--df-text-muted); margin: 0; }
 .c3d-tools-service .c3d-tool-actions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .c3d-tools-aegis { border-top: 1px solid var(--df-border-subtle); margin-top: 8px; padding-top: 14px; }
@@ -2388,7 +2395,6 @@ body:has(.c3d-preview-layout) > br { display: none; }
 .c3d-service-access h2 { margin: 2px 0 4px; font-size: 15px; }
 .c3d-service-access p { margin: 0; color: var(--df-text-muted); font-size: 12px; line-height: 1.45; }
 .c3d-service-access .btn { justify-self: start; min-width: 0; padding: 7px 10px; font-size: 12px; }
-.c3d-service-access--active { background: color-mix(in srgb, var(--brand-accent) 8%, var(--df-surface-0)); border-color: color-mix(in srgb, var(--brand-accent) 38%, var(--df-border-strong)); }
 .c3d-service-entry { color: var(--df-text-muted); }
 .c3d-service-modal .modal-dialog { width: calc(100% - 32px); max-width: 620px; margin: 10vh auto 24px; }
 .c3d-service-modal .modal-content { color: var(--df-text-strong); background: var(--df-surface-0); border: 1px solid var(--df-border-strong); border-radius: var(--df-radius-lg); box-shadow: 0 24px 70px rgba(0, 0, 0, .58); overflow: hidden; }
@@ -2400,7 +2406,10 @@ body:has(.c3d-preview-layout) > br { display: none; }
 .c3d-service-modal .modal-footer { padding: 14px 22px 20px; border-top: 0; display: flex; justify-content: flex-end; gap: 10px; }
 .c3d-service-modal .modal-footer .btn { margin: 0; min-width: 132px; }
 @media (max-width: 1100px) {
-  .c3d-tools-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .c3d-tools-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .c3d-tools-grid > .c3d-card,
+  .c3d-tools-stack { height: auto; }
+  .c3d-tools-stack { grid-template-rows: auto auto; align-content: start; }
   .c3d-tools-service .c3d-tool-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 767px) {

@@ -124,16 +124,14 @@ function settings_init() {
         var page = window.location.hash.substr(1);
         if ($("#scategory").val()==page) return;
         if (window.location.hash.length>2){
-            select_setting();
+            if (!select_setting()) select_first_setting();
         } else {
-            settings_close();
+            select_first_setting();
         }
     });
-    if (window.location.hash.length>2){
-        select_setting();
-    }
     axis_height();
     oem_lock();
+    if (window.location.hash.length<=2 || !select_setting()) select_first_setting();
 }
 
 function axis_height(){	
@@ -149,11 +147,22 @@ function axis_height_calc(){
 }
 
 function select_setting(){
-	$(".setting-cat").each(function(){
-		if ("#"+$(this).data("related")==window.location.hash){
-			$(this).trigger("click");
-		}
-	});
+    var selected = false;
+    $("#setup .setting-cat:visible").each(function(){
+        if ("#"+$(this).data("related")==window.location.hash){
+            selected = true;
+            $(this).trigger("click");
+            return false;
+        }
+    });
+    return selected;
+}
+
+function select_first_setting(){
+    var first = $("#setup .setting-cat:visible").first();
+    if (first.length==0) return false;
+    first.trigger("click");
+    return true;
 }
 
 function settings_open(t){
@@ -161,6 +170,7 @@ function settings_open(t){
     var cl = $(t).data("related");
 	$("#setup .setting-cat").removeClass("is-active").attr("aria-selected", "false");
 	$(t).addClass("is-active").attr("aria-selected", "true");
+    $("#settings-panel-title").text($.trim($(t).find("h4").first().text()));
     $("#scategory").val(cl);
     $("."+cl).show();
     window.location = "#"+cl;

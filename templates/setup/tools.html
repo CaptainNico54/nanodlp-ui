@@ -97,8 +97,6 @@
                 <a href="/printer/hmi/restart" data-ajax="/" class="btn c3d-ghost c3d-tool-action ajax {% if viewMode == 0 %}hidden{% endif %}" translate>Restart HMI</a>
                 <a href="/printer/hmi/stop" data-ajax="/" class="btn c3d-ghost c3d-tool-action ajax {% if viewMode == 0 %}hidden{% endif %}" translate>Stop HMI</a>
                 <a href="/printer/hmi/start" data-ajax="/" class="btn c3d-ghost c3d-tool-action ajax {% if viewMode == 0 %}hidden{% endif %}" translate>Start HMI</a>
-                {% if arch=="arm" %}<a class="btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" href="/printer/edit/pi " translate>Edit Raspberry Pi Settings</a>{% endif %}
-                {% if arch=="arm" %}<a class="ajax btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" data-ajax="/" href="/printer/expand-fs" data-confirm="expand-confirm" translate>Expand Filesystem</a>{% endif %}
                 {% if os=="linux" %}<a class="btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" href="/setup/timezone" translate>Change Timezone</a>{% endif %}
                 <a class="btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" href="/term" translate>Gcode Terminal</a>
                 <a href="/setup/custom-inputs" class="btn c3d-ghost c3d-tool-action {% if viewMode == 0 %}hidden{% endif %}" translate>Inputs</a>
