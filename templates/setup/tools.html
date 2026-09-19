@@ -29,6 +29,7 @@
                 <a href="/debug" class="btn c3d-ghost c3d-tool-action" translate>Download Debug</a>
             </div>
         </section>
+        <div class="c3d-tools-stack">
         <section class="c3d-card" aria-labelledby="tools-backup-heading">
             <h2 id="tools-backup-heading"><span class="glyphicon glyphicon-save" aria-hidden="true"></span> <translate>Backup &amp; Restore</translate></h2>
             <h3><translate>Export backups</translate></h3>
@@ -46,6 +47,24 @@
             <p class="c3d-tools-note"><translate>The restore shortcut is shown in Service Mode.</translate></p>
             {% endif %}
         </section>
+        <section class="c3d-card c3d-service-access {% if viewMode == 1 %}c3d-service-access--active{% endif %}" aria-labelledby="service-access-heading">
+            {% if viewMode == 1 %}
+            <div>
+                <div class="c3d-page-eyebrow"><translate>Service Mode</translate></div>
+                <h2 id="service-access-heading"><translate>Service Mode Active</translate></h2>
+                <p><translate>Advanced service controls are available. Leave Service Mode when finished.</translate></p>
+            </div>
+            <a href="#" class="btn c3d-ghost c3d-ghost-gold c3d-service-mode-leave"><translate>Leave Service Mode</translate></a>
+            {% else %}
+            <div>
+                <div class="c3d-page-eyebrow"><translate>Support &amp; Development</translate></div>
+                <h2 id="service-access-heading"><translate>Advanced Service Access</translate></h2>
+                <p><translate>Advanced controls for troubleshooting or guided support.</translate></p>
+            </div>
+            <button type="button" id="serviceModeEntry" class="btn c3d-ghost c3d-service-entry"><translate>Enter Service Mode</translate></button>
+            {% endif %}
+        </section>
+        </div>
         <section class="c3d-card" aria-labelledby="tools-custom-heading">
             <h2 id="tools-custom-heading"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> <translate>Customization</translate></h2>
             <div class="c3d-tool-actions">
@@ -92,23 +111,6 @@
                 <a href="/debug/sampling" class="btn c3d-ghost c3d-tool-action ajax" data-confirm="sampling-confirm" translate>Sample Stack</a>
                 <a href="/debug/stack" class="btn c3d-ghost c3d-tool-action" translate>View Stack</a>
         </div>
-    </section>
-    <section class="c3d-card c3d-service-access {% if viewMode == 1 %}c3d-service-access--active{% endif %}" aria-labelledby="service-access-heading">
-        {% if viewMode == 1 %}
-        <div>
-            <div class="c3d-page-eyebrow"><translate>Service Mode</translate></div>
-            <h2 id="service-access-heading"><translate>Service Mode Active</translate></h2>
-            <p><translate>Advanced configuration and service controls are available. Leave Service Mode when finished.</translate></p>
-        </div>
-        <a href="#" class="btn c3d-ghost c3d-ghost-gold c3d-service-mode-leave"><translate>Leave Service Mode</translate></a>
-        {% else %}
-        <div>
-            <div class="c3d-page-eyebrow"><translate>Support &amp; Development</translate></div>
-            <h2 id="service-access-heading"><translate>Advanced Service Access</translate></h2>
-            <p><translate>Service Mode exposes advanced printer configuration and diagnostic controls. Use it only for troubleshooting, development, or when instructed by Concepts3D support.</translate></p>
-        </div>
-        <button type="button" id="serviceModeEntry" class="btn c3d-ghost c3d-service-entry"><translate>Enter Service Mode</translate></button>
-        {% endif %}
     </section>
 </div>
 {% if viewMode == 0 %}
