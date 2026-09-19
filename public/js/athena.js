@@ -1228,12 +1228,12 @@ function setup_diskspace(json){
 	}
 }
 
-async function updateIdWithAnalytic(elemId, analyticId) {
+async function updateIdWithAnalytic(elemId, analyticId, formatter) {
 	const elementById = document.getElementById(elemId);
 	const analyticValue = await getAnalytic(analyticId);
 
 	if (elementById) {
-		elementById.innerHTML = analyticValue;
+		elementById.textContent = formatter ? formatter(analyticValue) : analyticValue;
 	}
 	return analyticValue;
 }
@@ -1255,3 +1255,26 @@ $(document).ready(function () {
 	})
 
 })
+
+// Restore the production Dashboard Z readout. The existing NanoDLP endpoint is
+// read-only and is only polled when the Dashboard readout is present.
+function setupDashboardZPosition() {
+	const zPosition = $("#dashboard-z-position");
+	if (!zPosition.length) return;
+
+	function updateDashboardZPosition() {
+		$.getJSON("/z-axis/info")
+			.done(function (data) {
+				const z = Number.parseFloat(data && data["current-height-mm"]);
+				zPosition.text(Number.isFinite(z) ? z.toFixed(2) : "--");
+			})
+			.fail(function () {
+				zPosition.text("--");
+			});
+	}
+
+	updateDashboardZPosition();
+	setInterval(updateDashboardZPosition, 1500);
+}
+
+$(document).ready(setupDashboardZPosition);

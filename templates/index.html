@@ -41,7 +41,10 @@
                                 <a class="ask btn btn-primary" href="/printer/restart" data-ask="restart-confirm"><span class="c3d-btn-i"><span class="glyphicon glyphicon-repeat"></span><translate>Restart</translate></span></a>
                             </div>
 
-                            <div class="c3d-section-label"><translate>Move Plate</translate></div>
+                            <div class="c3d-section-label c3d-move-label">
+                                <translate>Move Plate</translate>
+                                <span class="c3d-z-position" aria-label="Current Z position">Z: <span id="dashboard-z-position">--</span><span aria-hidden="true"> mm</span></span>
+                            </div>
 
                             <button id="btnUp" type="button" class="btn c3d-ghost c3d-ghost-gold c3d-z-btn"><span class="c3d-btn-i"><span class="glyphicon glyphicon-chevron-up"></span><translate>Move Up</translate></span></button>
 

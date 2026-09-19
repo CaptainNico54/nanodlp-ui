@@ -202,9 +202,9 @@ async function setupAegisPolling() {
 }
 
 async function getAegisValues() {
-    const fanRpm = await updateIdWithAnalytic('aegis-fan-rpm', 21);
-    const outletValue = await updateIdWithAnalytic('aegis-fan-voc-outlet', 27);
-    const inletValue = await updateIdWithAnalytic('aegis-fan-voc-inlet', 26);
+    const fanRpm = await updateIdWithAnalytic('aegis-fan-rpm', 21, value => formatAegisValue(value, 0));
+    const outletValue = await updateIdWithAnalytic('aegis-fan-voc-outlet', 27, value => formatAegisValue(value, 1));
+    const inletValue = await updateIdWithAnalytic('aegis-fan-voc-inlet', 26, value => formatAegisValue(value, 1));
 
     await setAegisStatus(inletValue);
     await setAegisIndicator(inletValue, 'aegis-fan-voc-inlet-status')
@@ -314,4 +314,12 @@ async function isAegisAvailable() {
     const aegisAvailable = await fetch(`${BASE_URL}/athena-iot/aegis/available`);
     const result = await aegisAvailable.json();
     return result.available
+}
+
+function formatAegisValue(value, decimalPlaces) {
+    if (value === null || value === undefined || String(value).trim() === '') return '--';
+    const numericValue = Number(value);
+    if (!Number.isFinite(numericValue)) return '--';
+    const factor = 10 ** decimalPlaces;
+    return (Math.round((numericValue + Number.EPSILON) * factor) / factor).toFixed(decimalPlaces);
 }

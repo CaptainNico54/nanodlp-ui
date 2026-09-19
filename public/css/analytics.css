@@ -10,6 +10,10 @@
     border-radius: 10px;
 }
 
+@media (max-width: 767px) {
+    .uplot { margin-bottom: 24px; overflow-x: hidden; }
+}
+
 .u-label, .u-value, .u-title {
     color: var(--df-text-muted);
 }

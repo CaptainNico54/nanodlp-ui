@@ -300,3 +300,60 @@ Physical printer acceptance remains necessary for live navbar statuses,
 Linux/USB job availability, Proteus messaging and import, calibration guide QR
 scanning, and the existing service/update workflows. No printer writes or
 calibration/terminal actions were performed for WP7.
+
+## Work Package 8: first real-printer acceptance fixes
+
+The first physical-printer review found a small optical logo offset, excessive
+AEGIS precision, the missing production Z readout, a tall Printer Status page,
+the 960 px Terminal cap, and a critical growth loop on full Analytics. WP8 is a
+local UI-only correction set; it does not change printer configuration,
+NanoDLP backend behavior, analytics source values, motion, Gcode, or heaters.
+
+The production backup showed that the previous Dashboard read Z from the
+read-only `/z-axis/info` route every 1.5 seconds and used
+`current-height-mm`. That implementation is restored on Dashboard only. It
+shows two decimal places in the existing Move Plate label row and keeps `--`
+for missing, invalid, or failed responses. No motion command is part of the
+readout.
+
+AEGIS continues to use analytics IDs 21, 27, and 26. Formatting now happens
+only when writing those values to the Dashboard: fan RPM is rounded to an
+integer and VOC inlet/outlet values to one decimal place. The raw values still
+feed the existing thresholds and filtering behavior.
+
+Printer Status now places Usage Stats and System in a responsive 40/60 summary
+grid. Usage retains all six counters in two columns, and System retains all
+seven IDs, sparklines, and values in three columns. The cards stack below the
+desktop breakpoint and collapse to single-column metrics on phones. Warnings,
+reset, consumables, and Printer Log remain in their existing flow. The Gcode
+Terminal now fills the normal shared page width.
+
+The Analytics runaway came from measuring a parent whose height included the
+chart and then writing the larger result back into uPlot on every refresh.
+Parent fitting is now guarded by an explicit `fitParent` configuration flag.
+Full Analytics uses a fixed 420 px desktop canvas and 320 px mobile canvas;
+only viewport resize can change it. A representative real-browser fixture
+recorded identical container/uPlot/canvas heights after updates 0, 10, and 100:
+desktop 510.5/476.5/420 px and mobile 461.5/435.5/320 px. A second mobile
+fixture containing both full chart groups and every configured series also
+held steady at 697.5 and 933.5 px including their wrapped legends, with both
+canvases fixed at 320 px. Neither viewport had chart overflow.
+
+Dashboard-only chart configuration now sets minimum visual spans without
+changing data: Force uses 200 g and resin temperature uses 1.0°C. Fixture
+ranges of 3–11 g expanded to -93–107 g, while -120–150 g stayed unchanged;
+25.0–25.3°C expanded to 24.65–25.65°C, while 24–26°C stayed unchanged. Full
+Analytics has no minimum-span configuration.
+
+Browser checks covered desktop, tablet, and mobile. The desktop status cards
+rendered at 552/828 px within a 1392 px shared width, the expected 40/60 split;
+tablet and phone layouts stacked without horizontal overflow. The Terminal
+card used the full 1392 px inner shared width. The compact Z row fit at 390 px.
+The shared navbar remained 48 px high (49 px including its border); a logo-only
+1 px downward translation produced balanced optical spacing without moving the
+brand box or changing collapsed navigation.
+
+Physical printer re-test remains necessary for live Z updates during manual and
+printer-driven motion, real AEGIS values, full Analytics during a long print,
+status sparklines/log data, and the logo's final optical alignment on the
+printer display. WP8 was not deployed and no printer actions were executed.

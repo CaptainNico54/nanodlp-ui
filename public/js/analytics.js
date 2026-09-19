@@ -69,10 +69,10 @@ function renderChart(name, dataRows, series, chartConfig) {
 
     if (dataRows.length <= 1) return;
 
-    let plotHeight = chartConfig?.height ?? 400;
+    let plotHeight = getPlotHeight(chartConfig);
     const containerEl = $uplot[0];
     const parentEl = containerEl ? containerEl.parentElement : null;
-    if (parentEl) {
+    if (chartConfig.fitParent === true && parentEl) {
         const link = parentEl.querySelector('a[href="/analytic"]');
         const cs = getComputedStyle(parentEl);
         const pad = parseFloat(cs.paddingTop || 0) + parseFloat(cs.paddingBottom || 0);
@@ -93,6 +93,7 @@ function renderChart(name, dataRows, series, chartConfig) {
         height: plotHeight,
         series: series,
         axes: axes,
+        scales: buildScaleOptions(chartConfig),
         cursor: {
             sync: {
                 key: 'chartCursorSync'
@@ -152,7 +153,7 @@ function renderChart(name, dataRows, series, chartConfig) {
     opts = applyLegend(opts, uplotId);
     const newUplot = new uPlot(opts, dataRows, $uplot[0]);
 
-    let newUplotReference = { id: uplotId, uplot: newUplot, seriesLength: series.length };
+    let newUplotReference = { id: uplotId, uplot: newUplot, seriesLength: series.length, chartConfig };
     if (plotToUpdate && plotToUpdate.seriesLength !== series.length) {
         // This was a legend update trigger so we want to set our uplot reference with the new series length
         uplots = uplots.map(uplot => uplot.id === plotToUpdate.id ? newUplotReference : uplot)
@@ -375,3 +376,47 @@ function renderSplitChart(series, backFilledData, chartConfig, name) {
 
     renderChart(name, dataWithoutNulls, seriesWithoutNulls, chartConfig);
 }
+
+function getPlotHeight(chartConfig) {
+    const configuredHeight = chartConfig && chartConfig.height;
+    const desktopHeight = Number.isFinite(configuredHeight) ? configuredHeight : 420;
+    return window.matchMedia && window.matchMedia('(max-width: 767px)').matches
+        ? Math.min(desktopHeight, 320)
+        : desktopHeight;
+}
+
+function minimumSpanRange(minimumSpan) {
+    return function (_uplot, min, max) {
+        if (!Number.isFinite(min) || !Number.isFinite(max) || max - min >= minimumSpan) {
+            return [min, max];
+        }
+        const midpoint = (min + max) / 2;
+        return [midpoint - minimumSpan / 2, midpoint + minimumSpan / 2];
+    };
+}
+
+function buildScaleOptions(chartConfig) {
+    const constraints = chartConfig.minimumScaleSpans || {};
+    return Object.keys(constraints).reduce((scales, scaleName) => {
+        const minimumSpan = Number(constraints[scaleName]);
+        if (Number.isFinite(minimumSpan) && minimumSpan > 0) {
+            scales[scaleName] = { range: minimumSpanRange(minimumSpan) };
+        }
+        return scales;
+    }, {});
+}
+
+let analyticsResizeTimer;
+window.addEventListener('resize', function () {
+    clearTimeout(analyticsResizeTimer);
+    analyticsResizeTimer = setTimeout(function () {
+        uplots.forEach(function (plot) {
+            const container = document.querySelector(plot.id);
+            if (!container) return;
+            plot.uplot.setSize({
+                width: $(container).width(),
+                height: getPlotHeight(plot.chartConfig),
+            });
+        });
+    }, 120);
+});
