@@ -119,11 +119,12 @@
 				{% endif %}
 			</div>
 			{% if !row.profileError %}
-			<form action="/printer/start/{{ row.PlateID }}" method="post" class="c3d-job-resume {% if row.PlateID == status.PlateID && status.ResumeID>0 && status.ResumeID<row.LayersCount %}{% else %}hide{% endif %}">
+			<!-- Layer 1 starts the job from the beginning; only later layers can resume progress. -->
+			<form action="/printer/start/{{ row.PlateID }}" method="post" class="c3d-job-resume {% if row.PlateID == status.PlateID && status.ResumeID>1 && status.ResumeID<row.LayersCount %}{% else %}hide{% endif %}">
 				<translate class="c3d-job-resume-label">Layer ID</translate>
 				<span class="input-append input-group">
 					<input name="LayerID" class="form-control compact-input appendedtext resume-id"
-						value="{% if row.PlateID == status.PlateID && status.ResumeID>0 && status.ResumeID<row.LayersCount %}{{status.ResumeID}}{% endif %}"
+						value="{% if row.PlateID == status.PlateID && status.ResumeID>1 && status.ResumeID<row.LayersCount %}{{status.ResumeID}}{% endif %}"
 						type="number" min="0" size="3" max="{{row.LayersCount}}">
 					<span class="input-group-btn">
 					<button class="btn layer-id" disabled>/ {{row.LayersCount}}</button>
@@ -145,7 +146,7 @@
 		<div class="c3d-list-actions c3d-job-actions">
 			{% if status.Printing == false %}
 				{% if !row.profileError %}
-				<a class="btn btn-success ask req-processed tip {% if row.PlateID == status.PlateID && status.ResumeID>0 && status.ResumeID<row.LayersCount %}hide{% endif %}" href="/printer/start/{{ row.PlateID }}"
+				<a class="btn btn-success ask req-processed tip {% if row.PlateID == status.PlateID && status.ResumeID>1 && status.ResumeID<row.LayersCount %}hide{% endif %}" href="/printer/start/{{ row.PlateID }}"
 					data-ask="start-confirm"><span class="c3d-btn-i"><span class="glyphicon glyphicon-play"></span><translate>Start Print</translate></span>
 				</a>
 				{% endif %}
