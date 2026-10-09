@@ -42,4 +42,50 @@ const equalPrintTimes = [
 ];
 assert.deepEqual(sortRows(equalPrintTimes), ['id-8', 'id-5', 'id-3']);
 
-console.log('Passed: chronological ages, multiple never-printed rows, equal ages, descending PlateID tie-break.');
+const saved = new Map([['plates-sort', 'lastprint-desc']]);
+const rendered = [];
+const rows = [
+	{id: 'never', sortLastprint: 0, sortId: 3, idx: 1},
+	{id: 'older', sortLastprint: 18000, sortId: 2, idx: 2},
+	{id: 'recent', sortLastprint: 600, sortId: 1, idx: 3}
+].map(row => ({...row, getAttribute: key => key === 'data-idx' ? row.idx : null}));
+const chips = ['id-desc', 'id-asc', 'name', 'lastprint-asc', 'layers-desc']
+	.map(sort => ({sort, active: false}));
+const list = {
+	length: 1,
+	children: () => ({toArray: () => rows.slice()}),
+	append: row => rendered.push(row.id)
+};
+const sortContext = {
+	localStorage: {
+		getItem: key => saved.get(key) ?? null,
+		setItem: (key, value) => saved.set(key, value)
+	},
+	$: item => {
+		if (item === '#plates.c3d-job-list') return list;
+		if (item === '#c3d-jobs-sort .c3d-chip') {
+			return {each: callback => chips.forEach(chip => callback.call(chip))};
+		}
+		return {
+			data: key => item[key],
+			toggleClass: (name, active) => { item.active = active; }
+		};
+	}
+};
+const applyStart = source.indexOf('function applyJobSort(mode){');
+const applyEnd = source.indexOf('\nfunction decorateJobsCount', applyStart);
+assert.notEqual(applyStart, -1, 'job sort function is present');
+assert.notEqual(applyEnd, -1, 'job sort function has an end marker');
+vm.runInNewContext(source.slice(applyStart, applyEnd), sortContext);
+sortContext.applyJobSort(sortContext.localStorage.getItem('plates-sort'));
+assert.deepEqual(rendered, ['recent', 'older', 'never']);
+assert.equal(saved.get('plates-sort'), 'lastprint-asc');
+assert.equal(chips.find(chip => chip.sort === 'lastprint-asc').active, true);
+
+rendered.length = 0;
+saved.delete('plates-sort');
+sortContext.applyJobSort(null);
+assert.deepEqual(rendered, ['never', 'older', 'recent']);
+assert.equal(chips.some(chip => chip.active), false);
+
+console.log('Passed: chronological ages, PlateID tie-breaks, saved sort migration, and server-order reset.');
