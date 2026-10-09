@@ -545,6 +545,10 @@ function sortable_table_init(){
 function applyJobSort(mode){
 	var list = $("#plates.c3d-job-list");
 	if (list.length === 0) return;
+	if (mode === "lastprint-desc") {
+		mode = "lastprint-asc";
+		localStorage.setItem('plates-sort', mode);
+	}
 	var rows = list.children(".c3d-job-row").toArray();
 	var m = /^(id|name|lastprint|layers)(?:-(asc|desc))?$/.exec(mode || "");
 	if (!m) {
