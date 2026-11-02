@@ -32,11 +32,11 @@ async function onPageLoad() {
         }
     })
 
-    document.getElementById('btn-mix-resin').addEventListener('click', (e) => {
+    document.getElementById('btn-mix-resin').addEventListener('click', (_) => {
         mixResin();
     })
 
-    aegisSetup()
+    await aegisSetup()
 }
 
 $(document).ready(function () {
@@ -46,11 +46,11 @@ $(document).ready(function () {
 async function setTemperature(object) {
     const heaterTemperature = object.targetTemperature;
     if (object.chamberHeaterToggle) {
-        runGcode(`SET_CHAMBER_HEATER TARGET=${heaterTemperature}`)
+        await runGcode(`SET_CHAMBER_HEATER TARGET=${heaterTemperature}`)
     }
 
     if (object.vatHeaterToggle) {
-        runGcode(`SET_VAT_HEATER TARGET=${heaterTemperature}`)
+        await runGcode(`SET_VAT_HEATER TARGET=${heaterTemperature}`)
     }
 
     await updateMachineCustomValues((customValues) => {
@@ -142,16 +142,8 @@ async function fetchHeatersActive(ptype) {
         vatHeaterId = 19;
     }
 
-
-    const chamberHeaterActive = await fetchHeaterActive(chamberHeaterId);
-    if (chamberHeaterActive) {
-        document.getElementById('chamber-heater-toggle').checked = true;
-    }
-
-    const vatHeaterActive = await fetchHeaterActive(vatHeaterId);
-    if (vatHeaterActive) {
-        document.getElementById('vat-heater-toggle').checked = true;
-    }
+    document.getElementById('chamber-heater-toggle').checked = await fetchHeaterActive(chamberHeaterId);
+    document.getElementById('vat-heater-toggle').checked = await fetchHeaterActive(vatHeaterId);
 
 }
 
@@ -206,8 +198,8 @@ async function getAegisValues() {
     const inletValue = await updateIdWithAnalytic('aegis-fan-voc-inlet', 26, value => formatAegisValue(value, 1));
 
     await setAegisStatus(inletValue);
-    await setAegisIndicator(inletValue, 'aegis-fan-voc-inlet-status')
-    await setAegisIndicator(outletValue, 'aegis-fan-voc-outlet-status')
+    setAegisIndicator(inletValue, 'aegis-fan-voc-inlet-status')
+    setAegisIndicator(outletValue, 'aegis-fan-voc-outlet-status')
 
     return {
         fanRpm, outletValue, inletValue
