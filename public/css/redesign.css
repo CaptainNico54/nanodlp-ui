@@ -3554,6 +3554,8 @@ body:has(.c3d-preview-layout) > br { display: none; }
 /* Live output header: label left, the auto-scroll switch on the right. */
 .c3d-terminal-output-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 10px; }
 .c3d-terminal-output-head .c3d-toggle-pill { gap: 7px; }
+.c3d-terminal-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+.c3d-terminal-filter-note { color: var(--df-text-muted); font-size: 12px; margin: 0 0 12px; }
 .c3d-terminal-page .c3d-terminal-output-label { color: var(--df-text-muted); margin: 0; }
 .c3d-terminal-page #terminal { min-height: 250px; max-height: 55vh; overflow-y: auto; scrollbar-gutter: stable; color: var(--df-text-strong); background: #0b0d12; border: 1px solid var(--df-border-strong); border-radius: var(--df-radius-sm); padding: 12px; }
 .c3d-terminal-page label { color: var(--df-text-muted); margin: 4px 0 0; }

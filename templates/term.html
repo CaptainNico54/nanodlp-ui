@@ -13,6 +13,12 @@
             <div class="c3d-section-label c3d-terminal-output-label"><translate>Live output</translate></div>
             <button type="button" id="terminal-autoscroll" class="c3d-toggle-pill is-on" role="switch" aria-checked="true" title="Keep the newest output in view"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span><translate>Auto-scroll</translate></button>
         </div>
+        <div class="c3d-terminal-filters" role="group" aria-label="Terminal display filters" aria-describedby="terminal-filter-note">
+            <button type="button" class="c3d-toggle-pill is-on" data-terminal-filter="m105" role="switch" aria-checked="true" title="Hide routine M105 commands and temperature reports"><translate>Hide M105</translate></button>
+            <button type="button" class="c3d-toggle-pill is-on" data-terminal-filter="fan" role="switch" aria-checked="true" title="Hide routine fan speed readings"><translate>Hide fan RPM</translate></button>
+            <button type="button" class="c3d-toggle-pill is-on" data-terminal-filter="voc" role="switch" aria-checked="true" title="Hide routine VOC sensor readings"><translate>Hide VOC</translate></button>
+        </div>
+        <p id="terminal-filter-note" class="c3d-terminal-filter-note"><translate>Filters affect this view only. Sensor logging and analytics continue.</translate></p>
         <div id="terminal" role="log" aria-live="polite"></div>
         <label for="gcode"><translate>G-code command</translate></label>
         <textarea name="gcode" id="gcode" rows="2" class="form-control"></textarea>

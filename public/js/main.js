@@ -1193,6 +1193,83 @@ function tooltip_display(selector,timeout){
 }
 
 var TERMINAL_AUTOSCROLL_KEY='terminal-autoscroll';
+var TERMINAL_FILTERS_KEY='terminal-display-filters';
+var terminal_display_filters={m105:true,fan:true,voc:true};
+var terminal_raw_html=null;
+
+function terminal_filters_load(){
+	var saved=null;
+	try { saved=JSON.parse(localStorage.getItem(TERMINAL_FILTERS_KEY)); } catch(e) {}
+	['m105','fan','voc'].forEach(function(key){
+		terminal_display_filters[key]=saved && typeof saved[key]=='boolean' ? saved[key] : true;
+	});
+}
+
+function terminal_filters_paint(){
+	$('.c3d-terminal-filters [data-terminal-filter]').each(function(){
+		var on=terminal_display_filters[this.getAttribute('data-terminal-filter')];
+		$(this).toggleClass('is-on',on).toggleClass('is-off',!on)
+			.attr('aria-checked',on?'true':'false');
+	});
+}
+
+function terminal_filter_category(text){
+	// Match complete, routine readings only. Never infer a response's owner
+	// from its position after M105, or hide acknowledgements/errors by keyword.
+	var line=text.trim().replace(/^(?:echo:|Send:|Recv:|\/\/)\s*/i,'');
+	if (/^(?:N\d+\s+)?M105(?:\s+T\d+)?(?:\s*\*\d+)?$/i.test(line)) return 'm105';
+	var number='[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?';
+	var positive='\\+?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?';
+	if (new RegExp('^(?:UVLed|UV|Case|MCU|PTC|Aux|AEGIS)FanRPM\\s+'+positive+'$','i').test(line)) return 'fan';
+	if (new RegExp('^VOC(?:INLET|OUTLET):\\s*'+positive+'$','i').test(line)) return 'voc';
+	// Athena's M105 uses named sensors; conventional T/B reports are also
+	// supported. Requiring complete actual/target pairs preserves other data.
+	var temperature='(?:T\\d*|B\\d*|CHAMBER|HOST|MCU|PTC|RESIN|UVLED|VAT):\\s*'+number+'\\s*/\\s*'+number;
+	var power='(?:@|B@|@\\d+):\\s*'+positive;
+	if (new RegExp('^(?:ok\\s+)?'+temperature+'(?:\\s+(?:'+temperature+'|'+power+'))*$','i').test(line)) return 'm105';
+	return null;
+}
+
+function terminal_should_hide(text,filters){
+	var lines=text.split(/\r?\n/).map(function(line){return line.trim();}).filter(function(line){return line!='';});
+	return lines.length>0 && lines.every(function(line){
+		var category=terminal_filter_category(line);
+		return category!==null && filters[category]===true;
+	});
+}
+
+function terminal_filter_html(html){
+	if (!terminal_display_filters.m105 && !terminal_display_filters.fan && !terminal_display_filters.voc) return html;
+	// /term-io is an already-received display snapshot. Work on a detached
+	// copy, retaining the original snapshot so filters are reversible locally.
+	var output=document.createElement('div');
+	output.innerHTML=html;
+	Array.prototype.slice.call(output.childNodes).forEach(function(record){
+		if (record.nodeType!==1 || record.tagName!=='DIV') return;
+		var probe=record.cloneNode(true);
+		var stamp=probe.firstElementChild;
+		if (stamp && stamp.tagName==='B' && /^\d{2}:\d{2}:\d{2}$/.test(stamp.textContent.trim())) {
+			probe.removeChild(stamp);
+		}
+		Array.prototype.slice.call(probe.querySelectorAll('br')).forEach(function(br){
+			br.parentNode.replaceChild(document.createTextNode('\n'),br);
+		});
+		// Keep a mixed record if any line is not recognized telemetry. This
+		// preserves warnings, failed readings, commands and truncated records.
+		if (terminal_should_hide(probe.textContent,terminal_display_filters)) output.removeChild(record);
+	});
+	return output.innerHTML;
+}
+
+function terminal_render(){
+	var el=$('#terminal')[0];
+	if (!el || terminal_raw_html===null) return;
+	var stick=terminal_autoscroll_pref() && terminal_at_bottom(el);
+	var html=terminal_filter_html(terminal_raw_html);
+	if (el.innerHTML===html) return;
+	$(el).html(html);
+	if (stick) el.scrollTop=el.scrollHeight;
+}
 
 function terminal_autoscroll_pref(){
 	var saved=null;
@@ -1235,6 +1312,16 @@ function terminal_init(){
 		}
 	});
 	terminal_autoscroll_paint();
+	terminal_filters_load();
+	terminal_filters_paint();
+	$('.c3d-terminal-filters [data-terminal-filter]').on('click',function(){
+		var key=this.getAttribute('data-terminal-filter');
+		if (!Object.prototype.hasOwnProperty.call(terminal_display_filters,key)) return;
+		terminal_display_filters[key]=!terminal_display_filters[key];
+		try { localStorage.setItem(TERMINAL_FILTERS_KEY,JSON.stringify(terminal_display_filters)); } catch(e) {}
+		terminal_filters_paint();
+		terminal_render();
+	});
 	terminal_fetch();
 	setInterval(function(){terminal_fetch();}, 1000);
 }
@@ -1243,11 +1330,9 @@ function terminal_fetch(){
 	var el=$('#terminal')[0];
 	if (!el) return;
 	$.get("/term-io").done(function(data){
-		if (data=="") return;
-		if (data==$("#terminal").html()) return;
-		var stick=terminal_autoscroll_pref() && terminal_at_bottom(el);
-		$("#terminal").html(data);
-		if (stick) el.scrollTop=el.scrollHeight;
+		if (typeof data!=='string' || data===terminal_raw_html) return;
+		terminal_raw_html=data;
+		terminal_render();
 	});
 }
 
