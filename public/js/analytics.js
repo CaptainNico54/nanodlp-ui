@@ -6,6 +6,8 @@ let uplots = [];
 let isZoomed = false;
 
 const LOCAL_STORAGE_KEY = "legends:v3";
+// Keep current-page choices usable even if browser storage cannot be written.
+const legendPreferencesByChart = new Map();
 
 const ANALYTICS_UPDATE_INTERVAL = 1000;
 
@@ -113,7 +115,14 @@ function renderChart(name, dataRows, series, chartConfig) {
         // uPlot renders its legend inside the container, so reserve that too
         const legendEl = containerEl.querySelector('.u-legend');
         const legendH = legendEl ? legendEl.offsetHeight + 8 : 58;
-        const inner = parentEl.clientHeight - pad - plotMargin;
+        const siblingSpace = chartConfig.reserveSiblingSpace === true
+            ? Array.from(parentEl.children).reduce((height, child) => {
+                if (child === containerEl) return height;
+                const siblingStyle = getComputedStyle(child);
+                if (siblingStyle.display === 'none') return height;
+                return height + child.offsetHeight + parseFloat(siblingStyle.marginTop || 0) + parseFloat(siblingStyle.marginBottom || 0);
+            }, 0) : 0;
+        const inner = parentEl.clientHeight - pad - plotMargin - siblingSpace;
         if (inner - legendH > 150) {
             plotHeight = Math.floor(inner - legendH - 2); // container border
         }
@@ -202,7 +211,7 @@ function renderChart(name, dataRows, series, chartConfig) {
 
     if (plotToUpdate) plotToUpdate.uplot.destroy();
     $uplot.html('');
-    opts = applyLegend(opts, uplotId);
+    opts = applyLegend(opts, chartConfig.legendStorageKey || uplotId);
     const vocAxis = opts.axes.find(axis => axis.scale === 'VOC');
     if (vocAxis) vocAxis.show = opts.series.some(serie => serie.scale === 'VOC' && serie.show !== false);
     const newUplot = new uPlot(opts, dataRows, $uplot[0]);
@@ -230,14 +239,22 @@ function renderChart(name, dataRows, series, chartConfig) {
     addSaveLegendHandler();
 }
 
-function applyLegend(opts, uplotId) {
-    const storedString = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (!storedString) return opts;
-    const series = JSON.parse(storedString);
-    const savedValuesForUplotId = series[uplotId];
-    if (!savedValuesForUplotId) return opts;
+function readLegendPreferences() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+        return saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {};
+    } catch (error) {
+        return {};
+    }
+}
+
+function applyLegend(opts, storageKey) {
+    const savedValuesForUplotId = legendPreferencesByChart.has(storageKey)
+        ? legendPreferencesByChart.get(storageKey) : readLegendPreferences()[storageKey];
+    if (!Array.isArray(savedValuesForUplotId)) return opts;
 
     savedValuesForUplotId.forEach((element, index) => {
+        if (!element || typeof element !== 'object') return;
         const matchingSeries = element.key
             ? opts.series.find(serie => serie.key === element.key)
             : opts.series[index];
@@ -246,12 +263,19 @@ function applyLegend(opts, uplotId) {
     return opts
 }
 
+function resetLegendPreferences(storageKey) {
+    legendPreferencesByChart.set(storageKey, []);
+}
+
 function addSaveLegendHandler() {
     $(".u-legend .u-series").off('click.c3dLegend').on('click.c3dLegend', function () {
-        const cacheData = uplots.reduce((acc, uplot) => {
-            return {...acc, [uplot.id]: uplot.uplot.series};
-        }, {});
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cacheData));
+        const cacheData = readLegendPreferences();
+        uplots.forEach(plot => {
+            const storageKey = plot.chartConfig.legendStorageKey || plot.id;
+            cacheData[storageKey] = plot.uplot.series.map(serie => ({key:serie.key, show:serie.show !== false}));
+            legendPreferencesByChart.set(storageKey, cacheData[storageKey]);
+        });
+        try { localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cacheData)); } catch (error) {}
     });
 }
 
@@ -303,8 +327,8 @@ function prepareAxis(series, chartConfig) {
 }
 
 function determineDecimalPlaces(scale) {
-    let zeroPlaceScales = ["px", "Pressure", "RPM", "VOC"];
-    let onePlaceScales = ["s", "mm", "°C"];
+    let zeroPlaceScales = ["px", "#", "Pressure", "RPM", "VOC"];
+    let onePlaceScales = ["s", "mm", "mm/s", "°C"];
 
     if (zeroPlaceScales.includes(scale)) {
         return 0;

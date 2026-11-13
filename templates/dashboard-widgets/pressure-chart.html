@@ -1,63 +1,69 @@
 <link rel="stylesheet" href="/static/dependencies/uPlot/uPlot.min.css">
 <script src="/static/dependencies/uPlot/uPlot.iife.min.js"></script>
-<script src='/static/js/analytics.js?{{version}}(athenav2)'></script>
+<script src='/static/js/analytics.js?{{version}}(athenav3)'></script>
 <link href='/static/css/analytics.css?{{version}}(athenav2)' rel="stylesheet">
+<link href='/static/css/dashboard-metrics.css?{{version}}(v1)' rel="stylesheet">
+<script src='/static/js/dashboard-metrics.js?{{version}}(v1)'></script>
 
 <script>
-    // Used for testing only
-    const hardCodeAnalytics = false;
-    const HARDCODED_ANALYTICS = [
-        {
-            "ID": 1723200296791816000,
-            "T": 6,
-            "V": 668.8699951171875
-        },
-        {
-            "ID": 1723200296839004000,
-            "T": 6,
-            "V": 668.8699951171875
-        },
-        {
-            "ID": 1723200296890853400,
-            "T": 6,
-            "V": 675.9199829101562
-        },
-        {
-            "ID": 1723200296935928600,
-            "T": 6,
-            "V": 678.22998046875
-        }
-    ];
-
-    const CHART_CONFIGS = [
-        {
-            uplotId: '#uplot-1',
-            height: 250,
-            fitParent: true,
-            minimumScaleSpans: {
-                Pressure: 200,
-                '°C': 2.0,
-            },
-            fields: [
-                { key: 'LayerHeight', id: 0, stroke: 'var(--c3d-info)' },
-                { key: 'Pressure', id: 6, overrideLabel: 'Force', overrideAxisLabel: 'Force', overrideUnit: 'g' },
-                { key: 'TemperatureInside', id: 7 },
-            ]
-        },
-    ]
-
+    const CHART_CONFIGS = [C3DDashboardMetrics.chartConfig(C3DDashboardMetrics.DEFAULT_KEYS, ALL_CHART_CONFIG)];
 
     $(document).ready(function () {
-
-        const axes = [{"Key":"LayerHeight","Name":"Layer Height","Type":"mm","Decimal":2},{"Key":"SolidArea","Name":"Solid Area","Type":"px","Decimal":0},{"Key":"AreaCount","Name":"Area Count","Type":"#","Decimal":0},{"Key":"LargestArea","Name":"Largest Area","Type":"px","Decimal":0},{"Key":"Speed","Name":"Speed","Type":"mm/s","Decimal":0},{"Key":"Cure","Name":"Cure Time","Type":"s","Decimal":2},{"Key":"Pressure","Name":"Pressure","Type":"Pressure","Decimal":2},{"Key":"TemperatureInside","Name":"Resin Temp","Type":"°C","Decimal":2},{"Key":"TemperatureOutside","Name":"UV Temp","Type":"°C","Decimal":2},{"Key":"LayerTime","Name":"Layer Time","Type":"s","Decimal":2},{"Key":"LiftHeight","Name":"Lift Height","Type":"mm","Decimal":2},{"Key":"TemperatureMCU","Name":"MCU Temp","Type":"°C","Decimal":2},{"Key":"TemperatureInsideTarget","Name":"Resin Temp Target","Type":"°C","Decimal":2},{"Key":"TemperatureOutsideTarget","Name":"UV Temp Target","Type":"°C","Decimal":2},{"Key":"TemperatureMCUTarget","Name":"MCU Temp Target","Type":"°C","Decimal":2},{"Key":"MCUFanRPM","Name":"MCU Fan RPM","Type":"RPM","Decimal":0},{"Key":"UVFanRPM","Name":"UV Fan RPM","Type":"RPM","Decimal":0},{"Key":"DynamicWait","Name":"Dynamic Wait Time","Type":"s","Decimal":2},{"Key":"TemperatureVat","Name":"VAT Temp","Type":"°C","Decimal":2},{"Key":"TemperatureVatTarget","Name":"VAT Temp Target","Type":"°C","Decimal":2},{"Key":"PTCFanRPM","Name":"PTC Fan RPM","Type":"RPM","Decimal":0},{"Key":"AEGISFanRPM","Name":"AEGIS Fan RPM","Type":"RPM","Decimal":0},{"Key":"TemperatureChamber","Name":"Chamber Temp","Type":"°C","Decimal":2},{"Key":"TemperatureChamberTarget","Name":"Chamber Temp Target","Type":"°C","Decimal":2},{"Key":"TemperaturePTC","Name":"PTC Temp","Type":"°C","Decimal":2},{"Key":"TemperaturePTCTarget","Name":"PTC Temp Target","Type":"°C","Decimal":2},{"Key":"VOCInlet","Name":"VOC Index Inlet","Type":"VOC","Decimal":0},{"Key":"VOCOutlet","Name":"VOC Index Outlet","Type":"VOC","Decimal":0}]
-
+        let lastDashboardData = null;
         let requestRunning = false;
+        let switchedTo10000 = false;
+        const controller = C3DDashboardMetrics.mount(ALL_CHART_CONFIG, function () {
+            clearDashboardPlot();
+            isZoomed = false;
+            $('#chart-paused-warning').hide();
+            renderDashboardData();
+        });
+
+        function clearDashboardPlot() {
+            const previous = uplots.find(plot => plot.id === '#uplot-1');
+            if (previous) {
+                if (previous.chartConfig.rpmScaleState) clearTimeout(previous.chartConfig.rpmScaleState.timer);
+                previous.uplot.destroy();
+                uplots = uplots.filter(plot => plot !== previous);
+            }
+            delete CHART_CONFIGS[0].rpmScaleState;
+            cachedDataByChart.delete('#uplot-1');
+            $('#uplot-1').empty();
+        }
+
+        function renderDashboardData() {
+            const selected = controller.getSelection();
+            const available = C3DDashboardMetrics.availableKeys(lastDashboardData, ALL_CHART_CONFIG);
+            const missing = selected.filter(key => !available.includes(key));
+            const hasReadings = missing.length < selected.length;
+            Object.assign(CHART_CONFIGS[0], C3DDashboardMetrics.chartConfig(selected, ALL_CHART_CONFIG, available));
+            $('#dashboard-metrics-missing').prop('hidden', !hasReadings || missing.length === 0);
+            $('#dashboard-chart-empty').prop('hidden', hasReadings);
+            if (!hasReadings) {
+                clearDashboardPlot();
+                return;
+            }
+            buildChartFromData(null, lastDashboardData, false, C3DDashboardMetrics.AXES, CHART_CONFIGS);
+        }
+
         async function refreshDashboardChart() {
             if (requestRunning) return;
             requestRunning = true;
             try {
-                const data = !hardCodeAnalytics ? await fetchData() : HARDCODED_ANALYTICS;
-                buildChartFromData(null, data, false, axes, CHART_CONFIGS);
+                const statusFetch = await fetch(`${BASE_URL}/status`, { cache: 'no-store' });
+                if (!statusFetch.ok) throw new Error('Status unavailable');
+                const status = await statusFetch.json();
+                if (!status.Printing) switchedTo10000 = false;
+                const range = status.Printing && !switchedTo10000 ? 'start' : '10000';
+                const response = await fetch(`${BASE_URL}/analytic/data/${range}`, { cache: 'no-store' });
+                if (!response.ok) throw new Error('Analytics unavailable');
+                const data = await response.json();
+                if (!Array.isArray(data)) throw new Error('Unexpected analytics response');
+                if (status.Printing && data.length > 10000) switchedTo10000 = true;
+                lastDashboardData = data;
+                // Read the current selection after the request completes. A
+                // pending request must never restore an earlier selection.
+                renderDashboardData();
             } catch (err) {
                 // Keep the last valid chart visible and retry on the next interval.
             } finally {
@@ -68,43 +74,30 @@
         refreshDashboardChart();
         setInterval(refreshDashboardChart, ANALYTICS_UPDATE_INTERVAL);
     });
-
-    let switchedTo10000 = false;  // persists across calls
-
-    const fetchData = async () => {
-        // Check printer status
-        const statusFetch = await fetch(`${BASE_URL}/status`, { cache: 'no-store' });
-        const status = await statusFetch.json();
-
-        let dataPointToFetch;
-
-        if (!status.Printing) {
-            // Not printing → always use 10000 endpoint
-            dataPointToFetch = "10000";
-            switchedTo10000 = false; // reset for the next print
-        } else {
-            // Printing → use "start" until switched
-            dataPointToFetch = switchedTo10000 ? "10000" : "start";
-        }
-
-        const response = await fetch(`${BASE_URL}/analytic/data/${dataPointToFetch}`, { cache: 'no-store' });
-        const data = await response.json();
-
-        // If using "start" and dataset size exceeds 10k, switch permanently
-        if (status.Printing && !switchedTo10000) {
-            const dataSize = Array.isArray(data)
-                ? data.length
-                : typeof data === "object" && data !== null
-                    ? Object.keys(data).length
-                    : 0;
-
-            if (dataSize > 10000) {
-                switchedTo10000 = true;
-            }
-        }
-
-        return data;
-    };
-
 </script>
+<p id="dashboard-metrics-storage-note" class="c3d-dashboard-metrics-note" role="status" hidden><translate>These metric choices apply until this page closes because browser storage is unavailable.</translate></p>
+<p id="dashboard-metrics-missing" class="c3d-dashboard-metrics-note" hidden><translate>Some selected metrics have no readings yet.</translate></p>
 <div id="uplot-1" class="uplot uplot-container"></div>
+<p id="dashboard-chart-empty" class="c3d-dashboard-chart-empty" role="status"><translate>No readings yet for the selected metrics.</translate></p>
+
+<div class="modal fade" id="dashboard-metrics-dialog" tabindex="-1" role="dialog" aria-labelledby="dashboard-metrics-title">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="dashboard-metrics-title"><translate>Dashboard metrics</translate></h4>
+            </div>
+            <div class="modal-body">
+                <p><translate>Choose up to five metrics. Your choices are saved in this browser.</translate></p>
+                <p class="c3d-dashboard-metrics-note"><translate>Metrics appear when readings are available. The chart shows up to three vertical axes on desktop and two on mobile; all selected readings keep their own scale and legend units.</translate></p>
+                <p id="dashboard-metrics-count" role="status" aria-live="polite"></p>
+                <div id="dashboard-metric-options" class="c3d-dashboard-metric-options"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="dashboard-metrics-reset" type="button" class="btn btn-default"><translate>Reset defaults</translate></button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><translate>Cancel</translate></button>
+                <button id="dashboard-metrics-apply" type="button" class="btn btn-primary"><translate>Apply</translate></button>
+            </div>
+        </div>
+    </div>
+</div>

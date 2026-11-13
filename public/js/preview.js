@@ -1,30 +1,97 @@
 var preview_loop;
+var preview_physical_ratio_value=null;
+var preview_physical_ratio_request=null;
+var preview_physical_ratio_retry_after=0;
+
+function preview_physical_ratio(config){
+	if (!config || typeof config!=='object') return null;
+	var width=Number(config.ProjectorWidth), height=Number(config.ProjectorHeight);
+	var x=Number(config.XYRes), y=Number(config.YRes);
+	// YRes is an optional override of the shared X/Y pixel size.
+	if (config.YRes==null || config.YRes==='' || y===0) y=x;
+	if (![width,height,x,y].every(function(value){return isFinite(value) && value>0;})) return null;
+	var ratio=(width*x)/(height*y);
+	return isFinite(ratio) && ratio>0 ? ratio : null;
+}
+
+function preview_fit_dimensions(maxWidth,maxHeight,ratio){
+	if (![maxWidth,maxHeight,ratio].every(function(value){return isFinite(value) && value>0;})) return null;
+	var width=Math.min(maxWidth,maxHeight*ratio);
+	return {width:width,height:width/ratio};
+}
+
+function preview_apply_physical_size(image,maxWidth,maxHeight,ratio){
+	var size=preview_fit_dimensions(maxWidth,maxHeight,ratio);
+	if (!image || !size) return null;
+	// Layer PNG dimensions can be packed or reduced. Their natural aspect
+	// does not represent the physical LCD, including rectangular pixel pitch.
+	image.style.aspectRatio=String(ratio);
+	image.style.objectFit='fill';
+	image.style.maxWidth='none';
+	image.style.maxHeight='none';
+	image.style.width=size.width+'px';
+	image.style.height=size.height+'px';
+	return size;
+}
+
+function preview_load_physical_ratio(callback){
+	var request=preview_physical_ratio_request;
+	if (!request){
+		if (Date.now()<preview_physical_ratio_retry_after) return;
+		request=$.getJSON('/json/db/machine.json');
+		preview_physical_ratio_request=request;
+		request.done(function(config){
+			preview_physical_ratio_value=preview_physical_ratio(config);
+			if (!preview_physical_ratio_value){
+				preview_physical_ratio_request=null;
+				preview_physical_ratio_retry_after=Date.now()+30000;
+			}
+		}).fail(function(){
+			preview_physical_ratio_request=null;
+			preview_physical_ratio_retry_after=Date.now()+30000;
+		});
+	}
+	request.done(function(){callback(preview_physical_ratio_value);});
+}
+
+function preview_status_image_resize(){
+	var frame=document.getElementById('image_wrapper');
+	if (!frame) return;
+	var box=frame.querySelector('.image_enlarge');
+	var image=frame.querySelector('img.two');
+	if (!box || !image) return;
+	if (!preview_physical_ratio_value){
+		preview_load_physical_ratio(function(ratio){if (ratio) preview_status_image_resize();});
+		return;
+	}
+	preview_apply_physical_size(image,box.clientWidth,box.clientHeight,preview_physical_ratio_value);
+}
+
+function preview_status_image_init(){
+	var frame=document.getElementById('image_wrapper');
+	if (!frame) return;
+	preview_load_physical_ratio(preview_status_image_resize);
+	if (window.ResizeObserver){
+		new ResizeObserver(preview_status_image_resize).observe(frame);
+	} else {
+		$(window).on('resize.statusPreviewPhysicalRatio',preview_status_image_resize);
+	}
+}
+
 function preview_layer_unavailable(){
 	if (window.toastr) toastr.warning('Display Layer is unavailable while printing or printer status cannot be confirmed.');
 }
 function preview_init(){
+	preview_status_image_init();
 	var previewImage = $('#preview img');
 	if (previewImage.length==0) return;
-	$.getJSON('/json/db/machine.json').done(function(config){
-		var physicalWidth = Number(config.ProjectorWidth) * Number(config.XYRes);
-		var physicalHeight = Number(config.ProjectorHeight) * Number(config.YRes);
-		if (isFinite(physicalWidth) && physicalWidth > 0 && isFinite(physicalHeight) && physicalHeight > 0){
-			var ratio = physicalWidth / physicalHeight;
+	preview_load_physical_ratio(function(ratio){
+		if (ratio){
 			function sizePreviewImage(){
 				var preview = $('#preview');
 				var panel = preview.closest('.c3d-preview-canvas');
-				var maxWidth = preview.innerWidth();
-				var maxHeight = panel.height();
-				var displayWidth = Math.min(maxWidth, maxHeight * ratio);
-				if (!(displayWidth > 0)) return;
-				var displayHeight = displayWidth / ratio;
-				preview[0].style.height = displayHeight + 'px';
-				previewImage[0].style.aspectRatio = ratio;
-				previewImage[0].style.objectFit = 'fill';
-				previewImage[0].style.maxWidth = 'none';
-				previewImage[0].style.maxHeight = 'none';
-				previewImage[0].style.width = displayWidth + 'px';
-				previewImage[0].style.height = displayHeight + 'px';
+				var size=preview_apply_physical_size(previewImage[0],preview.innerWidth(),panel.height(),ratio);
+				if (size) preview[0].style.height=size.height+'px';
 			}
 			sizePreviewImage();
 			if (window.ResizeObserver){

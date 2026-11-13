@@ -2,7 +2,7 @@
 {% block head %}
 <link rel="stylesheet" href="/static/dependencies/uPlot/uPlot.min.css">
 <script src="/static/dependencies/uPlot/uPlot.iife.min.js"></script>
-<script src='/static/js/analytics.js?{{version}}(athenav2)'></script>
+<script src='/static/js/analytics.js?{{version}}(athenav3)'></script>
 <link href='/static/css/analytics.css?{{version}}(athenav2)' rel="stylesheet">
 
 {% endblock %}
@@ -111,6 +111,9 @@
     {% include "components/print-progress.html" %}
 </div>
 
+<div class="c3d-analytics-toolbar">
+    <button type="button" class="btn c3d-ghost c3d-ghost-gold" data-force-tare title="Zero the current force reading"><span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span> <translate>Tare Force</translate></button>
+</div>
 <div id="uplot-1" class="uplot uplot-container"></div>
 <div id="uplot-2" class="uplot uplot-container"></div>
 <div class="row">

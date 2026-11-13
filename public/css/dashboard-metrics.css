@@ -1,0 +1,12 @@
+.c3d-dashboard-metric-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; max-height: 55vh; overflow-y: auto; }
+.c3d-dashboard-metric-group { min-width: 0; }
+.c3d-dashboard-metric-group legend { color: var(--df-text-strong); font-size: 14px; font-weight: 600; border-color: var(--df-border-subtle); margin-bottom: 10px; }
+.c3d-dashboard-metric-group label { display: flex; align-items: flex-start; gap: 8px; margin: 0 0 10px; color: var(--df-text-muted); font-size: 13px; font-weight: 400; cursor: pointer; }
+.c3d-dashboard-metric-group input { flex: 0 0 auto; margin-top: 3px; }
+.c3d-dashboard-metric-group input:disabled + span { opacity: 0.55; }
+.c3d-dashboard-metrics-note { margin: 4px 0 8px; font-size: 12px; color: var(--df-text-muted); }
+.c3d-dashboard-chart-empty { padding: 24px 12px; text-align: center; color: var(--df-text-muted); }
+.c3d-dashboard-chart-empty[hidden], .c3d-dashboard-metrics-note[hidden] { display: none !important; }
+@media (max-width: 480px) {
+  .c3d-dashboard-metric-options { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+}

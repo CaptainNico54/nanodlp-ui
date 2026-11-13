@@ -72,9 +72,13 @@
             <div class="row row-marginless pressure-row">
                 <div id="pressure-chart-column" class="col-md-12 no-padding">
                     <div class="panel panel-default dashboard-panel">
-                        <div class="panel-heading c3d-panel-heading--split">
-                            <span>Force &amp; Resin Temperature</span>
-                            <a class="c3d-panel-heading-action" href="/analytic"><span class="glyphicon glyphicon-stats"></span><translate>Full Analytics</translate></a>
+                        <div class="panel-heading c3d-panel-heading--split c3d-analytics-heading">
+                            <span><translate>Live Analytics</translate></span>
+                            <div class="c3d-analytics-actions">
+                                <button type="button" class="c3d-panel-heading-action" data-force-tare title="Zero the current force reading"><span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span><translate>Tare</translate></button>
+                                <button type="button" id="dashboard-metrics-open" class="c3d-panel-heading-action" aria-controls="dashboard-metrics-dialog"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span><translate>Metrics</translate></button>
+                                <a class="c3d-panel-heading-action" href="/analytic"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span><translate>Full Analytics</translate></a>
+                            </div>
                         </div>
                         <div class="panel-body">
                             {% include "dashboard-widgets/pressure-chart.html" %}

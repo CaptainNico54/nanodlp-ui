@@ -1364,6 +1364,33 @@ async function runGcode(gcode) {
 	});
 }
 
+let forceTarePending = false;
+
+async function requestForceTare() {
+	if (forceTarePending) return;
+	forceTarePending = true;
+	const buttons = $('[data-force-tare]');
+	buttons.prop('disabled', true).attr('aria-busy', 'true');
+	try {
+		const response = await runGcode('[[PressureWrite 1]]');
+		if (!response.ok) throw new Error('Tare request failed');
+		// HTTP success confirms submission, not completion of the MCU's tare.
+		toastr.success('Force tare requested.');
+	} catch (error) {
+		toastr.error('Could not request force tare. Check the printer connection and try again.');
+	} finally {
+		forceTarePending = false;
+		buttons.prop('disabled', false).removeAttr('aria-busy');
+	}
+}
+
+$(document).ready(function () {
+	$(document).on('click.c3dForceTare', '[data-force-tare]', function (event) {
+		event.preventDefault();
+		requestForceTare();
+	});
+});
+
 /* The disk cards carry a meter under their value; the endpoint already reports
    the used percentage per volume, so the bar needs no unit parsing. */
 function set_disk_meter(fillId, trackId, usageId, stat){
