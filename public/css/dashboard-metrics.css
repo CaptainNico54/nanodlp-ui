@@ -7,6 +7,12 @@
 .c3d-dashboard-metrics-note { margin: 4px 0 8px; font-size: 12px; color: var(--df-text-muted); }
 .c3d-dashboard-chart-empty { padding: 24px 12px; text-align: center; color: var(--df-text-muted); }
 .c3d-dashboard-chart-empty[hidden], .c3d-dashboard-metrics-note[hidden] { display: none !important; }
+/* Reset inherited button margins equally; Bootstrap otherwise resets only
+   the second and later footer buttons, leaving Reset Defaults higher. */
+#dashboard-metrics-dialog .modal-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+#dashboard-metrics-dialog .modal-footer::before,
+#dashboard-metrics-dialog .modal-footer::after { display: none; }
+#dashboard-metrics-dialog .modal-footer > .btn { margin: 0; }
 @media (max-width: 480px) {
   .c3d-dashboard-metric-options { grid-template-columns: minmax(0, 1fr); gap: 12px; }
 }
