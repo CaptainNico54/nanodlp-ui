@@ -197,7 +197,7 @@ test('preserves leading diagnostics, invalid readings and ambiguous fragments as
 	const next = '<div><b>19:54:24</b><br>ok\n</div>';
 	for (const fragment of [
 		'Error: CaseFanRPM sensor failed', 'Warning: VOC sensor disconnected',
-		'G28', 'ok', '619.1904806268', '>CHAMBER:30.3 /0.0',
+		'G28', 'ok', '>CHAMBER:30.3 /0.0',
 		'echo: UVLedFanRPM NaN', 'VOCINLET:Infinity',
 		'5 /NaN UVLED:28.3 /40.0 VAT:27.2 /0.0',
 		'5 /0.0 UVLED:28.3 /40.0 VAT:27.2 /0.0 error',
@@ -209,6 +209,25 @@ test('preserves leading diagnostics, invalid readings and ambiguous fragments as
 		const html = fragment + '\n</div>' + next;
 		assert.equal(context.terminal_filter_leading_html(html), html, fragment);
 	}
+});
+
+test('omits only a finite nonnegative numeric orphan when every telemetry filter is enabled', () => {
+	const {context} = makeContext();
+	const next = '<div><b>20:04:06</b><br>ok\n</div>';
+	for (const filters of filterCombinations()) {
+		context.terminal_display_filters = filters;
+		for (const value of ['12', '0', '0.5', '.5', '+12.5', '1.2e3', '619.1904806268']) {
+			const html = value + '\n</div>' + next;
+			assert.equal(context.terminal_filter_leading_html(html), filters.m105 && filters.fan && filters.voc ? next : html);
+		}
+	}
+	context.terminal_display_filters = defaults;
+	for (const fragment of ['-1', 'NaN', 'Infinity', '1e999', '0x12', '12<br>Error: sensor failed', '12\n13', '']) {
+		const html = fragment + '</div>' + next;
+		assert.equal(context.terminal_filter_leading_html(html), html, fragment);
+	}
+	assert.equal(context.terminal_filter_leading_html('<div>12</div>' + next), '<div>12</div>' + next);
+	assert.equal(context.terminal_should_hide('12', defaults), false);
 });
 
 test('leading multiline telemetry respects every filter and disabling filters restores raw bytes', () => {

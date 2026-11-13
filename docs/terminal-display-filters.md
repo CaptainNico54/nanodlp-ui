@@ -57,9 +57,14 @@ as `5 /0.0` can be identified as temperature data when followed exclusively by
 complete known temperature fields. This exception is limited to that clipped
 leading record; normal rows retain strict complete-record matching.
 
-Bare numbers, errors, warnings, invalid readings, unknown text, and mixed
-records remain visible. The original snapshot is retained, so turning a filter
-off restores its leading fragment as well as complete records.
+A later read-only capture began with only `12`, with its identifying label
+already removed by the server buffer. When all three telemetry filters are
+enabled, the filtered view also omits a single finite, nonnegative numeric tail
+at this proven clipped boundary. This is a display rule for an unidentified
+oldest fragment, not a claim about which sensor produced it. Turning any filter
+off restores it. Complete numeric rows, negative sentinels, errors, warnings,
+invalid readings, other unknown text, and mixed records remain visible.
+The original snapshot is retained, so toggles also restore leading fragments.
 
 ## Verification
 
@@ -71,9 +76,10 @@ node tests/job-sort.test.js
 node --check public/js/main.js
 ```
 
-The 14-test filter suite covers all eight switch combinations, exact command
+The 15-test filter suite covers all eight switch combinations, exact command
 matching, temperature/fan/VOC formats, clipped leading boundaries and headers,
-the reported temperature suffix, diagnostic preservation, and saved preferences.
+the reported temperature suffix, the bounded numeric-tail rule, diagnostic
+preservation, and saved preferences.
 
 An offline HTML replay also exercised the actual filter click handlers,
 retained snapshot restoration, unchanged polling, and blocked browser storage.

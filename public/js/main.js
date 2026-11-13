@@ -1262,6 +1262,11 @@ function terminal_filter_leading_html(html){
 		}
 		return category!==null && terminal_display_filters[category]===true;
 	});
+	// A numeric-only oldest tail has lost its label. Omit that fragment only
+	// in the all-telemetry-hidden view; any disabled filter restores it. Keep
+	// negative sentinels, invalid numbers and complete numeric records visible.
+	if (lines.length===1 && terminal_display_filters.m105 && terminal_display_filters.fan && terminal_display_filters.voc &&
+		/^\+?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(lines[0]) && Number.isFinite(Number(lines[0]))) hidden=true;
 	return hidden ? html.slice(closing.index+closing[0].length) : html;
 }
 
