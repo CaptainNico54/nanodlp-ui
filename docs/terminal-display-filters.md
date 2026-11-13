@@ -1,9 +1,18 @@
 # Terminal display filters
 
-The G-code Terminal has three independent **Hide temperatures**, **Hide fan RPM**, and
-**Hide VOC** switches. All three start enabled. Preferences are saved in the
-browser's local storage under `terminal-display-filters`; the switches also work
-for the current page when local storage is unavailable.
+The G-code Terminal has three independent display filters. Each button names
+the action it will perform, so its meaning does not depend on its color:
+
+| Current display | Temperature action | Fan action | VOC action |
+| --- | --- | --- | --- |
+| Readings hidden | Show Temperatures | Show Fan RPM | Show VOC |
+| Readings visible | Hide Temperatures | Hide Fan RPM | Hide VOC |
+
+All three categories are hidden by default. Preferences are saved in the
+browser's local storage under `terminal-display-filters`; the controls also work
+for the current page when local storage is unavailable. The changing labels use
+ordinary action buttons with `aria-controls="terminal"`, rather than announcing
+a contradictory switch state. Both translated strings remain in the template.
 
 ## Data boundary
 
@@ -31,8 +40,8 @@ Recognized `echo:`, `Send:`, `Recv:`, and `//` wrappers are supported.
 Generic `ok` acknowledgements are always retained. Errors, warnings, invalid
 readings, unfamiliar formats, and ambiguous truncated text are retained. A record
 containing both telemetry and other text stays visible as a whole.
-Manually entered M105 commands follow the same display filter; disable Hide
-temperatures to inspect them. Commands are always sent normally. The internal
+Manually entered M105 commands follow the same display filter; choose **Show
+Temperatures** to inspect them. Commands are always sent normally. The internal
 `m105` preference key is unchanged, preserving existing saved choices.
 
 ## Leading fragments from the rolling buffer
@@ -66,6 +75,24 @@ off restores it. Complete numeric rows, negative sentinels, errors, warnings,
 invalid readings, other unknown text, and mixed records remain visible.
 The original snapshot is retained, so toggles also restore leading fragments.
 
+Further visual review exposed cuts inside the opening and closing tags, shown
+as `>20:36:29`, `div>20:39:44` with fan readings, or a lone `div>`. The leading
+handler now recognizes every suffix of the known
+`<div><b>HH:MM:SS</b><br>` header, including the supported `<br/>` and `<br />`
+spellings. It tries the longest suffix first and still removes the record only
+when its remaining body passes the existing filtering rules. Unknown attribute
+fragments, commands, diagnostics, and mixed content remain unchanged.
+
+A prefix consisting entirely of a closing-tag suffix such as `/div>`, `div>`,
+`iv>`, `v>`, or `>` is removed only directly before the next complete row. This
+removes markup debris without inferring the category of an absent payload.
+With all filters disabled, the original snapshot is returned byte-for-byte.
+
+A leading `>CHAMBER:30.3 /0.0</div>` is also a possible cut at the final character
+of `<br>`, so it follows the temperature filter at this proven orphan boundary.
+The same text in a complete row remains subject to strict normal matching and
+stays visible, as do leading `>G28`, `>Error: ...`, and mixed diagnostic records.
+
 ## Verification
 
 Run the dependency-free regression tests from the repository root:
@@ -76,10 +103,12 @@ node tests/job-sort.test.js
 node --check public/js/main.js
 ```
 
-The 15-test filter suite covers all eight switch combinations, exact command
+The 22-test filter suite covers all eight filter combinations, exact command
 matching, temperature/fan/VOC formats, clipped leading boundaries and headers,
 the reported temperature suffix, the bounded numeric-tail rule, diagnostic
-preservation, and saved preferences.
+preservation, and saved preferences. It enumerates every character cut in each
+supported header spelling with telemetry and diagnostic payloads, every closing
+tag suffix, and Show/Hide labels for every state and subsequent toggles.
 
 An offline HTML replay also exercised the actual filter click handlers,
 retained snapshot restoration, unchanged polling, and blocked browser storage.
@@ -97,6 +126,12 @@ temperature suffix also reproduced and was removed. Turning the filters off
 restored all 166 and 180 complete records respectively, plus each original
 leading fragment, without changing the retained raw snapshot or making requests.
 The older 295-record replay still preserves all eight significant event records.
+
+The markup correction additionally replays the two newly reported fan/header
+fragments and the lone closing-tag fragment through the full display renderer.
+A fresh .80 snapshot is included in private replay evidence. The same replay
+checks action labels, reversible filtering, unchanged polling, and blocked
+storage. Captures remain private and are not part of the repository.
 
 The correction and renamed control require another browser check on desktop and
 mobile, including auto-scroll and reload persistence. These replay results are

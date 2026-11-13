@@ -197,7 +197,7 @@ test('preserves leading diagnostics, invalid readings and ambiguous fragments as
 	const next = '<div><b>19:54:24</b><br>ok\n</div>';
 	for (const fragment of [
 		'Error: CaseFanRPM sensor failed', 'Warning: VOC sensor disconnected',
-		'G28', 'ok', '>CHAMBER:30.3 /0.0',
+		'G28', 'ok', '>G28', '>Error: temperature read failed',
 		'echo: UVLedFanRPM NaN', 'VOCINLET:Infinity',
 		'5 /NaN UVLED:28.3 /40.0 VAT:27.2 /0.0',
 		'5 /0.0 UVLED:28.3 /40.0 VAT:27.2 /0.0 error',
@@ -222,7 +222,7 @@ test('omits only a finite nonnegative numeric orphan when every telemetry filter
 		}
 	}
 	context.terminal_display_filters = defaults;
-	for (const fragment of ['-1', 'NaN', 'Infinity', '1e999', '0x12', '12<br>Error: sensor failed', '12\n13', '']) {
+	for (const fragment of ['-1', 'NaN', 'Infinity', '1e999', '0x12', '12<br>Error: sensor failed', '12\n13']) {
 		const html = fragment + '</div>' + next;
 		assert.equal(context.terminal_filter_leading_html(html), html, fragment);
 	}
@@ -239,6 +239,159 @@ test('leading multiline telemetry respects every filter and disabling filters re
 	}
 	context.terminal_display_filters = {m105: false, fan: false, voc: false};
 	assert.equal(context.terminal_filter_html(html), html);
+});
+
+test('all possible cuts through a known row header respect each telemetry filter', () => {
+	const {context} = makeContext();
+	const next = '<div><b>20:40:00</b><br>G28\n</div>';
+	const bodies = [
+		['M105', 'm105'], [temperature, 'm105'],
+		['echo: PTCFanRPM 0.0', 'fan'], ['echo: CaseFanRPM 1624.0601503797307', 'fan'],
+		['VOCINLET:95.91', 'voc'], ['VOCOUTLET:95.96', 'voc']
+	];
+	for (const br of ['<br>', '<br/>', '<br />']) {
+		const header = '<div><b>20:39:44</b>' + br;
+		for (let cut = 1; cut <= header.length; cut++) {
+			for (const filters of filterCombinations()) {
+				context.terminal_display_filters = filters;
+				for (const [body, category] of bodies) {
+					const html = header.slice(cut) + body + '\n</div>' + next;
+					assert.equal(context.terminal_filter_leading_html(html), filters[category] ? next : html,
+						JSON.stringify({br, cut, filters, body}));
+				}
+			}
+		}
+	}
+});
+
+test('all header cuts retain commands, diagnostics, invalid readings and mixed content verbatim', () => {
+	const {context} = makeContext();
+	const next = '<div><b>20:40:00</b><br>ok\n</div>';
+	const bodies = [
+		'G28 Z0', 'G90', 'MOVE_PLATE Z=224.52 F=600', 'ok',
+		'Error: fan sensor failed', 'Warning: VOC unavailable', '!! temperature error',
+		'echo: PTCFanRPM NaN', 'echo: PTCFanRPM -1', 'VOCINLET:Infinity',
+		'UnknownFanRPM 1000', 'CUSTOM:25 /30', 'RESIN:NaN /35',
+		'echo: PTCFanRPM 0.0<br>Error: fan stalled',
+		temperature + '\nG28 Z0'
+	];
+	for (const br of ['<br>', '<br/>', '<br />']) {
+		const header = '<div><b>20:39:44</b>' + br;
+		for (let cut = 1; cut <= header.length; cut++) {
+			for (const filters of filterCombinations()) {
+				context.terminal_display_filters = filters;
+				for (const body of bodies) {
+					const html = header.slice(cut) + body + '\n</div>' + next;
+					assert.equal(context.terminal_filter_leading_html(html), html, JSON.stringify({br, cut, filters, body}));
+				}
+			}
+		}
+	}
+});
+
+test('every closing-tag tail is removed only at the proven boundary before a full row', () => {
+	const {context} = makeContext();
+	const next = '<div><b>20:40:00</b><br>G28\n</div>';
+	for (const filters of filterCombinations()) {
+		context.terminal_display_filters = filters;
+		for (let cut = 0; cut < '</div>'.length; cut++) {
+			const html = '\n ' + '</div>'.slice(cut) + '\n' + next;
+			assert.equal(context.terminal_filter_leading_html(html), filters.m105 || filters.fan || filters.voc ? next : html);
+		}
+		for (const prefix of ['Error: div>', 'Warning: >', 'G28\ndiv>', 'unknown>', 'class="unknown">', 'div>']) {
+			// A suffix without a following complete row is not sufficient proof.
+			assert.equal(context.terminal_filter_leading_html(prefix), prefix);
+			if (prefix !== 'div>') assert.equal(context.terminal_filter_leading_html(prefix + next), prefix + next);
+		}
+	}
+});
+
+test('reported opening-tag fragments disappear with the fan filter and remain reversible', () => {
+	const {context} = makeContext();
+	const next = '<div><b>20:40:00</b><br>ok\n</div>';
+	for (const first of [
+		'><b>20:36:29</b><br>echo: PTCFanRPM 0.0\n</div>',
+		'div><b>20:39:44</b><br>echo: CaseFanRPM 1624.0601503797307\n</div>'
+	]) {
+		context.terminal_display_filters = defaults;
+		assert.equal(context.terminal_filter_leading_html(first + next), next);
+		context.terminal_display_filters = {m105:true, fan:false, voc:true};
+		assert.equal(context.terminal_filter_leading_html(first + next), first + next);
+	}
+});
+
+test('the final br tag character is normalized only for a clipped leading telemetry record', () => {
+	const {context} = makeContext();
+	const next = '<div><b>20:40:00</b><br>ok\n</div>';
+	const orphan = '>CHAMBER:30.3 /0.0\n</div>';
+	for (const filters of filterCombinations()) {
+		context.terminal_display_filters = filters;
+		assert.equal(context.terminal_filter_leading_html(orphan + next), filters.m105 ? next : orphan + next);
+		const complete = '<div><b>20:39:44</b><br>>CHAMBER:30.3 /0.0\n</div>' + next;
+		assert.equal(context.terminal_filter_leading_html(complete), complete);
+		assert.equal(context.terminal_should_hide('>CHAMBER:30.3 /0.0', filters), false);
+		for (const body of ['>G28', '>Error: sensor failed', '>CHAMBER:30.3 /0.0 warning']) {
+			const html = body + '</div>' + next;
+			assert.equal(context.terminal_filter_leading_html(html), html);
+		}
+	}
+});
+
+test('filter button labels name the next action for every stored state and after toggling', () => {
+	const {context} = makeContext();
+	const buttons = ['m105','fan','voc'].map(key => ({
+		key, classes: new Set(),
+		show: {classes: new Set()}, hide: {classes: new Set()},
+		getAttribute(name) { assert.equal(name, 'data-terminal-filter'); return key; }
+	}));
+	function wrap(items) {
+		return {
+			each(fn) { items.forEach(item => fn.call(item)); return this; },
+			toggleClass(name, on) { items.forEach(item => on ? item.classes.add(name) : item.classes.delete(name)); return this; },
+			find(selector) {
+				assert.match(selector, /^\[data-terminal-action="(show|hide)"\]$/);
+				return wrap(items.map(item => item[selector.includes('"show"') ? 'show' : 'hide']));
+			}
+		};
+	}
+	context.$ = selector => {
+		if (selector === '.c3d-terminal-filters [data-terminal-filter]') return wrap(buttons);
+		assert.ok(buttons.includes(selector));
+		return wrap([selector]);
+	};
+	function checkLabels(filters) {
+		for (const button of buttons) {
+			const hidden = filters[button.key];
+			assert.equal(button.show.classes.has('hide'), !hidden);
+			assert.equal(button.hide.classes.has('hide'), hidden);
+			assert.equal(button.classes.has('is-on'), hidden);
+			assert.equal(button.classes.has('is-off'), !hidden);
+		}
+	}
+	for (const filters of filterCombinations()) {
+		context.terminal_display_filters = {...filters};
+		context.terminal_filters_paint();
+		checkLabels(filters);
+		for (const key of ['m105','fan','voc']) {
+			context.terminal_display_filters[key] = !context.terminal_display_filters[key];
+			context.terminal_filters_paint();
+			checkLabels(context.terminal_display_filters);
+		}
+	}
+});
+
+test('all terminal action text is capitalized and the filters expose ordinary action buttons', () => {
+	const template = fs.readFileSync(path.join(__dirname, '../templates/term.html'), 'utf8');
+	for (const label of ['Show Temperatures','Hide Temperatures','Show Fan RPM','Hide Fan RPM','Show VOC','Hide VOC','Auto-Scroll','Send G-Code']) {
+		assert.ok(template.includes('>' + label + '<'), label);
+	}
+	const buttons = template.match(/<button\b[^>]*data-terminal-filter=[^>]*>/g);
+	assert.equal(buttons.length, 3);
+	for (const button of buttons) {
+		assert.match(button, /type="button"/);
+		assert.match(button, /aria-controls="terminal"/);
+		assert.doesNotMatch(button, /role="switch"|aria-checked|aria-pressed/);
+	}
 });
 
 test('restores every saved boolean combination, including explicit false values', () => {

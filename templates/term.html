@@ -11,18 +11,18 @@
     <section class="c3d-card terminal" aria-label="Live G-code terminal">
         <div class="c3d-terminal-output-head">
             <div class="c3d-section-label c3d-terminal-output-label"><translate>Live output</translate></div>
-            <button type="button" id="terminal-autoscroll" class="c3d-toggle-pill is-on" role="switch" aria-checked="true" title="Keep the newest output in view"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span><translate>Auto-scroll</translate></button>
+            <button type="button" id="terminal-autoscroll" class="c3d-toggle-pill is-on" role="switch" aria-checked="true" title="Keep the newest output in view"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span><translate>Auto-Scroll</translate></button>
         </div>
         <div class="c3d-terminal-filters" role="group" aria-label="Terminal display filters" aria-describedby="terminal-filter-note">
-            <button type="button" class="c3d-toggle-pill is-on" data-terminal-filter="m105" role="switch" aria-checked="true" title="Hide M105 requests and temperature readings"><translate>Hide temperatures</translate></button>
-            <button type="button" class="c3d-toggle-pill is-on" data-terminal-filter="fan" role="switch" aria-checked="true" title="Hide routine fan speed readings"><translate>Hide fan RPM</translate></button>
-            <button type="button" class="c3d-toggle-pill is-on" data-terminal-filter="voc" role="switch" aria-checked="true" title="Hide routine VOC sensor readings"><translate>Hide VOC</translate></button>
+            <button type="button" class="c3d-toggle-pill is-on" data-terminal-filter="m105" aria-controls="terminal" title="Toggle display of M105 requests and temperature readings"><translate data-terminal-action="show">Show Temperatures</translate><translate data-terminal-action="hide" class="hide">Hide Temperatures</translate></button>
+            <button type="button" class="c3d-toggle-pill is-on" data-terminal-filter="fan" aria-controls="terminal" title="Toggle display of routine fan speed readings"><translate data-terminal-action="show">Show Fan RPM</translate><translate data-terminal-action="hide" class="hide">Hide Fan RPM</translate></button>
+            <button type="button" class="c3d-toggle-pill is-on" data-terminal-filter="voc" aria-controls="terminal" title="Toggle display of routine VOC sensor readings"><translate data-terminal-action="show">Show VOC</translate><translate data-terminal-action="hide" class="hide">Hide VOC</translate></button>
         </div>
         <p id="terminal-filter-note" class="c3d-terminal-filter-note"><translate>Filters affect this view only. Sensor logging and analytics continue.</translate></p>
         <div id="terminal" role="log" aria-live="polite"></div>
         <label for="gcode"><translate>G-code command</translate></label>
         <textarea name="gcode" id="gcode" rows="2" class="form-control"></textarea>
-        <a href="#" class="btn c3d-ghost c3d-ghost-gold" role="button" translate>Send G-code</a>
+        <a href="#" class="btn c3d-ghost c3d-ghost-gold" role="button" translate>Send G-Code</a>
     </section>
 </div>
 {% endblock %}

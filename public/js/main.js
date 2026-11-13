@@ -1207,8 +1207,11 @@ function terminal_filters_load(){
 function terminal_filters_paint(){
 	$('.c3d-terminal-filters [data-terminal-filter]').each(function(){
 		var on=terminal_display_filters[this.getAttribute('data-terminal-filter')];
-		$(this).toggleClass('is-on',on).toggleClass('is-off',!on)
-			.attr('aria-checked',on?'true':'false');
+		$(this).toggleClass('is-on',on).toggleClass('is-off',!on);
+		// Name the next action. Keep both strings in the template so the
+		// existing translation pass can translate each one before toggling.
+		$(this).find('[data-terminal-action="show"]').toggleClass('hide',!on);
+		$(this).find('[data-terminal-action="hide"]').toggleClass('hide',on);
 	});
 }
 
@@ -1237,19 +1240,37 @@ function terminal_should_hide(text,filters){
 	});
 }
 
+var terminal_header_suffix_pattern=null;
+function terminal_strip_leading_header(fragment){
+	if (!terminal_header_suffix_pattern) {
+		var suffixes=[];
+		// The buffer may cut at ANY byte of NanoDLP's known row header, not
+		// just the clock or <b> tag. Zeroes stand for timestamp digits.
+		['<div><b>00:00:00</b><br>','<div><b>00:00:00</b><br/>','<div><b>00:00:00</b><br />'].forEach(function(header){
+			for (var cut=1;cut<header.length;cut++) suffixes.push(header.slice(cut));
+		});
+		suffixes.sort(function(a,b){return b.length-a.length;});
+		terminal_header_suffix_pattern=new RegExp('^(?:'+suffixes.join('|').replace(/0/g,'\\d')+')','i');
+	}
+	return fragment.replace(terminal_header_suffix_pattern,'');
+}
+
 function terminal_filter_leading_html(html){
+	if (!terminal_display_filters.m105 && !terminal_display_filters.fan && !terminal_display_filters.voc) return html;
 	// NanoDLP's rolling buffer can start inside its oldest record, including
 	// its timestamp. Handle that one orphan before the HTML parser discards
 	// the unmatched closing tags. Never infer a category from the next row.
 	var closing=/<\/div\s*>/i.exec(html);
 	var opening=/<div(?:\s[^>]*)?>/i.exec(html);
+	// If the cut is within the closing tag itself, it has no remaining
+	// record body. Remove only an exact tag suffix before the next full row.
+	var prefix=opening ? html.slice(0,opening.index).trim().toLowerCase() : '';
+	if (prefix && '</div>'.slice(-prefix.length)===prefix) return html.slice(opening.index);
 	if (!closing || (opening && opening.index<closing.index)) return html;
 	var fragment=html.slice(0,closing.index).trim();
-	// Remove only recognizable timestamp/header remnants, not arbitrary tags
-	// or words that could be part of an error or command.
-	fragment=fragment.replace(/^(?:<b>|b>|>)?[\d:]{0,8}<\/b>\s*<br\s*\/?>/i,'')
-		.replace(/^(?:\/b>|b>|>)?\s*<br\s*\/?>/i,'')
-		.replace(/<br\s*\/?>/gi,'\n');
+	// This normalization is only for classification. If any remaining text
+	// is a command, diagnostic or unknown reading, retain the original bytes.
+	fragment=terminal_strip_leading_header(fragment).replace(/<br\s*\/?>/gi,'\n');
 	var lines=fragment.split(/\r?\n/).map(function(line){return line.trim();}).filter(function(line){return line!='';});
 	var hidden=lines.length>0 && lines.every(function(line,index){
 		var category=terminal_filter_category(line);
