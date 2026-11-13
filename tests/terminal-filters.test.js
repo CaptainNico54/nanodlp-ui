@@ -154,6 +154,74 @@ test('hides a multiline record only when every nonblank line is selected telemet
 	assert.equal(context.terminal_should_hide('  \n' + fanSamples[0] + '\n\t', defaults), true);
 });
 
+test('filters a clipped leading record without leaving its timestamp or line break', () => {
+	const {context} = makeContext();
+	const next = '<div><b>19:54:24</b><br>G28\n</div>';
+	const cases = [
+		['echo: CaseFanRPM 1619.1904806268\n', 'fan'],
+		['4</b><br>echo: UVLedFanRPM 1676.6467065739696\n', 'fan'],
+		['<b>19:54:24</b><br>echo: CaseFanRPM 1600\n', 'fan'],
+		[':24</b><br>VOCINLET:95.73\n', 'voc'],
+		['/b><br>VOCOUTLET:97.16\n', 'voc'],
+		['<br>' + temperature + '\n', 'm105'],
+		['M105\n', 'm105'],
+	];
+	for (const filters of filterCombinations()) {
+		context.terminal_display_filters = filters;
+		for (const [fragment, category] of cases) {
+			const html = fragment + '</div>' + next;
+			assert.equal(context.terminal_filter_leading_html(html), filters[category] ? next : html, fragment);
+		}
+	}
+});
+
+test('hides the observed temperature suffix only at a proven clipped leading boundary', () => {
+	const {context} = makeContext();
+	const suffix = '5 /0.0 UVLED:28.3 /40.0 VAT:27.2 /0.0';
+	const next = '<div><b>19:54:24</b><br>ok\n</div>';
+	for (const filters of filterCombinations()) {
+		context.terminal_display_filters = filters;
+		const html = suffix + '\n</div>' + next;
+		assert.equal(context.terminal_filter_leading_html(html), filters.m105 ? next : html);
+	}
+	context.terminal_display_filters = defaults;
+	assert.equal(context.terminal_filter_category(suffix), null);
+	assert.equal(context.terminal_should_hide(suffix, defaults), false);
+	for (const html of [suffix, '<div>' + suffix + '</div>' + next, next + suffix + '</div>']) {
+		assert.equal(context.terminal_filter_leading_html(html), html);
+	}
+});
+
+test('preserves leading diagnostics, invalid readings and ambiguous fragments as a whole', () => {
+	const {context} = makeContext();
+	const next = '<div><b>19:54:24</b><br>ok\n</div>';
+	for (const fragment of [
+		'Error: CaseFanRPM sensor failed', 'Warning: VOC sensor disconnected',
+		'G28', 'ok', '619.1904806268', '>CHAMBER:30.3 /0.0',
+		'echo: UVLedFanRPM NaN', 'VOCINLET:Infinity',
+		'5 /NaN UVLED:28.3 /40.0 VAT:27.2 /0.0',
+		'5 /0.0 UVLED:28.3 /40.0 VAT:27.2 /0.0 error',
+		'5 /0.0 UVLED:28.3 /40.0 FORCE:123', '5 /0.0 M105',
+		'echo: CaseFanRPM 1600<br>Warning: fan stalled',
+		'4</b><br>echo: CaseFanRPM 1600<br>Error: sensor failed',
+		'5 /0.0 UVLED:28.3 /40.0 VAT:27.2 /0.0\nG1 Z10 F60',
+	]) {
+		const html = fragment + '\n</div>' + next;
+		assert.equal(context.terminal_filter_leading_html(html), html, fragment);
+	}
+});
+
+test('leading multiline telemetry respects every filter and disabling filters restores raw bytes', () => {
+	const {context} = makeContext();
+	const html = '4</b><br>echo: CaseFanRPM 1600<br>VOCINLET:95.73\n</div><div>G28</div>';
+	for (const filters of filterCombinations()) {
+		context.terminal_display_filters = filters;
+		assert.equal(context.terminal_filter_leading_html(html), filters.fan && filters.voc ? '<div>G28</div>' : html);
+	}
+	context.terminal_display_filters = {m105: false, fan: false, voc: false};
+	assert.equal(context.terminal_filter_html(html), html);
+});
+
 test('restores every saved boolean combination, including explicit false values', () => {
 	for (const filters of filterCombinations()) {
 		const {context, reads} = makeContext(JSON.stringify(filters));

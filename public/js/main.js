@@ -1237,12 +1237,40 @@ function terminal_should_hide(text,filters){
 	});
 }
 
+function terminal_filter_leading_html(html){
+	// NanoDLP's rolling buffer can start inside its oldest record, including
+	// its timestamp. Handle that one orphan before the HTML parser discards
+	// the unmatched closing tags. Never infer a category from the next row.
+	var closing=/<\/div\s*>/i.exec(html);
+	var opening=/<div(?:\s[^>]*)?>/i.exec(html);
+	if (!closing || (opening && opening.index<closing.index)) return html;
+	var fragment=html.slice(0,closing.index).trim();
+	// Remove only recognizable timestamp/header remnants, not arbitrary tags
+	// or words that could be part of an error or command.
+	fragment=fragment.replace(/^(?:<b>|b>|>)?[\d:]{0,8}<\/b>\s*<br\s*\/?>/i,'')
+		.replace(/^(?:\/b>|b>|>)?\s*<br\s*\/?>/i,'')
+		.replace(/<br\s*\/?>/gi,'\n');
+	var lines=fragment.split(/\r?\n/).map(function(line){return line.trim();}).filter(function(line){return line!='';});
+	var hidden=lines.length>0 && lines.every(function(line,index){
+		var category=terminal_filter_category(line);
+		if (category===null && index===0) {
+			// A clipped temperature value is identifiable only when followed by
+			// complete known temperature fields. Bare numbers stay visible.
+			var number='[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?';
+			var suffix=new RegExp('^'+number+'\\s*/\\s*'+number+'\\s+(.+)$').exec(line);
+			if (suffix && /^(?:T\d*|B\d*|CHAMBER|HOST|MCU|PTC|RESIN|UVLED|VAT):/i.test(suffix[1]) && terminal_filter_category(suffix[1])==='m105') category='m105';
+		}
+		return category!==null && terminal_display_filters[category]===true;
+	});
+	return hidden ? html.slice(closing.index+closing[0].length) : html;
+}
+
 function terminal_filter_html(html){
 	if (!terminal_display_filters.m105 && !terminal_display_filters.fan && !terminal_display_filters.voc) return html;
 	// /term-io is an already-received display snapshot. Work on a detached
 	// copy, retaining the original snapshot so filters are reversible locally.
 	var output=document.createElement('div');
-	output.innerHTML=html;
+	output.innerHTML=terminal_filter_leading_html(html);
 	Array.prototype.slice.call(output.childNodes).forEach(function(record){
 		if (record.nodeType!==1 || record.tagName!=='DIV') return;
 		var probe=record.cloneNode(true);
