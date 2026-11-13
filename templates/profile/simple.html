@@ -1,7 +1,7 @@
 {% extends "../base.html" %} {% block content %}
 <div class="starter-template">
     <h1>{{profile.Title}}</h1>
-    <form action="" method="post" class="edit-page" id="setup">
+    <form action="" method="post" class="edit-page" id="setup" data-resin-editor-form>
         <br>
         <div class="row flex-row">
             <div class="col-md-12">
@@ -107,4 +107,7 @@
     <br>
     <br>
 </div>
+{% endblock %}
+{% block js %}
+<script src="/static/js/resin-unsaved.js?{{version}}(athenav1)"></script>
 {% endblock %}

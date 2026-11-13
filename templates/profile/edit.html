@@ -20,7 +20,7 @@
 	{% endif %}
 	<input type="hidden" id="scategory" value="">
 	<div id="setup-profile">
-	<form action="" method="post" class="edit-page {% if viewMode == 0 %}hidden{% endif %}" id="setup">
+	<form action="" method="post" class="edit-page {% if viewMode == 0 %}hidden{% endif %}" id="setup" data-resin-editor-form>
 		<br>
 		<div class="row">
 			<div class="col-md-12 setup-categories profiles">
@@ -879,7 +879,7 @@
 			});
 		</script>
 
-		<form action="" method="post" class="edit-page {% if viewMode == 1 %}hidden{% endif %}" id="setup2">
+		<form action="" method="post" class="edit-page {% if viewMode == 1 %}hidden{% endif %}" id="setup2" data-resin-editor-form>
 		<div class="c3d-resin-form">
 
 			<input type="hidden" name="ResinID" value="{{profile.ResinID}}">
@@ -1269,4 +1269,7 @@
 		</form>
 	</div>
 </div>
+{% endblock %}
+{% block js %}
+<script src="/static/js/resin-unsaved.js?{{version}}(athenav1)"></script>
 {% endblock %}

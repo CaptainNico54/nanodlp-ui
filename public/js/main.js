@@ -1549,7 +1549,11 @@ var serviceModeTogglePending = false;
 
 function toggleServiceMode() {
 	if (serviceModeTogglePending) return;
+	// Ask before the mode request: its completion reloads the editor, and a
+	// canceled unload must not leave the server and displayed mode out of sync.
+	if (window.c3dResinEditorGuard && !window.c3dResinEditorGuard.confirmLeave()) return;
 	serviceModeTogglePending = true;
+	$("#serviceModeConfirm").prop("disabled", true);
 	$.ajax({
 		url: "/printer/view/toggle",
 		type: "GET",
@@ -1567,7 +1571,6 @@ $(document).on("click", "#serviceModeEntry", function (e) {
 
 $(document).on("click", "#serviceModeConfirm", function (e) {
 	e.preventDefault();
-	$(this).prop("disabled", true);
 	toggleServiceMode();
 });
 
