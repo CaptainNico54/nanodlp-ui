@@ -1255,6 +1255,47 @@ function terminal_strip_leading_header(fragment){
 	return fragment.replace(terminal_header_suffix_pattern,'');
 }
 
+var terminal_tail_patterns=null;
+function terminal_is_telemetry_tail(line){
+	if (!terminal_tail_patterns) {
+		var number='[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?';
+		var positive='\\+?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?';
+		function suffixes(labels){
+			var parts=[];
+			labels.forEach(function(label){
+				for (var cut=1;cut<label.length;cut++) parts.push(label.slice(cut));
+			});
+			return parts.sort(function(a,b){return b.length-a.length;});
+		}
+		terminal_tail_patterns={
+			numbers:new RegExp(number,'g'),
+			scalar:new RegExp('^'+positive+'$'),
+			wrappers:suffixes(['echo:','Send:','Recv:','//']),
+			fan:new RegExp('^(?:'+suffixes(['UVLedFanRPM','UVFanRPM','CaseFanRPM','MCUFanRPM','PTCFanRPM','AuxFanRPM','AEGISFanRPM']).join('|')+')\\s+'+positive+'$','i'),
+			voc:new RegExp('^(?:'+suffixes(['VOCINLET:','VOCOUTLET:']).join('|')+')\\s*'+positive+'$','i'),
+			label:new RegExp('^(?:'+suffixes(['CHAMBER:','HOST:','MCU:','PTC:','RESIN:','UVLED:','VAT:','T:','B:']).join('|')+')(.+)$','i'),
+			target:new RegExp('^/\\s*('+positive+')(.*)$'),
+			field:new RegExp('^'+positive+'\\s+((?:T\\d*|B\\d*|CHAMBER|HOST|MCU|PTC|RESIN|UVLED|VAT):.+)$','i')
+		};
+	}
+	var patterns=terminal_tail_patterns;
+	// A lost label is ambiguous. Only the all-hidden orphan path calls this
+	// helper; retain negative sentinels, non-finite values and unknown words.
+	var values=line.match(patterns.numbers) || [];
+	if (!values.length || values.some(function(value){return !Number.isFinite(Number(value)) || Number(value)<0;})) return false;
+	if (patterns.wrappers.some(function(wrapper){
+		return line.toLowerCase().indexOf(wrapper.toLowerCase())===0 && terminal_filter_category(line.slice(wrapper.length).trim())!==null;
+	})) return true;
+	if (patterns.fan.test(line) || patterns.voc.test(line) || patterns.scalar.test(line)) return true;
+	var label=patterns.label.exec(line);
+	if (label && terminal_filter_category('T:'+label[1])==='m105') return true;
+	if (terminal_filter_category('T:'+line)==='m105') return true;
+	var target=patterns.target.exec(line);
+	if (target && terminal_filter_category('T:0 /'+target[1]+target[2])==='m105') return true;
+	var field=patterns.field.exec(line);
+	return !!field && terminal_filter_category(field[1])==='m105';
+}
+
 function terminal_filter_leading_html(html){
 	if (!terminal_display_filters.m105 && !terminal_display_filters.fan && !terminal_display_filters.voc) return html;
 	// NanoDLP's rolling buffer can start inside its oldest record, including
@@ -1270,24 +1311,27 @@ function terminal_filter_leading_html(html){
 	var fragment=html.slice(0,closing.index).trim();
 	// This normalization is only for classification. If any remaining text
 	// is a command, diagnostic or unknown reading, retain the original bytes.
-	fragment=terminal_strip_leading_header(fragment).replace(/<br\s*\/?>/gi,'\n');
+	var body=terminal_strip_leading_header(fragment);
+	var payloadClipped=body===fragment;
+	var allHidden=terminal_display_filters.m105 && terminal_display_filters.fan && terminal_display_filters.voc;
+	fragment=body.replace(/<br\s*\/?>/gi,'\n');
 	var lines=fragment.split(/\r?\n/).map(function(line){return line.trim();}).filter(function(line){return line!='';});
 	var hidden=lines.length>0 && lines.every(function(line,index){
 		var category=terminal_filter_category(line);
-		if (category===null && index===0) {
+		if (category===null && index===0 && payloadClipped) {
 			// A clipped temperature value is identifiable only when followed by
 			// complete known temperature fields. Bare numbers stay visible.
 			var number='[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?';
 			var suffix=new RegExp('^'+number+'\\s*/\\s*'+number+'\\s+(.+)$').exec(line);
 			if (suffix && /^(?:T\d*|B\d*|CHAMBER|HOST|MCU|PTC|RESIN|UVLED|VAT):/i.test(suffix[1]) && terminal_filter_category(suffix[1])==='m105') category='m105';
+			// Without a surviving header, the cut can also be inside a sensor
+			// name, protocol prefix or value. Omit only known telemetry suffixes
+			// when ALL categories are hidden. Never guess which visible category
+			// owns an ambiguous tail, or apply this rule to a complete payload.
+			if (category===null && allHidden && terminal_is_telemetry_tail(line)) return true;
 		}
 		return category!==null && terminal_display_filters[category]===true;
 	});
-	// A numeric-only oldest tail has lost its label. Omit that fragment only
-	// in the all-telemetry-hidden view; any disabled filter restores it. Keep
-	// negative sentinels, invalid numbers and complete numeric records visible.
-	if (lines.length===1 && terminal_display_filters.m105 && terminal_display_filters.fan && terminal_display_filters.voc &&
-		/^\+?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(lines[0]) && Number.isFinite(Number(lines[0]))) hidden=true;
 	return hidden ? html.slice(closing.index+closing[0].length) : html;
 }
 

@@ -394,6 +394,63 @@ test('all terminal action text is capitalized and the filters expose ordinary ac
 	}
 });
 
+test('all-hidden view handles every payload cut in the emitted Athena telemetry formats', () => {
+	const {context} = makeContext();
+	const next = '<div><b>21:05:00</b><br>G28\n</div>';
+	const bodies = [
+		'M105', temperature, 'RESIN:25.8 /35.0',
+		...fanSamples, ...vocSamples,
+		'echo: UVFanRPM 0.0', 'echo: MCUFanRPM 1234.5',
+		'Send: M105', 'Recv: ' + temperature, '// VOCINLET:95.91'
+	];
+	for (const body of bodies) {
+		for (let cut = 1; cut < body.length; cut++) {
+			const html = body.slice(cut) + '\n</div>' + next;
+			assert.equal(context.terminal_filter_leading_html(html), next, JSON.stringify({body, cut}));
+		}
+	}
+});
+
+test('ambiguous payload tails require all filters and no surviving row header', () => {
+	const {context} = makeContext();
+	const next = '<div><b>21:05:00</b><br>ok\n</div>';
+	const tails = [
+		'cho: CaseFanRPM 1600', 'aseFanRPM 1600', 'M 1600',
+		'OCINLET:95.91', 'T:95.91', ':95.91',
+		'HAMBER:25.3 /0.0', '/0.0', '25.3 /0.0',
+		'0.0 HOST:43.2 /55.0', '12'
+	];
+	for (const filters of filterCombinations()) {
+		context.terminal_display_filters = filters;
+		for (const tail of tails) {
+			const html = tail + '\n</div>' + next;
+			const allHidden = filters.m105 && filters.fan && filters.voc;
+			assert.equal(context.terminal_filter_leading_html(html), allHidden ? next : html, JSON.stringify({tail, filters}));
+			for (const header of ['<b>21:04:59</b><br>', 'div><b>21:04:59</b><br>', '59</b><br>', 'br>']) {
+				const completePayload = header + html;
+				assert.equal(context.terminal_filter_leading_html(completePayload), completePayload, JSON.stringify({header, tail, filters}));
+			}
+			assert.equal(context.terminal_should_hide(tail, filters), false);
+		}
+	}
+});
+
+test('payload-tail matching preserves surviving diagnostics, unknown text, and mixed records', () => {
+	const {context} = makeContext();
+	const next = '<div><b>21:05:00</b><br>ok\n</div>';
+	for (const body of [
+		'Error: M 1600', 'Warning: OCINLET:95.91', 'UnknownFanRPM 1600',
+		'cho: CaseFanRPM NaN', 'aseFanRPM -1', 'M Infinity', 'T:NaN', 'T:-1',
+		'RESIN:34.9', '/NaN', '25.3 /Infinity', '/0.0 FORCE:123',
+		'25.3 /0.0 warning', '0.0 HOST:43.2 /55.0 error',
+		'12\n13', 'M 1600<br>G28', 'OCINLET:95.91\nError: sensor disconnected',
+		'-1', 'NaN', 'Infinity', '1e999', '0x12'
+	]) {
+		const html = body + '\n</div>' + next;
+		assert.equal(context.terminal_filter_leading_html(html), html, body);
+	}
+});
+
 test('restores every saved boolean combination, including explicit false values', () => {
 	for (const filters of filterCombinations()) {
 		const {context, reads} = makeContext(JSON.stringify(filters));

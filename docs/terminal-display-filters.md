@@ -37,9 +37,10 @@ Routine records are matched strictly:
 - Numeric VOCINLET and VOCOUTLET readings.
 
 Recognized `echo:`, `Send:`, `Recv:`, and `//` wrappers are supported.
-Generic `ok` acknowledgements are always retained. Errors, warnings, invalid
-readings, unfamiliar formats, and ambiguous truncated text are retained. A record
-containing both telemetry and other text stays visible as a whole.
+Generic `ok` acknowledgements are always retained. Complete errors, warnings,
+invalid readings and unfamiliar formats are retained. A record containing both
+telemetry and other text stays visible as a whole. The narrow exception for
+unidentified oldest fragments in the all-hidden view is described below.
 Manually entered M105 commands follow the same display filter; choose **Show
 Temperatures** to inspect them. Commands are always sent normally. The internal
 `m105` preference key is unchanged, preserving existing saved choices.
@@ -93,6 +94,26 @@ of `<br>`, so it follows the temperature filter at this proven orphan boundary.
 The same text in a complete row remains subject to strict normal matching and
 stays visible, as do leading `>G28`, `>Error: ...`, and mixed diagnostic records.
 
+An exhaustive payload-cut check also found partial protocol/sensor names and
+temperature values: `cho: CaseFanRPM 1600`, `aseFanRPM 1600`, `OCINLET:95.91`,
+`/0.0`, and target values before complete temperature fields. These are handled
+by a finite grammar of suffixes of the existing known labels and numeric
+formats. No arbitrary words are removed before trying to classify a reading.
+
+This additional fallback requires **all three filters enabled**, a proven
+orphan boundary, and **no surviving recognizable header**. Only the first
+payload line can use it; every later line must pass strict complete matching.
+Newly inferred numbers must be finite and nonnegative. A surviving header means
+the payload is complete, so even numeric-only or ambiguous payloads stay visible.
+
+The shortest tails are inherently ambiguous: `M 1600` can be a clipped fan label
+or command-shaped text, and `T:95.91` can be a clipped VOC label or an incomplete
+temperature report. In the all-hidden view those headerless oldest fragments
+are omitted. Turning any filter off restores them. Complete rows, rows with a
+surviving header, negative sentinels, invalid values, and surviving diagnostic
+words keep their protection. This is an explicit display policy for data whose
+beginning has already been discarded, not a reconstruction of its lost origin.
+
 ## Verification
 
 Run the dependency-free regression tests from the repository root:
@@ -103,12 +124,14 @@ node tests/job-sort.test.js
 node --check public/js/main.js
 ```
 
-The 22-test filter suite covers all eight filter combinations, exact command
+The 25-test filter suite covers all eight filter combinations, exact command
 matching, temperature/fan/VOC formats, clipped leading boundaries and headers,
 the reported temperature suffix, the bounded numeric-tail rule, diagnostic
 preservation, and saved preferences. It enumerates every character cut in each
 supported header spelling with telemetry and diagnostic payloads, every closing
-tag suffix, and Show/Hide labels for every state and subsequent toggles.
+tag suffix, every payload cut in representative emitted Athena formats, the
+all-hidden/no-header safeguards, and Show/Hide labels for every state and
+subsequent toggles.
 
 An offline HTML replay also exercised the actual filter click handlers,
 retained snapshot restoration, unchanged polling, and blocked browser storage.
@@ -132,6 +155,11 @@ fragments and the lone closing-tag fragment through the full display renderer.
 A fresh .80 snapshot is included in private replay evidence. The same replay
 checks action labels, reversible filtering, unchanged polling, and blocked
 storage. Captures remain private and are not part of the repository.
+
+A separate read-only evidence sweep used the 102 unique routine payloads from
+287 captured telemetry records. All 5,035 nonempty payload cuts are covered by
+the bounded all-hidden fallback. This does not change the documented ambiguity
+of the oldest fragment or broaden matching for complete records.
 
 The correction and renamed control require another browser check on desktop and
 mobile, including auto-scroll and reload persistence. These replay results are
